@@ -62,7 +62,7 @@ abstract class BaseService implements BaseServiceInterface
             abort(404, 'Resource not found');
         }
 
-        $model->update([$request]);
+        $model->update($request);
 
         return $model;
     }

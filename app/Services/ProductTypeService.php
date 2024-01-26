@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\SearchObjects\BaseSearchObject;
+use App\Http\Requests\SearchObjects\ProductTypeSearchObject;
 use App\Models\ProductType;
 use App\Services\Interfaces\ProductTypeServiceInterface;
 
@@ -20,7 +21,7 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
 
     public function getSearchObject()
     {
-        return BaseSearchObject::class;
+        return ProductTypeSearchObject::class;
     }
 
     protected function getModelClass()

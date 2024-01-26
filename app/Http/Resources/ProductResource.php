@@ -16,10 +16,9 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'product_type_id' => new ProductType($this->whenLoaded('productType')),
+            'product_type_id' => new ProductTypeResource($this->whenLoaded('productType')),
         ];
     }
 }

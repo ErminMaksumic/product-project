@@ -24,7 +24,7 @@ class ProductUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|string',
             'description' => 'string',
-            'product_type_id' => 'required|number'
+            'product_type_id' => 'sometimes|number'
         ];
     }
 }

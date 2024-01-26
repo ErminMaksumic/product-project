@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
+            $table->fullText('name');
             $table->string('description')->nullable();
             $table->decimal('price');
             $table->foreignIdFor(ProductType::class);

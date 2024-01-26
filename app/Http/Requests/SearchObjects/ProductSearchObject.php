@@ -6,6 +6,7 @@ class ProductSearchObject extends BaseSearchObject
 {
 
     public ?string $name = null;
+    public ?bool $includeProductType = null;
 
     public function __construct(array $attributes = [])
     {
@@ -16,5 +17,6 @@ class ProductSearchObject extends BaseSearchObject
     {
         parent::fill($attributes);
         $this->name = $attributes['name'] ?? null;
+        $this->includeProductType = $attributes['includeProductType'] ?? null;
     }
 }

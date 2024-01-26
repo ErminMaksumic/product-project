@@ -19,6 +19,10 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function includeRelation($searchObject, $query){
 
+        if ($searchObject->includeProductType) {
+            $query = $query->with('productType');
+        }
+
         return $query;
     }
 
