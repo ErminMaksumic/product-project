@@ -23,6 +23,7 @@ abstract class BaseController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('admin');
         $validatedData = $this->validateRequest($request, $this->getInsertRequestClass());
         return $this->createResourcePayload($this->service->add($validatedData));
     }
@@ -55,6 +56,7 @@ abstract class BaseController extends Controller
 
     public function update(Request $request, int $id)
     {
+        $this->authorize('admin');
         $validatedData = $this->validateRequest($request, $this->getUpdateRequestClass());
         return $this->createResourcePayload($this->service->update($validatedData, $id));
     }
