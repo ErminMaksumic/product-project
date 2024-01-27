@@ -19,6 +19,7 @@ return new class extends Migration
             $table->fullText('name');
             $table->string('description')->nullable();
             $table->decimal('price');
+            $table->index('price');
             $table->foreignIdFor(ProductType::class);
         });
     }

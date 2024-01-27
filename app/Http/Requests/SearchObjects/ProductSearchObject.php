@@ -7,6 +7,8 @@ class ProductSearchObject extends BaseSearchObject
 
     public ?string $name = null;
     public ?bool $includeProductType = null;
+    public ?int $priceGT = null;
+    public ?int $priceLT = null;
 
     public function __construct(array $attributes = [])
     {
@@ -17,6 +19,8 @@ class ProductSearchObject extends BaseSearchObject
     {
         parent::fill($attributes);
         $this->name = $attributes['name'] ?? null;
+        $this->priceGT = $attributes['priceGT'] ?? null;
+        $this->priceLT = $attributes['priceLT'] ?? null;
         $this->includeProductType = $attributes['includeProductType'] ?? null;
     }
 }

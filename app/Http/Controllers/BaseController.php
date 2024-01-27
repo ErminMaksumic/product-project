@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 abstract class BaseController extends Controller
 {
     public function __construct(protected $service)
-    { }
+    {
+        $this->middleware('auth:sanctum')->except(['index']);
+    }
 
     abstract function getInsertRequestClass();
     abstract function getUpdateRequestClass();

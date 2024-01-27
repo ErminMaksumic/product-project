@@ -18,6 +18,7 @@ class VariantResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'value' => $this->value,
+            'price' => $this->price,
             'product' => new ProductResource($this->whenLoaded('product')),
         ];
     }

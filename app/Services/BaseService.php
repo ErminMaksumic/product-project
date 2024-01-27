@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Services\Interfaces\BaseServiceInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseService implements BaseServiceInterface
 {
     abstract protected function getModelClass();
-
 
     protected function handleDeleteResponse()
     {
@@ -43,7 +43,7 @@ abstract class BaseService implements BaseServiceInterface
 
         if(!$result)
         {
-            throw abort(404, 'Resource not found!');
+            throw new UserException("Resource not found!");
         }
 
         return $result;

@@ -13,12 +13,22 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($searchObject->name) {
             $query = $query->where('name', $searchObject->name);
         }
+        if ($searchObject->priceGT || $searchObject->priceLT) {
+            $query = $query->whereHas('variants', function ($variantQuery) use ($searchObject) {
+                if ($searchObject->priceGT) {
+                    $variantQuery->where('price', '>', $searchObject->priceGT);
+                }
+                if ($searchObject->priceLT) {
+                    $variantQuery->where('price', '<', $searchObject->priceLT);
+                }
+            });
+        }
 
         return $query;
     }
 
-    public function includeRelation($searchObject, $query){
-
+    public function includeRelation($searchObject, $query)
+    {
         if ($searchObject->includeProductType) {
             $query = $query->with('productType');
         }
