@@ -52,4 +52,10 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         return Product::class;
     }
+
+    public function add(array $request)
+    {
+        $request['status'] = 'DRAFT';
+        return parent::add($request);
+    }
 }

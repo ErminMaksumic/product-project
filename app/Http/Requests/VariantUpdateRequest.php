@@ -24,8 +24,8 @@ class VariantUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|string',
             'value' => 'sometimes|string',
-            'price' => 'sometimes|number',
-            'product_id' => 'sometimes|number'
+            'price' => 'sometimes|integer',
+            'product_id' => 'sometimes|integer'
         ];
     }
 }

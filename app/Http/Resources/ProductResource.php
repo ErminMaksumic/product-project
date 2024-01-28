@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'product_type_id' => new ProductTypeResource($this->whenLoaded('productType')),
             'validFrom' => $this->validFrom,
             'validTo' => $this->validTo,
+            'status' => $this->status,
         ];
     }
 }

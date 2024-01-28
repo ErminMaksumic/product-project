@@ -3,14 +3,12 @@
 namespace App\Providers;
 
 use App\Exceptions\CustomExceptionHandler;
-use App\Exceptions\ErrorFilter;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\Interfaces\ProductTypeServiceInterface;
 use App\Services\Interfaces\VariantServiceInterface;
 use App\Services\ProductService;
 use App\Services\ProductTypeService;
 use App\Services\VariantService;
-use Cassandra\Custom;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
 

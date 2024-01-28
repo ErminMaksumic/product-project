@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
 Route::apiResource('product', ProductController::class);
 Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('variant', VariantController::class);
@@ -29,3 +30,10 @@ Route::apiResource('variant', VariantController::class);
 // auth
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanctum");
+
+// state machine
+
+Route::get('/product/{id}/allowedActions', [ProductController::class, 'allowedActions'])->name('product.allowedActions');
+Route::put('/product/{id}/productActivate', [ProductController::class, 'productActivate'])->name('product.productActivate');
+Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');
+Route::put('/product/{id}/productDelete', [ProductController::class, 'productDelete'])->name('product.productDelete');
