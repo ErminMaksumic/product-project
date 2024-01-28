@@ -13,6 +13,13 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($searchObject->name) {
             $query = $query->where('name', $searchObject->name);
         }
+        if ($searchObject->validFrom) {
+            $query = $query->where('validFrom', '>=', $searchObject->validFrom);
+        }
+
+        if ($searchObject->validTo) {
+            $query = $query->where('validTo', '<=', $searchObject->validTo);
+        }
         if ($searchObject->priceGT || $searchObject->priceLT) {
             $query = $query->whereHas('variants', function ($variantQuery) use ($searchObject) {
                 if ($searchObject->priceGT) {

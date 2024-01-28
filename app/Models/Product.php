@@ -12,7 +12,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_type_id', 'name', 'description', 'price'];
+    protected $fillable = ['product_type_id', 'name', 'description', 'validFrom', 'validTo'];
 
     public function productType() : BelongsTo
     {

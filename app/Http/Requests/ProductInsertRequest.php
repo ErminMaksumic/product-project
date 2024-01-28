@@ -24,7 +24,10 @@ class ProductInsertRequest extends FormRequest
         return [
             'name' => 'required|string',
             'description' => 'string',
-            'product_type_id' => 'exists:product_types,id'
+            'product_type_id' => 'exists:product_types,id',
+            'validFrom' => 'required',
+            'validTo' => 'required'
+
         ];
     }
 }
