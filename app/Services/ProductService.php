@@ -22,18 +22,31 @@ class ProductService extends BaseService implements ProductServiceInterface
             $query = $query->where('validTo', '<=', $searchObject->validTo);
         }
 
-        if ($searchObject->priceGT > 0 || $searchObject->priceLT > 0)
-            return $query->with(['variants' => function ($variantQuery) use ($searchObject) {
-                if ($searchObject->priceGT) {
-                    $variantQuery->where('price', '>', $searchObject->priceGT);
-                }
-                if ($searchObject->priceLT) {
-                    $variantQuery->where('price', '<', $searchObject->priceLT);
-                }
-            }]);
-
+        if ($searchObject->priceGT || $searchObject->priceLT) {
+            $query = $this->applyPriceFilter($query, $searchObject);
+        }
 
         return $query;
+    }
+
+    private function applyPriceFilter($query, $searchObject)
+    {
+        return $query->with(['variants' => function ($variantQuery) use ($searchObject) {
+            $this->addPriceConditions($variantQuery, $searchObject);
+        }])
+            ->whereHas('variants', function ($variantQuery) use ($searchObject) {
+                $this->addPriceConditions($variantQuery, $searchObject);
+            });
+    }
+
+    private function addPriceConditions($query, $searchObject)
+    {
+        if ($searchObject->priceGT) {
+            $query->where('price', '>=', $searchObject->priceGT);
+        }
+        if ($searchObject->priceLT) {
+            $query->where('price', '<', $searchObject->priceLT);
+        }
     }
 
 
