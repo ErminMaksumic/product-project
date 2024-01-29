@@ -25,6 +25,22 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'variants' => VariantResource::collection($this->whenLoaded('variants')),
             'activatedBy' => $this->activatedBy,
+            'newestVariant' => $this->getNewestVariant(),
+        ];
+    }
+
+    private function getNewestVariant()
+    {
+        if ($this->variants->isEmpty()) {
+            return null;
+        }
+
+        $newestVariant = $this->variants->sortByDesc('created_at')->first();
+
+        return [
+            'id' => $newestVariant->id,
+            'name' => $newestVariant->name,
+            'price' => $newestVariant->price,
         ];
     }
 }
