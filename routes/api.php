@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/product/fullTextSearch', [ProductController::class, 'fullTextSearch']);
 Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
 Route::apiResource('product', ProductController::class);
 Route::apiResource('productType', ProductTypeController::class);

@@ -11,7 +11,10 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function addFilter($searchObject, $query)
     {
         if ($searchObject->name) {
-            $query = $query->where('name', $searchObject->name);
+            $query = $query->where(function ($query) use ($searchObject) {
+                $query->orWhere('name', 'ILIKE', '%' . $searchObject->name . '%');
+                $query->orWhereRaw("to_tsvector('english', name) @@ to_tsquery(?)", [$searchObject->name]);
+            });
         }
 
         if ($searchObject->validFrom) {
@@ -62,12 +65,6 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function getSearchObject()
     {
         return ProductSearchObject::class;
-    }
-
-    public function add(array $request)
-    {
-        $request['status'] = 'DRAFT';
-        return parent::add($request);
     }
 
     protected function getModelClass()

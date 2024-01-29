@@ -84,4 +84,9 @@ class ProductController extends BaseController
     {
         return ProductResource::make($this->productStateMahineService->productDelete($orderId));
     }
+
+    public function fullTextSearch()
+    {
+        return $this->createResourcePayload($this->service->getAll(), true);
+    }
 }
