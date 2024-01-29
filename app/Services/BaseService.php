@@ -16,12 +16,12 @@ abstract class BaseService implements BaseServiceInterface
         return response(content: "Resource removed successfully", status: 204);
     }
 
-    public function getAll()
+    public function getPageable()
     {
-        $searchObjectInstance = app($this->getSearchObject());
+        $searchObjectInstance = $this->getSearchObject();
         $searchObjectInstance->fill(request()->query());
 
-        $query = app($this->getModelClass())->query();
+        $query = $this->getModelClass()->query();
 
         $query = $this->includeRelation($searchObjectInstance, $query);
         $query = $this->addFilter($searchObjectInstance, $query);
@@ -32,8 +32,8 @@ abstract class BaseService implements BaseServiceInterface
 
     public function getById(int $id)
     {
-        $searchObjectInstance = app($this->getSearchObject());
-        $query = app($this->getModelClass())->query();
+        $searchObjectInstance = $this->getSearchObject();
+        $query = $this->getModelClass()->query();
 
         $searchObjectInstance->fill(request()->query());
         $query = $this->includeRelation($searchObjectInstance, $query);
@@ -77,7 +77,6 @@ abstract class BaseService implements BaseServiceInterface
         }
 
         $model->delete();
-
         return $this->handleDeleteResponse();
     }
 
@@ -87,7 +86,7 @@ abstract class BaseService implements BaseServiceInterface
 
     public function getSearchObject()
     {
-        return BaseSearchObject::class;
+        return new BaseSearchObject();
     }
 
     public function includeRelation($searchObject, $query)

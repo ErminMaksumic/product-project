@@ -18,7 +18,7 @@ abstract class BaseController extends Controller
 
     public function index()
     {
-        return $this->createResourcePayload($this->service->getAll(), true);
+        return $this->createResourcePayload($this->service->getPageable(), true);
     }
 
     public function store(Request $request)

@@ -64,11 +64,17 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function getSearchObject()
     {
-        return ProductSearchObject::class;
+        return new ProductSearchObject();
     }
 
     protected function getModelClass()
     {
-        return Product::class;
+        return new Product();
+    }
+
+    public function add($request)
+    {
+        $request['status'] = 'DRAFT';
+        return parent::add($request);
     }
 }

@@ -29,12 +29,12 @@ class VariantService extends BaseService implements VariantServiceInterface
 
     public function getSearchObject()
     {
-        return VariantSearchObject::class;
+        return new VariantSearchObject();
     }
 
     protected function getModelClass()
     {
-        return Variant::class;
+        return new Variant();
     }
 
     public function add(array $request)

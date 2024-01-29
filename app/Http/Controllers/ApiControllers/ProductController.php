@@ -87,6 +87,6 @@ class ProductController extends BaseController
 
     public function fullTextSearch()
     {
-        return $this->createResourcePayload($this->service->getAll(), true);
+        return $this->createResourcePayload($this->service->getPageable(), true);
     }
 }

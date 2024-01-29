@@ -21,21 +21,21 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
 
     public function getSearchObject()
     {
-        return ProductTypeSearchObject::class;
+        return new ProductTypeSearchObject();
     }
 
     protected function getModelClass()
     {
-        return ProductType::class;
+        return new ProductType();
     }
 
-    public function getAll()
+    public function getPageable()
     {
         if (Cache::has('product_types')) {
             return Cache::get('product_types');
         }
 
-        $all = parent::getAll();
+        $all = parent::getPageable();
         Cache::put('product_types', $all, 30);
         return $all;
     }
