@@ -22,17 +22,19 @@ class ProductService extends BaseService implements ProductServiceInterface
             $query = $query->where('validTo', '<=', $searchObject->validTo);
         }
 
-        return $query->with(['variants' => function ($variantQuery) use ($searchObject) {
-            if ($searchObject->priceGT) {
-                $variantQuery->where('price', '>', $searchObject->priceGT);
-            }
-            if ($searchObject->priceLT) {
-                $variantQuery->where('price', '<', $searchObject->priceLT);
-            }
-        }]);
+        if ($searchObject->priceGT > 0 || $searchObject->priceLT > 0)
+            return $query->with(['variants' => function ($variantQuery) use ($searchObject) {
+                if ($searchObject->priceGT) {
+                    $variantQuery->where('price', '>', $searchObject->priceGT);
+                }
+                if ($searchObject->priceLT) {
+                    $variantQuery->where('price', '<', $searchObject->priceLT);
+                }
+            }]);
+
+
+        return $query;
     }
-
-
 
 
     public function includeRelation($searchObject, $query)
@@ -49,14 +51,14 @@ class ProductService extends BaseService implements ProductServiceInterface
         return ProductSearchObject::class;
     }
 
-    protected function getModelClass()
-    {
-        return Product::class;
-    }
-
     public function add(array $request)
     {
         $request['status'] = 'DRAFT';
         return parent::add($request);
+    }
+
+    protected function getModelClass()
+    {
+        return Product::class;
     }
 }

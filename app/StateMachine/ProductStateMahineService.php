@@ -8,12 +8,46 @@ use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Config\StateConfiguration;
 use App\StateMachine\Enums\ProductStatus;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class ProductStateMahineService
 {
 
     public function __construct(protected StateConfiguration $stateConfiguration, protected ProductServiceInterface $productService)
-    { }
+    {
+    }
+
+    public function productDraft(int $productId)
+    {
+        return $this->updateProduct(ProductStatus::DRAFT, $productId);
+    }
+
+    public function updateProduct(ProductStatus $productStatus, int $productId, $validFrom = null, $validTo = null)
+    {
+        $allowedActions = $this->allowedActions($productId);
+
+        if (!$this->isStatusUpdateAllowed($productStatus, $allowedActions)) {
+            throw new UserException("Status update not allowed!");
+        }
+
+        $updateData = ['status' => $productStatus];
+
+        if ($validFrom && $validTo) {
+            $updateData += [
+                'validFrom' => $validFrom,
+                'validTo' => $validTo,
+                'activatedBy' => Auth::user()->email
+            ];
+        }
+
+        return $this->productService->update($updateData, $productId);
+    }
+
+    private function isStatusUpdateAllowed(ProductStatus $productStatus, $allowedActions)
+    {
+        return collect($allowedActions)->contains('value', $productStatus->value);
+    }
+
     public function allowedActions(int $id)
     {
         $product = Product::query()->find($id);
@@ -31,30 +65,13 @@ class ProductStateMahineService
         return $state->allowedActions();
     }
 
-
-    public function updateProduct(ProductStatus $productStatus, int $productId)
+    public function productActivate(int $productId, string $validFrom, string $validTo)
     {
-        $collection = collect($this->allowedActions($productId));
-        if ($collection->contains('value', $productStatus->value)) {
-            $product = $this->productService->update(['status' => $productStatus], $productId);
-        } else {
-            throw new UserException("Status update not allowed!");
-        }
-
-        return $product;
+        return $this->updateProduct(ProductStatus::ACTIVATED, $productId, $validFrom, $validTo);
     }
 
-    public function productDraft(int $productId)
-    {
-       return  $this->updateProduct(ProductStatus::DRAFT, $productId);
-    }
-
-    public function productActivate(int $productId)
-    {
-        return  $this->updateProduct(ProductStatus::ACTIVATED, $productId);
-    }
     public function productDelete(int $productId)
     {
-        return  $this->updateProduct(ProductStatus::DELETED, $productId);
+        return $this->updateProduct(ProductStatus::DELETED, $productId);
     }
 }

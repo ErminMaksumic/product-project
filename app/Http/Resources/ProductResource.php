@@ -24,6 +24,7 @@ class ProductResource extends JsonResource
             'validTo' => $this->validTo,
             'status' => $this->status,
             'variants' => VariantResource::collection($this->whenLoaded('variants')),
+            'activatedBy' => $this->activatedBy,
         ];
     }
 }

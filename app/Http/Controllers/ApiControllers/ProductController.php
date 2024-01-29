@@ -10,6 +10,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\ProductStateMahineService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends BaseController
@@ -45,7 +46,6 @@ class ProductController extends BaseController
             $query->latest()->take(1);
         }])->get();
 
-        dd($productsWithNewestVariant);
 
         $structuredData = $productsWithNewestVariant->map(function ($product) {
             $newestVariant = $product->variants->first();
@@ -75,9 +75,9 @@ class ProductController extends BaseController
         return ProductResource::make($this->productStateMahineService->productDraft($orderId));
     }
 
-    public function productActivate(int $orderId)
+    public function productActivate(int $orderId, Request $params)
     {
-        return ProductResource::make($this->productStateMahineService->productActivate($orderId));
+        return ProductResource::make($this->productStateMahineService->productActivate($orderId, $params->validFrom, $params->validTo));
     }
 
     public function productDelete(int $orderId)

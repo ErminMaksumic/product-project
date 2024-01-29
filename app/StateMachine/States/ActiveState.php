@@ -15,7 +15,8 @@ class ActiveState extends BaseState
     public function allowedActions()
     {
         return [
-                ProductStatus::DRAFT,
+            ProductStatus::DRAFT,
+            ProductStatus::DELETED,
         ];
     }
 }

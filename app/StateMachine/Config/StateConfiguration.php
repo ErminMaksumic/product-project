@@ -19,7 +19,7 @@ class StateConfiguration
         DeleteState $deletedState,
     ) {
         $this->draftState = $draftState;
-        $this->activatedStatus = $activatedState;
+        $this->activatedState = $activatedState;
         $this->deletedState = $deletedState;
     }
 
