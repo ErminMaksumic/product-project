@@ -8,11 +8,12 @@ use App\Services\Interfaces\ProductServiceInterface;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
-    public function addFilter($searchObject, $query){
-
+    public function addFilter($searchObject, $query)
+    {
         if ($searchObject->name) {
             $query = $query->where('name', $searchObject->name);
         }
+
         if ($searchObject->validFrom) {
             $query = $query->where('validFrom', '>=', $searchObject->validFrom);
         }
@@ -20,19 +21,19 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($searchObject->validTo) {
             $query = $query->where('validTo', '<=', $searchObject->validTo);
         }
-        if ($searchObject->priceGT || $searchObject->priceLT) {
-            $query = $query->whereHas('variants', function ($variantQuery) use ($searchObject) {
-                if ($searchObject->priceGT) {
-                    $variantQuery->where('price', '>', $searchObject->priceGT);
-                }
-                if ($searchObject->priceLT) {
-                    $variantQuery->where('price', '<', $searchObject->priceLT);
-                }
-            });
-        }
 
-        return $query;
+        return $query->with(['variants' => function ($variantQuery) use ($searchObject) {
+            if ($searchObject->priceGT) {
+                $variantQuery->where('price', '>', $searchObject->priceGT);
+            }
+            if ($searchObject->priceLT) {
+                $variantQuery->where('price', '<', $searchObject->priceLT);
+            }
+        }]);
     }
+
+
+
 
     public function includeRelation($searchObject, $query)
     {
