@@ -25,7 +25,7 @@ class VariantCreateRequest extends FormRequest
             'name' => 'required|string',
             'value' => 'required|string',
             'price' => 'required|integer',
-            'product_id' => 'required|integer'
+            'product_id' => 'required|integer|exists:products,id'
         ];
     }
 }

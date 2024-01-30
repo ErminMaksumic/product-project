@@ -15,7 +15,7 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
@@ -23,10 +23,19 @@ class ProductResource extends JsonResource
             'validFrom' => $this->validFrom,
             'validTo' => $this->validTo,
             'status' => $this->status,
-            'variants' => VariantResource::collection($this->whenLoaded('variants')),
-            'activatedBy' => $this->activatedBy,
-            'newestVariant' => $this->getNewestVariant(),
+            'variants' => VariantResource::collection($this->whenLoaded('variants'))
         ];
+
+        if (!is_null($this->activatedBy)) {
+            $data['activatedBy'] = $this->activatedBy;
+        }
+
+        if ($this->getNewestVariant()) {
+            $data['newestVariant'] = $this->getNewestVariant();
+        }
+
+        return $data;
+
     }
 
     private function getNewestVariant()

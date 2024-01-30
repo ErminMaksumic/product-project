@@ -27,7 +27,6 @@ class ProductInsertRequest extends FormRequest
             'product_type_id' => 'exists:product_types,id',
             'validFrom' => 'required',
             'validTo' => 'required'
-
         ];
     }
 }
