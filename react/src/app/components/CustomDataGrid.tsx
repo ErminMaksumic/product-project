@@ -5,8 +5,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { v4 as uuidv4 } from "uuid";
 
 export function CustomDataGrid({ params }: any) {
-    console.log("Array.isArray(params)", Array.isArray(params));
-    console.log("params", params);
     return (
         <div style={{ height: "100%", width: "100%", background: "white" }}>
             {params && (

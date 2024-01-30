@@ -14,7 +14,7 @@ class CustomExceptionHandler extends ExceptionHandler
             return response()->json(['error' => 'Database error: ' . $exception->getMessage()], 500);
         }
         if ($exception instanceof UserException) {
-            return response()->json(['error' => 'Custom error: ' . $exception->getMessage()], 500);
+            return response()->json(['error' => 'Server-error message: ' . $exception->getMessage()], 500);
         }
         else {
             return response()->json(['error' => $exception->getMessage()], 500);

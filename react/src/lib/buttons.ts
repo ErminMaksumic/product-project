@@ -1,27 +1,27 @@
 export interface Button {
-  text: string;
-  link: string;
-  state: string;
-  color: string;
+    text: string;
+    link: string;
+    state: string;
+    color: string;
 }
 
 export const orderStateButtons: Button[] = [
-  {
-    text: 'Process',
-    link: '/paymentProcess',
-    state: 'PROCESSING',
-    color: 'blue',
-  },
-  {
-    text: 'Approve',
-    link: '/paymentApprove',
-    state: 'APPROVED',
-    color: 'green',
-  },
-  {
-    text: 'Reject',
-    link: '/paymentReject',
-    state: 'REJECTED',
-    color: 'red',
-  },
+    {
+        text: "DRAFT",
+        link: "/productDraft",
+        state: "DRAFT",
+        color: "blue",
+    },
+    {
+        text: "ACTIVATE",
+        link: "/productActivate",
+        state: "ACTIVATED",
+        color: "green",
+    },
+    {
+        text: "DELETE",
+        link: "/productDelete",
+        state: "DELETED",
+        color: "red",
+    },
 ];

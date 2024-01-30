@@ -1,5 +1,7 @@
+import { Product } from "./product";
+
 export async function getProductById(id: number) {
-    return await fetch(`${process.env.NEXT_PUBLIC_URL}/product/${id}`, {
+    return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/product/${id}`, {
         headers: {
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
         },
@@ -7,9 +9,8 @@ export async function getProductById(id: number) {
 }
 
 export async function getAllowedActions(id: number) {
-    console.log(`${process.env.NEXT_PUBLIC_URL}/product/${id}/allowedActions`);
     return await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/product/${id}/allowedActions`,
+        `${process.env.NEXT_PUBLIC_URL}/api/product/${id}/allowedActions`,
         {
             headers: {
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
@@ -18,16 +19,25 @@ export async function getAllowedActions(id: number) {
     );
 }
 
-export async function updateProduct(id: number, path: string) {
-    return await fetch(`${process.env.NEXT_PUBLIC_URL}/product/${id}${path}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
-        } as HeadersInit,
-    });
+export async function updateProduct(
+    id: number,
+    path: string,
+    product: Product |null
+) {
+
+    return await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/product/${id}${path}`,
+        {
+            body: JSON.stringify(product),
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
+            } as HeadersInit,
+        }
+    );
 }
 
 export async function getProducts() {
-    return await fetch(`${process.env.NEXT_PUBLIC_URL}/product`);
+    return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/product`);
 }
