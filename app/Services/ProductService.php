@@ -59,6 +59,10 @@ class ProductService extends BaseService implements ProductServiceInterface
             $query = $query->with('productType');
         }
 
+        if ($searchObject->includeVariants) {
+            $query = $query->with('variants');
+        }
+
         return $query;
     }
 

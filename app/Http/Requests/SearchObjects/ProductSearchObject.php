@@ -7,6 +7,7 @@ class ProductSearchObject extends BaseSearchObject
 
     public ?string $name = null;
     public ?bool $includeProductType = null;
+    public ?bool $includeVariants = null;
     public ?int $priceGT = null;
     public ?int $priceLT = null;
     public ?string $validFrom = null;
@@ -26,5 +27,6 @@ class ProductSearchObject extends BaseSearchObject
         $this->validFrom = $attributes['validFrom'] ?? null;
         $this->validTo = $attributes['validTo'] ?? null;
         $this->includeProductType = $attributes['includeProductType'] ?? null;
+        $this->includeVariants = $attributes['includeVariants'] ?? null;
     }
 }
