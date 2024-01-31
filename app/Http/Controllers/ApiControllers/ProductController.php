@@ -62,9 +62,6 @@ class ProductController extends BaseController
         return response()->json(['data' => $structuredData]);
     }
 
-
-
-
     public function allowedActions(int $id)
     {
         return $this->productStateMahineService->allowedActions($id);

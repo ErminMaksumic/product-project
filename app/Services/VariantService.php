@@ -8,7 +8,7 @@ use App\Http\Requests\SearchObjects\VariantSearchObject;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Services\Interfaces\VariantServiceInterface;
-use App\StateMachine\States\BaseState;
+use Illuminate\Http\Request;
 
 class VariantService extends BaseService implements VariantServiceInterface
 {
@@ -39,23 +39,20 @@ class VariantService extends BaseService implements VariantServiceInterface
 
     public function add(array $request)
     {
-        $product = Product::find($request['product_id']);
+        return Variant::create($request);
 
-        if(!$product)
-        {
-            throw new UserException("Product not found!");
-        }
-        $state = BaseState::CreateState($product->status);
-
-        return $state->store($request);
     }
 
     public function update(array $request, int $id)
     {
-        $variant = $this->getById($id);
+        $model = Variant::find($id);
 
-        $state = BaseState::CreateState($variant->product->status);
+        if (!$model) {
+            abort(404, 'Resource not found');
+        }
 
-        return $state->update($request, $id);
+        $model->update($request);
+
+        return $model;
     }
 }
