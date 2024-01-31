@@ -15,13 +15,13 @@ export const orderStateButtons: Button[] = [
     {
         text: "ACTIVATE",
         link: "/productActivate",
-        state: "ACTIVATED",
+        state: "DraftToActive",
         color: "green",
     },
     {
         text: "DELETE",
         link: "/productDelete",
-        state: "DELETED",
+        state: "ActiveToDelete",
         color: "red",
     },
 ];

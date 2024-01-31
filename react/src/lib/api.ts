@@ -1,7 +1,11 @@
 import { Product } from "./product";
 
-export async function getProductById(id: number) {
-    return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/product/${id}`, {
+export async function getProductById(id: number, includeVariant = false) {
+    let url = `${process.env.NEXT_PUBLIC_URL}/api/product/${id}`;
+    if (includeVariant) {
+        url = `${process.env.NEXT_PUBLIC_URL}/api/product/${id}?includeVariants=true`;
+    }
+    return await fetch(url, {
         headers: {
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
         },
@@ -22,9 +26,8 @@ export async function getAllowedActions(id: number) {
 export async function updateProduct(
     id: number,
     path: string,
-    product: Product |null
+    product: Product | null
 ) {
-
     return await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/product/${id}${path}`,
         {
@@ -38,6 +41,15 @@ export async function updateProduct(
     );
 }
 
-export async function getProducts() {
-    return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/product`);
+export async function getProducts(includeVariant: boolean) {
+    let url = `${process.env.NEXT_PUBLIC_URL}/api/product`;
+    if (includeVariant) {
+        url = `${process.env.NEXT_PUBLIC_URL}/api/product?includeVariant=true`;
+    }
+
+    return await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
+        },
+    });
 }
