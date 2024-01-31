@@ -5,14 +5,15 @@ namespace App\StateMachine\States;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Services\ProductService;
+use App\Services\VariantService;
 use App\StateMachine\Enums\ProductActions;
 use App\StateMachine\Enums\ProductStatus;
 
 class DraftState extends BaseState
 {
-    public function __construct(ProductService $service)
+    public function __construct(protected ProductService $productService, protected VariantService $variantService)
     {
-        parent::__construct($service);
+        parent::__construct($productService, $variantService);
     }
 
     public function allowedActions()
@@ -25,20 +26,19 @@ class DraftState extends BaseState
     public function addProduct($request)
     {
         $request['status'] = ProductStatus::DRAFT;
-        $product = Product::create($request);
+        $product = $this->productService->insert($request);
         return $product;
     }
 
     public function updateProduct($id, $request)
     {
-        $product = Product::find($id);
-        $product->update($request);
+        $product = $this->productService->updateProduct($request, $id);
         return $product;
     }
 
     public function addVariant($request)
     {
-        $variant = Variant::create($request);
+        $variant = $this->variantService->add($request);
         return $variant;
     }
 

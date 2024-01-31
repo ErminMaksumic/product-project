@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Auth;
 
 class ActiveState extends BaseState
 {
-    public function __construct(ProductService $service)
+    public function __construct(protected ProductService $productService, protected VariantService $variantService)
     {
-        parent::__construct($service);
+        parent::__construct($productService, $variantService);
     }
 
     public function allowedActions()

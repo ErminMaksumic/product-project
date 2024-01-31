@@ -5,6 +5,7 @@ namespace App\StateMachine\States;
 use App\Exceptions\UserException;
 use App\Models\Product;
 use App\Services\ProductService;
+use App\Services\VariantService;
 use App\StateMachine\Enums\ProductActions;
 use App\StateMachine\Enums\ProductStatus;
 use Exception;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BaseState
 {
-    public function __construct(protected ProductService $service)
+    public function __construct(protected ProductService $productService, protected VariantService $variantService)
     { }
 
     public function store($request)

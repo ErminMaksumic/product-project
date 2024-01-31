@@ -38,18 +38,4 @@ class VariantController extends BaseController
 
         return new VariantResource($request);
     }
-
-    public function store(Request $request)
-    {
-        $this->authorize('admin');
-        $validatedData = $this->validateRequest($request, $this->getInsertRequestClass());
-        return VariantResource::make($this->stateMachineService->insert($validatedData));
-    }
-
-    public function update(Request $request, int $id)
-    {
-        $this->authorize('admin');
-        $validatedData = $this->validateRequest($request, $this->getInsertRequestClass());
-        return VariantResource::make($this->stateMachineService->update($validatedData, $id));
-    }
 }

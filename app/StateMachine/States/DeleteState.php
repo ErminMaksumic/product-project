@@ -4,13 +4,12 @@ namespace App\StateMachine\States;
 
 use App\Services\ProductService;
 use App\Services\VariantService;
-use App\StateMachine\Enums\ProductStatus;
 
 class DeleteState extends BaseState
 {
-    public function __construct(ProductService $service)
+    public function __construct(protected ProductService $productService, protected VariantService $variantService)
     {
-        parent::__construct($service);
+        parent::__construct($productService, $variantService);
     }
 
     public function allowedActions()

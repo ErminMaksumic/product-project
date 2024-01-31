@@ -17,15 +17,24 @@ class StateMachineServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind('ActiveState', function ($app) {
-            return new ActiveState($app->make(ProductService::class));
+            return new ActiveState(
+                $app->make(ProductService::class),
+                $app->make(VariantService::class)
+            );
         });
 
         $this->app->bind('DraftState', function ($app) {
-            return new DraftState($app->make(ProductService::class));
+            return new DraftState(
+                $app->make(ProductService::class),
+                $app->make(VariantService::class)
+            );
         });
 
         $this->app->bind('DeleteState', function ($app) {
-            return new DeleteState($app->make(ProductService::class));
+            return new DeleteState(
+                $app->make(ProductService::class),
+                $app->make(VariantService::class)
+            );
         });
     }
 
