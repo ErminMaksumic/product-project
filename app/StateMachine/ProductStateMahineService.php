@@ -10,6 +10,7 @@ use App\StateMachine\Config\StateConfiguration;
 use App\StateMachine\Enums\ProductActions;
 use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\ActiveState;
+use App\StateMachine\States\BaseState;
 use App\StateMachine\States\DeleteState;
 use App\StateMachine\States\DraftState;
 use Exception;
@@ -18,7 +19,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductStateMahineService
 {
-
     public function __construct(protected StateConfiguration $stateConfiguration, protected ProductServiceInterface $productService,
     protected VariantService $variantService)
     {
@@ -29,31 +29,9 @@ class ProductStateMahineService
         return $this->updateProduct(ProductActions::DraftToActive, ProductStatus::DRAFT, $productId);
     }
 
-    public function updateProduct(ProductActions $productAction, ProductStatus $productStatus, int $productId, $validFrom = null, $validTo = null)
-    {
-        $allowedActions = $this->allowedActions($productId);
 
-        if (!$this->isStatusUpdateAllowed($productAction, $allowedActions)) {
-            throw new UserException("Status update not allowed!");
-        }
 
-        $updateData = ['status' => $productStatus];
 
-        if ($validFrom && $validTo) {
-            $updateData += [
-                'validFrom' => $validFrom,
-                'validTo' => $validTo,
-                'activatedBy' => Auth::user()->email
-            ];
-        }
-
-        return $this->productService->update($updateData, $productId);
-    }
-
-    private function isStatusUpdateAllowed(ProductActions $productAction, $allowedActions)
-    {
-        return collect($allowedActions)->contains('value', $productAction->value);
-    }
 
     public function allowedActions(int $id)
     {
@@ -87,19 +65,7 @@ class ProductStateMahineService
         return $this->updateProduct(ProductActions::ActiveToDelete, ProductStatus::DELETED, $productId);
     }
 
-    static function createState($stateName)
-    {
-        switch ($stateName) {
-            case 'ACTIVATED':
-                return app('ActiveState');
-            case 'DRAFT':
-                return app('DraftState');
-            case 'DELETED':
-                return app('DeleteState');
-            default:
-                throw new Exception("Action not allowed!");
-        }
-    }
+
 
     public function insert($request)
     {
@@ -109,7 +75,7 @@ class ProductStateMahineService
         {
             throw new UserException("Product not found!");
         }
-        $state = $this->createState($product->status);
+        $state = BaseState::createState($product->status);
 
         return $state->store($request);
     }
@@ -118,7 +84,7 @@ class ProductStateMahineService
     {
         $variant = $this->variantService->getById($id);
 
-        $state = $this->createState($variant->product->status);
+        $state = BaseState::createState($variant->product->status);
 
         return $state->update($request, $id);
     }

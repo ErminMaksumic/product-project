@@ -8,6 +8,7 @@ use App\Http\Requests\SearchObjects\VariantSearchObject;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Services\Interfaces\VariantServiceInterface;
+use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
 
 class VariantService extends BaseService implements VariantServiceInterface
@@ -37,10 +38,12 @@ class VariantService extends BaseService implements VariantServiceInterface
         return new Variant();
     }
 
-    public function add(array $request)
+    public function add($request)
     {
-        return Variant::create($request);
+        $product = Product::find($request['product_id']);
+        $state = BaseState::createState($product->status);
 
+        return $state->addProduct($request);
     }
 
     public function update(array $request, int $id)

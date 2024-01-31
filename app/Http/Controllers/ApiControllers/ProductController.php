@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\ApiControllers;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductTypeCreateRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\VariantResource;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\ProductStateMahineService;
@@ -15,7 +18,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends BaseController
 {
-    public function __construct(ProductServiceInterface $productService, protected ProductStateMahineService $productStateMahineService)
+    public function __construct(protected ProductServiceInterface $productService, protected ProductStateMahineService $productStateMahineService)
     {
         parent::__construct($productService);
     }
@@ -72,14 +75,25 @@ class ProductController extends BaseController
         return ProductResource::make($this->productStateMahineService->productDraft($orderId));
     }
 
-    public function productActivate(int $orderId, Request $params)
+    public function productHide(int $productId)
     {
-        return ProductResource::make($this->productStateMahineService->productActivate($orderId, $params->validFrom, $params->validTo));
+        return ProductResource::make($this->productService->hideProduct($productId));
     }
 
-    public function productDelete(int $orderId)
+    public function addVariant(Request $request)
     {
-        return ProductResource::make($this->productStateMahineService->productDelete($orderId));
+        $formRequestInstance = new VariantCreateRequest();
+        $validatedData = $this->validate($request, $formRequestInstance->rules());
+
+        return VariantResource::make($this->productService->addVariant($validatedData));
+    }
+
+    public function productActivate(Request $request, int $orderId)
+    {
+        $formRequestInstance = new ActivateRequest();
+        $validatedData = $this->validate($request, $formRequestInstance->rules());
+
+        return ProductResource::make($this->productService->activate($orderId, $validatedData));
     }
 
     public function fullTextSearch()

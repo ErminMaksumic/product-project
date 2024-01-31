@@ -26,6 +26,7 @@ Route::get('/product/fullTextSearch', [ProductController::class, 'fullTextSearch
 Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
 Route::apiResource('product', ProductController::class);
 Route::apiResource('productType', ProductTypeController::class);
+Route::post('/product/variant', [ProductController::class, 'addVariant']);
 Route::apiResource('variant', VariantController::class);
 
 // auth
@@ -37,4 +38,4 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanct
 Route::get('/product/{id}/allowedActions', [ProductController::class, 'allowedActions'])->name('product.allowedActions');
 Route::put('/product/{id}/productActivate', [ProductController::class, 'productActivate'])->name('product.productActivate');
 Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');
-Route::put('/product/{id}/productDelete', [ProductController::class, 'productDelete'])->name('product.productDelete');
+Route::put('/product/{id}/productDelete', [ProductController::class, 'productHide'])->name('product.productHide');
