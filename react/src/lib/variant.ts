@@ -1,6 +1,7 @@
 export interface Variant {
-    'name': string;
-    'price': number;
-    'value': string;
-    "product_id": number;
+    id: number;
+    name: string;
+    price: number;
+    value: string;
+    product_id: number;
 }

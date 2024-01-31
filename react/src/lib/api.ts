@@ -1,4 +1,5 @@
 import { Product } from "./product";
+import { Variant } from "./variant";
 
 export async function getProductById(id: number, includeVariant = false) {
     let url = `${process.env.NEXT_PUBLIC_URL}/api/product/${id}`;
@@ -39,6 +40,17 @@ export async function updateProduct(
             } as HeadersInit,
         }
     );
+}
+
+export async function updateVariant(id: number, variant: Variant) {
+    return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/variant/${id}`, {
+        body: JSON.stringify(variant),
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
+        } as HeadersInit,
+    });
 }
 
 export async function getProducts(includeVariant: boolean) {

@@ -11,15 +11,18 @@ import {
 } from "@mui/material";
 import { CustomDataGrid } from "@/app/components/CustomDataGrid";
 import { orderStateButtons, Button as StateButton } from "@/lib/buttons";
-import { getAllowedActions, getProductById, updateProduct } from "@/lib/api";
+import { getAllowedActions, getProductById, updateProduct, updateVariant } from "@/lib/api";
 import { Product } from "@/lib/product";
 import ProductForm from "@/app/components/ProductForm";
 import { Variant } from "@mui/material/styles/createTypography";
 import { columnsWithEdit, columns } from "@/lib/productColumns";
 import { variantColumns, variantColumnsWithEdit } from "@/lib/variantColumns";
 import { ProductDetails } from "@/app/components/ProductDetails";
+import VariantForm from "@/app/components/VariantForm";
 
 export default function Product({ params }: { params: { id: number } }) {
+    const [selectedVariant, setSelectedVariant] = useState();
+    const [openVariantModal, setOpenVariantModal] = useState(false);
     const [product, setProduct] = useState<Product | null>(null);
     const [variants, setVariants] = useState<Variant[]>([]);
     const [allowedActions, setAllowedActions] = useState([]);
@@ -66,6 +69,17 @@ export default function Product({ params }: { params: { id: number } }) {
         handleCloseModal();
     };
 
+    const handleEditVariant = (variant) => {
+        setSelectedVariant(variant);
+        setOpenVariantModal(true);
+    };
+
+    const handleSubmitVariantForm = async (formData) => {
+        await updateVariant(selectedVariant?.id, formData);
+        setOpenVariantModal(false);
+        fetchData();
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -88,6 +102,7 @@ export default function Product({ params }: { params: { id: number } }) {
                     params={variants}
                     columns={variantColumns}
                     columnsWithEdit={variantColumnsWithEdit}
+                    handleEditVariant={handleEditVariant}
                 ></CustomDataGrid>
             </div>
             <Dialog open={openModal} onClose={handleCloseModal}>
@@ -103,6 +118,25 @@ export default function Product({ params }: { params: { id: number } }) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseModal}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openVariantModal}
+                onClose={() => setOpenVariantModal(false)}
+            >
+                <DialogTitle>Edit Variant</DialogTitle>
+                <DialogContent>
+                    {selectedVariant && (
+                        <VariantForm
+                            variant={selectedVariant}
+                            onSubmit={handleSubmitVariantForm}
+                        />
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenVariantModal(false)}>
+                        Cancel
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>
