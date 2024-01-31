@@ -5,20 +5,18 @@ namespace App\Http\Controllers\ApiControllers;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
-use App\Http\Requests\ProductTypeCreateRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\VariantResource;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
-use App\StateMachine\ProductStateMahineService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends BaseController
 {
-    public function __construct(protected ProductServiceInterface $productService, protected ProductStateMahineService $productStateMahineService)
+    public function __construct(protected ProductServiceInterface $productService)
     {
         parent::__construct($productService);
     }
@@ -67,12 +65,12 @@ class ProductController extends BaseController
 
     public function allowedActions(int $id)
     {
-        return $this->productStateMahineService->allowedActions($id);
+        return $this->productService->allowedActions($id);
     }
 
-    public function productDraft(int $orderId)
+    public function productDraft(int $productId)
     {
-        return ProductResource::make($this->productStateMahineService->productDraft($orderId));
+        return ProductResource::make($this->productService->draftProduct($productId));
     }
 
     public function productHide(int $productId)

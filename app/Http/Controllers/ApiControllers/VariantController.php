@@ -14,7 +14,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class VariantController extends BaseController
 {
 
-    public function __construct(VariantServiceInterface $variantService, protected ProductStateMahineService $stateMachineService)
+    public function __construct(VariantServiceInterface $variantService)
     {
         parent::__construct($variantService);
     }

@@ -38,16 +38,19 @@ class DraftState extends BaseState
 
     public function addVariant($request)
     {
-        $variant = $this->variantService->add($request);
+        $variant = $this->variantService->insert($request);
         return $variant;
     }
 
     public function productActivate(array $request, int $productId)
     {
+        $allowedActions = $this->allowedActions();
+
         return $this->updateProductModel(
             ProductActions::DraftToActive,
             ProductStatus::ACTIVATED,
             $productId,
+            $allowedActions,
             $request['valid_from'],
             $request['valid_to']);
     }

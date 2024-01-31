@@ -16,16 +16,6 @@ class BaseState
     public function __construct(protected ProductService $productService, protected VariantService $variantService)
     { }
 
-    public function store($request)
-    {
-        throw new Exception("Not allowed");
-    }
-
-    public function update($request, int $id)
-    {
-        throw new Exception("Not allowed");
-    }
-
     public function addProduct($request)
     {
         throw new Exception("Not allowed");
@@ -46,6 +36,11 @@ class BaseState
         throw new Exception("Not allowed");
     }
 
+    public function productDraft(int $productId)
+    {
+        throw new Exception("Not allowed");
+    }
+
     public function addVariant($request)
     {
         throw new Exception("Not allowed");
@@ -61,13 +56,18 @@ class BaseState
             case 'DELETED':
                 return app('DeleteState');
             default:
-                throw new Exception("Action not allowed!");
+                throw new Exception("Creating state: Action not allowed!");
         }
     }
 
-    public function updateProductModel(ProductActions $productAction, ProductStatus $productStatus, int $productId, $validFrom = null, $validTo = null)
+    public function updateProductModel(
+        ProductActions $productAction,
+        ProductStatus $productStatus,
+        int $productId,
+        $allowedActions,
+        $validFrom = null,
+        $validTo = null)
     {
-        $allowedActions = $this->allowedActions($productId);
         $product = Product::find($productId);
 
         if (!$this->isStatusUpdateAllowed($productAction, $allowedActions)) {

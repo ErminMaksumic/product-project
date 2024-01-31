@@ -125,6 +125,13 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->hideProduct($id);
     }
 
+    public function draftProduct($id)
+    {
+        $model = Product::find($id);
+        $state = BaseState::createState($model->status);
+        return $state->productDraft($id);
+    }
+
     public function update(array $request, int $id)
     {
         $model = Product::find($id);
@@ -148,5 +155,18 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         $model->update($request);
         return $model;
+    }
+
+    public function allowedActions(int $id)
+    {
+        $model = Product::find($id);
+
+        if (!$model) {
+            abort(404, 'Resource not found');
+        }
+
+        $state = BaseState::createState($model->status);
+
+        return $state->allowedActions($id);
     }
 }

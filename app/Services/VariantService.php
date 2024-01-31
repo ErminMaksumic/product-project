@@ -46,6 +46,12 @@ class VariantService extends BaseService implements VariantServiceInterface
         return $state->addProduct($request);
     }
 
+    public function insert($request)
+    {
+        $model = Variant::create($request);
+        return $model;
+    }
+
     public function update(array $request, int $id)
     {
         $model = Variant::find($id);

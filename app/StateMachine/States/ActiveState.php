@@ -20,16 +20,30 @@ class ActiveState extends BaseState
     public function allowedActions()
     {
         $allowedActions = array();
-        array_push($allowedActions, ProductActions::DraftToActive);
         array_push($allowedActions, ProductActions::ActiveToDelete);
+        array_push($allowedActions, ProductActions::ActiveToDraft);
         return $allowedActions;
     }
 
     public function hideProduct($id)
     {
+        $allowedActions = $this->allowedActions();
+
         return $this->updateProductModel(
             ProductActions::ActiveToDelete,
             ProductStatus::DELETED,
-            $id);
+            $id,
+            $allowedActions);
+    }
+
+    public function productDraft(int $productId)
+    {
+        $allowedActions = $this->allowedActions();
+
+        return $this->updateProductModel(
+            ProductActions::ActiveToDraft,
+            ProductStatus::DRAFT,
+            $productId,
+            $allowedActions);
     }
 }
