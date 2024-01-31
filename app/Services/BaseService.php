@@ -6,6 +6,7 @@ use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Services\Interfaces\BaseServiceInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 abstract class BaseService implements BaseServiceInterface
 {
