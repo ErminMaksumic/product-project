@@ -15,7 +15,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends BaseController
 {
-    public function __construct(ProductServiceInterface $productService, protected ProductStateMahineService $productStateMahineService)
+    public function __construct(protected ProductServiceInterface $productService, protected ProductStateMahineService $productStateMahineService)
     {
         parent::__construct($productService);
     }
@@ -88,5 +88,15 @@ class ProductController extends BaseController
     public function fullTextSearch()
     {
         return $this->createResourcePayload($this->service->getPageable(), true);
+    }
+
+    public function DraftToActive(Request $request, $id)
+    {
+        return ProductResource::make($this->productService->DraftToActive($request, $id));
+    }
+
+    public function ActiveToDeleted($id)
+    {
+        return ProductResource::make($this->productService->ActiveToDeleted($id));
     }
 }

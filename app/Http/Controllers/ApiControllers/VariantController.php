@@ -7,12 +7,14 @@ use App\Http\Requests\VariantCreateRequest;
 use App\Http\Requests\VariantUpdateRequest;
 use App\Http\Resources\VariantResource;
 use App\Services\Interfaces\VariantServiceInterface;
+use App\Services\VariantService;
+use App\StateMachine\ProductStateMahineService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class VariantController extends BaseController
 {
-
-    public function __construct(VariantServiceInterface $variantService)
+    public function __construct(VariantServiceInterface $variantService, protected ProductStateMahineService $productStateMachineService)
     {
         parent::__construct($variantService);
     }
@@ -35,5 +37,11 @@ class VariantController extends BaseController
         }
 
         return new VariantResource($request);
+    }
+
+    public function store(Request $request)
+    {
+        $validatedData = $this->validateRequest($request, $this->getInsertRequestClass());
+        return VariantResource::make($this->productStateMachineService->InsertToDraft($validatedData));
     }
 }

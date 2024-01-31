@@ -3,14 +3,13 @@
 namespace App\StateMachine\States;
 
 use App\StateMachine\Enums\ProductStatus;
+use ArrayObject;
 
 class DeleteState extends BaseState
 {
     public function allowedActions()
     {
-        return [
-            ProductStatus::DRAFT,
-
-        ];
+        $allowedActions = array();
+        return $allowedActions;
     }
 }

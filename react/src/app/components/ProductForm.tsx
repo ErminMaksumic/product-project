@@ -1,4 +1,4 @@
-// ProductForm.tsx
+
 import React, { useState } from "react";
 import { Product } from "@/lib/product";
 import { TextField, Button, Grid } from "@mui/material";

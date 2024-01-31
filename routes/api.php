@@ -35,6 +35,6 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanct
 // state machine
 
 Route::get('/product/{id}/allowedActions', [ProductController::class, 'allowedActions'])->name('product.allowedActions');
-Route::put('/product/{id}/productActivate', [ProductController::class, 'productActivate'])->name('product.productActivate');
+Route::put('/product/{id}/productActivate', [ProductController::class, 'DraftToActive'])->name('product.productActivate');
 Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');
-Route::put('/product/{id}/productDelete', [ProductController::class, 'productDelete'])->name('product.productDelete');
+Route::put('/product/{id}/productDelete', [ProductController::class, 'ActiveToDeleted'])->name('product.productDelete');

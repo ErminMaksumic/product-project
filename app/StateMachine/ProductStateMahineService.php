@@ -5,6 +5,7 @@ namespace App\StateMachine;
 use App\Exceptions\UserException;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
+use App\Services\Interfaces\VariantServiceInterface;
 use App\StateMachine\Config\StateConfiguration;
 use App\StateMachine\Enums\ProductStatus;
 use Exception;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class ProductStateMahineService
 {
 
-    public function __construct(protected StateConfiguration $stateConfiguration, protected ProductServiceInterface $productService)
+    public function __construct(protected StateConfiguration $stateConfiguration, protected VariantServiceInterface $variantService)
     {
     }
 
@@ -73,5 +74,53 @@ class ProductStateMahineService
     public function productDelete(int $productId)
     {
         return $this->updateProduct(ProductStatus::DELETED, $productId);
+    }
+
+    public function InsertToDraft($request)
+    {
+        $product = Product::find($request['product_id']);
+        if ($product->status === ProductStatus::DRAFT->value)
+        {
+            return $this->variantService->add($request);
+        } else
+            throw new UserException("Not allowed!");
+    }
+
+    public function DraftToActive($request, int $productId)
+    {
+        $user = Auth::user();
+        $product = Product::find($productId);
+        $collection = collect($this->allowedActions($productId));
+
+        if ($collection->contains('value', 'DraftToActive'))
+        {
+            $product->update([
+                'status' => ProductStatus::ACTIVATED,
+                'activatedBy' => $user->email,
+                'valid_from' => $request['valid_from'],
+                'valid_to' => $request['valid_to']
+            ]);
+        } else {
+            throw new UserException('Not allowed!');
+        }
+
+        return $product;
+    }
+
+    public function ActiveToDeleted(int $productId)
+    {
+        $product = Product::find($productId);
+        $collection = collect($this->allowedActions($productId));
+
+        if ($collection->contains('value', 'ActiveToDelete'))
+        {
+            $product->update([
+                'status' => ProductStatus::DELETED
+            ]);
+        } else {
+            throw new UserException('Not allowed!');
+        }
+
+        return $product;
     }
 }

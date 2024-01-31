@@ -5,9 +5,12 @@ namespace App\Services;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
+use App\StateMachine\ProductStateMahineService;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
+    public function __construct(protected ProductStateMahineService $productStateMachineService)
+    { }
     public function addFilter($searchObject, $query)
     {
         if ($searchObject->name) {
@@ -80,5 +83,15 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $request['status'] = 'DRAFT';
         return parent::add($request);
+    }
+
+    public function DraftToActive($request ,$id)
+    {
+        return $this->productStateMachineService->DraftToActive($request, $id);
+    }
+
+    public function ActiveToDeleted($id)
+    {
+        return $this->productStateMachineService->ActiveToDeleted($id);
     }
 }
