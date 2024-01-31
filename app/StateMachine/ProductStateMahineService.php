@@ -6,6 +6,7 @@ use App\Exceptions\UserException;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Config\StateConfiguration;
+use App\StateMachine\Enums\ProductActions;
 use App\StateMachine\Enums\ProductStatus;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -19,14 +20,14 @@ class ProductStateMahineService
 
     public function productDraft(int $productId)
     {
-        return $this->updateProduct(ProductStatus::DRAFT, $productId);
+        return $this->updateProduct(ProductActions::DraftToActive, ProductStatus::DRAFT, $productId);
     }
 
-    public function updateProduct(ProductStatus $productStatus, int $productId, $validFrom = null, $validTo = null)
+    public function updateProduct(ProductActions $productAction, ProductStatus $productStatus, int $productId, $validFrom = null, $validTo = null)
     {
         $allowedActions = $this->allowedActions($productId);
 
-        if (!$this->isStatusUpdateAllowed($productStatus, $allowedActions)) {
+        if (!$this->isStatusUpdateAllowed($productAction, $allowedActions)) {
             throw new UserException("Status update not allowed!");
         }
 
@@ -43,9 +44,9 @@ class ProductStateMahineService
         return $this->productService->update($updateData, $productId);
     }
 
-    private function isStatusUpdateAllowed(ProductStatus $productStatus, $allowedActions)
+    private function isStatusUpdateAllowed(ProductActions $productAction, $allowedActions)
     {
-        return collect($allowedActions)->contains('value', $productStatus->value);
+        return collect($allowedActions)->contains('value', $productAction->value);
     }
 
     public function allowedActions(int $id)
@@ -67,11 +68,16 @@ class ProductStateMahineService
 
     public function productActivate(int $productId, string $validFrom, string $validTo)
     {
-        return $this->updateProduct(ProductStatus::ACTIVATED, $productId, $validFrom, $validTo);
+        return $this->updateProduct(
+            ProductActions::DraftToActive,
+            ProductStatus::ACTIVATED,
+            $productId,
+            $validFrom,
+            $validTo);
     }
 
     public function productDelete(int $productId)
     {
-        return $this->updateProduct(ProductStatus::DELETED, $productId);
+        return $this->updateProduct(ProductActions::ActiveToDelete, ProductStatus::DELETED, $productId);
     }
 }

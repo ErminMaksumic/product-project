@@ -4,6 +4,7 @@ namespace App\StateMachine\States;
 
 use App\Models\Product;
 use App\Models\Variant;
+use App\StateMachine\Enums\ProductActions;
 use App\StateMachine\Enums\ProductStatus;
 
 class DraftState extends BaseState
@@ -28,9 +29,8 @@ class DraftState extends BaseState
 
     public function allowedActions()
     {
-        return [
-            ProductStatus::ACTIVATED,
-            ProductStatus::DELETED,
-        ];
+        $allowedActions = array();
+        array_push($allowedActions, ProductActions::DraftToActive);
+        return $allowedActions;
     }
 }

@@ -8,9 +8,7 @@ class DeleteState extends BaseState
 {
     public function allowedActions()
     {
-        return [
-            ProductStatus::DRAFT,
-
-        ];
+        $allowedActions = array();
+        return $allowedActions;
     }
 }
