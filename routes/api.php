@@ -22,16 +22,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-
+// Resources
 
 
 Route::post('/product/variant', [ProductController::class, 'addVariant']);
 Route::get('/product/fullTextSearch', [ProductController::class, 'fullTextSearch']);
 Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
-Route::apiResource('product', ProductController::class);
-Route::get('product', [ProductController::class, 'index'])->middleware('bindSearchObject:ProductSearchObject');
-Route::apiResource('productType', ProductTypeController::class);
+Route::apiResource('product', ProductController::class)->middleware('bindSearchObject:ProductSearchObject');
+Route::apiResource('productType', ProductTypeController::class)->middleware('bindSearchObject:ProductTypeSearchObject');
 Route::apiResource('variant', VariantController::class);
 
 // auth

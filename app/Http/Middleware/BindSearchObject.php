@@ -21,6 +21,6 @@ class BindSearchObject
             $request->attributes->set('searchObject', $searchObject);
         }
 
-        return $next($searchObject);
+        return $next($request);
     }
 }

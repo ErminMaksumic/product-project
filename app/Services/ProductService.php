@@ -2,14 +2,11 @@
 
 namespace App\Services;
 
-use App\Exceptions\UserException;
-use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
-use function PHPUnit\Framework\isEmpty;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
@@ -19,22 +16,23 @@ class ProductService extends BaseService implements ProductServiceInterface
     }
     public function addFilter($searchObject, $query)
     {
-        if (!isEmpty($searchObject->name)) {
+
+        if ($searchObject->name) {
             $query = $query->where(function ($query) use ($searchObject) {
                 $query->orWhere('name', 'ILIKE', '%' . $searchObject->name . '%');
                 $query->orWhereRaw("to_tsvector('english', name) @@ to_tsquery(?)", [$searchObject->name]);
             });
         }
 
-        if (!isEmpty($searchObject->validFrom)) {
+        if ($searchObject->validFrom) {
             $query = $query->where('validFrom', '>=', $searchObject->validFrom);
         }
 
-        if (!isEmpty($searchObject->validTo)) {
+        if ($searchObject->validTo) {
             $query = $query->where('validTo', '<=', $searchObject->validTo);
         }
 
-        if (!isEmpty($searchObject->priceGT) || !isEmpty($searchObject->priceLT)) {
+        if ($searchObject->priceGT || $searchObject->priceLT) {
             $query = $this->applyPriceFilter($query, $searchObject);
         }
 
@@ -53,10 +51,10 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function addPriceConditions($query, $searchObject)
     {
-        if (!isEmpty($searchObject->priceGT)) {
+        if ($searchObject->priceGT) {
             $query->where('price', '>=', $searchObject->priceGT);
         }
-        if (!isEmpty($searchObject->priceLT)) {
+        if ($searchObject->priceLT) {
             $query->where('price', '<', $searchObject->priceLT);
         }
     }
@@ -64,11 +62,11 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function includeRelation($searchObject, $query)
     {
-        if (!isEmpty($searchObject->includeProductType)) {
+        if ($searchObject->includeProductType) {
             $query = $query->with('productType');
         }
 
-        if (!isEmpty($searchObject->includeVariants)) {
+        if ($searchObject->includeVariants) {
             $query = $query->with('variants');
         }
 
