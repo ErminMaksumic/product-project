@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiControllers;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ProductTypeCreateRequest;
 use App\Http\Requests\ProductTypeUpdateRequest;
+use App\Http\Requests\SearchObjects\ProductTypeSearchObject;
 use App\Http\Resources\ProductTypeResource;
 use App\Services\Interfaces\ProductTypeServiceInterface;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

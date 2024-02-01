@@ -17,9 +17,10 @@ abstract class BaseController extends Controller
     abstract function getUpdateRequestClass();
     abstract function createResourcePayload($request, $collection = false);
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->createResourcePayload($this->service->getPageable(), true);
+        $searchObject = $request->attributes->get('searchObject');
+        return $this->createResourcePayload($this->service->getPageable($searchObject), true);
     }
 
     public function store(Request $request)

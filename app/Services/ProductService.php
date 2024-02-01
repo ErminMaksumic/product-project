@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
+use function PHPUnit\Framework\isEmpty;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
@@ -18,22 +19,22 @@ class ProductService extends BaseService implements ProductServiceInterface
     }
     public function addFilter($searchObject, $query)
     {
-        if ($searchObject->name) {
+        if (!isEmpty($searchObject->name)) {
             $query = $query->where(function ($query) use ($searchObject) {
                 $query->orWhere('name', 'ILIKE', '%' . $searchObject->name . '%');
                 $query->orWhereRaw("to_tsvector('english', name) @@ to_tsquery(?)", [$searchObject->name]);
             });
         }
 
-        if ($searchObject->validFrom) {
+        if (!isEmpty($searchObject->validFrom)) {
             $query = $query->where('validFrom', '>=', $searchObject->validFrom);
         }
 
-        if ($searchObject->validTo) {
+        if (!isEmpty($searchObject->validTo)) {
             $query = $query->where('validTo', '<=', $searchObject->validTo);
         }
 
-        if ($searchObject->priceGT || $searchObject->priceLT) {
+        if (!isEmpty($searchObject->priceGT) || !isEmpty($searchObject->priceLT)) {
             $query = $this->applyPriceFilter($query, $searchObject);
         }
 
@@ -52,10 +53,10 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function addPriceConditions($query, $searchObject)
     {
-        if ($searchObject->priceGT) {
+        if (!isEmpty($searchObject->priceGT)) {
             $query->where('price', '>=', $searchObject->priceGT);
         }
-        if ($searchObject->priceLT) {
+        if (!isEmpty($searchObject->priceLT)) {
             $query->where('price', '<', $searchObject->priceLT);
         }
     }
@@ -63,11 +64,11 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function includeRelation($searchObject, $query)
     {
-        if ($searchObject->includeProductType) {
+        if (!isEmpty($searchObject->includeProductType)) {
             $query = $query->with('productType');
         }
 
-        if ($searchObject->includeVariants) {
+        if (!isEmpty($searchObject->includeVariants)) {
             $query = $query->with('variants');
         }
 

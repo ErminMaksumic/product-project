@@ -17,16 +17,14 @@ abstract class BaseService implements BaseServiceInterface
         return response(content: "Resource removed successfully", status: 204);
     }
 
-    public function getPageable()
+    public function getPageable($searchObject)
     {
-        $searchObjectInstance = $this->getSearchObject(request()->query());
-
         $query = $this->getModelClass()->query();
 
-        $query = $this->includeRelation($searchObjectInstance, $query);
-        $query = $this->addFilter($searchObjectInstance, $query);
+        $query = $this->includeRelation($searchObject, $query);
+        $query = $this->addFilter($searchObject, $query);
 
-        return $query->paginate($searchObjectInstance->size);
+        return $query->paginate($searchObject->size);
     }
 
 

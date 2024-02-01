@@ -64,15 +64,10 @@ class BaseState
         ProductActions $productAction,
         ProductStatus $productStatus,
         int $productId,
-        $allowedActions,
         $validFrom = null,
         $validTo = null)
     {
         $product = Product::find($productId);
-
-        if (!$this->isStatusUpdateAllowed($productAction, $allowedActions)) {
-            throw new UserException("Status update not allowed!");
-        }
 
         $updateData = ['status' => $productStatus];
 
