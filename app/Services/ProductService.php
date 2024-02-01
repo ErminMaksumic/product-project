@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Models\Product;
@@ -131,8 +132,9 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if (!$model) {
-            abort(404, 'Resource not found');
+        if(!$model)
+        {
+            throw new UserException("Resource not found!");
         }
 
         $state = BaseState::createState($model->status);
@@ -144,8 +146,9 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if (!$model) {
-            abort(404, 'Resource not found');
+        if(!$model)
+        {
+            throw new UserException("Resource not found!");
         }
 
         $model->update($request);
@@ -156,8 +159,9 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if (!$model) {
-            abort(404, 'Resource not found');
+        if(!$model)
+        {
+            throw new UserException("Resource not found!");
         }
 
         $state = BaseState::createState($model->status);

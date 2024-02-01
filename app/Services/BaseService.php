@@ -54,8 +54,9 @@ abstract class BaseService implements BaseServiceInterface
     {
         $model = $this->getModelInstance()->find($id);
 
-        if (!$model) {
-            abort(404, 'Resource not found');
+        if(!$model)
+        {
+            throw new UserException("Resource not found!");
         }
 
         $model->update($request);
@@ -69,7 +70,7 @@ abstract class BaseService implements BaseServiceInterface
 
         if(!$model)
         {
-            abort(404, "Resource not found");
+            throw new UserException("Resource not found!");
         }
 
         $model->delete();

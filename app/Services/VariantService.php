@@ -56,8 +56,9 @@ class VariantService extends BaseService implements VariantServiceInterface
     {
         $model = Variant::find($id);
 
-        if (!$model) {
-            abort(404, 'Resource not found');
+        if(!$model)
+        {
+            throw new UserException("Resource not found!");
         }
 
         $model->update($request);
