@@ -108,16 +108,16 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         $state = BaseState::createState($model->status);
 
-        return $state->productActivate($request, $id);
+        return $state->activate($request, $model);
     }
 
     public function hideProduct($id)
     {
-        $model = Product::find($id);
+        $product = Product::find($id);
 
-        $state = BaseState::createState($model->status);
+        $state = BaseState::createState($product->status);
 
-        return $state->hideProduct($id);
+        return $state->hideProduct($product);
     }
 
     public function draftProduct($id)

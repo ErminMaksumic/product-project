@@ -16,6 +16,12 @@ class BaseState
     public function __construct(protected ProductService $productService, protected VariantService $variantService)
     { }
 
+    public function allowedActions()
+    {
+        $allowedActions = array();
+        return $allowedActions;
+    }
+
     public function addProduct($request)
     {
         throw new Exception("Not allowed");
@@ -26,12 +32,12 @@ class BaseState
         throw new Exception("Not allowed");
     }
 
-    public function hideProduct(int $id)
+    public function hideProduct($product)
     {
         throw new Exception("Not allowed");
     }
 
-    public function productActivate(array $request, int $productId)
+    public function activate($request, $model)
     {
         throw new Exception("Not allowed");
     }
@@ -58,34 +64,5 @@ class BaseState
             default:
                 throw new Exception("Creating state: Action not allowed!");
         }
-    }
-
-    public function updateProductModel(
-        ProductActions $productAction,
-        ProductStatus $productStatus,
-        int $productId,
-        $validFrom = null,
-        $validTo = null)
-    {
-        $product = Product::find($productId);
-
-        $updateData = ['status' => $productStatus];
-
-        if ($validFrom && $validTo) {
-            $updateData += [
-                'validFrom' => $validFrom,
-                'validTo' => $validTo,
-                'activatedBy' => Auth::user()->email
-            ];
-        }
-
-        $product->update($updateData);
-
-        return $product;
-    }
-
-    private function isStatusUpdateAllowed(ProductActions $productAction, $allowedActions)
-    {
-        return collect($allowedActions)->contains('value', $productAction->value);
     }
 }

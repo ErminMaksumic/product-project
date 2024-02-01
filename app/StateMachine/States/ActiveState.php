@@ -25,19 +25,18 @@ class ActiveState extends BaseState
         return $allowedActions;
     }
 
-    public function hideProduct($id)
+    public function hideProduct($product)
     {
-        $allowedActions = $this->allowedActions();
+        $product->update([
+            'status' => ProductStatus::DELETED->value
+        ]);
 
-        return $this->updateProductModel(
-            ProductActions::ActiveToDelete,
-            ProductStatus::DELETED,
-            $id,
-            $allowedActions);
+        return $product;
     }
 
     public function productDraft(int $productId)
     {
+
         $allowedActions = $this->allowedActions();
 
         return $this->updateProductModel(
