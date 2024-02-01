@@ -5,9 +5,14 @@ import { Variant } from "@/lib/variant";
 interface VariantFormProps {
     variant: Variant;
     onSubmit: (formData: Variant) => void;
+    onClose: () => void;
 }
 
-const VariantForm: React.FC<VariantFormProps> = ({ variant, onSubmit }) => {
+const VariantForm: React.FC<VariantFormProps> = ({
+    variant,
+    onSubmit,
+    onClose,
+}) => {
     const [formData, setFormData] = useState<Variant>(variant);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +26,7 @@ const VariantForm: React.FC<VariantFormProps> = ({ variant, onSubmit }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form id="variant-form" onSubmit={handleSubmit}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
@@ -43,7 +48,7 @@ const VariantForm: React.FC<VariantFormProps> = ({ variant, onSubmit }) => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={12}>
+            <Grid item xs={12}>
                     <TextField
                         fullWidth
                         label="Value"
@@ -53,16 +58,20 @@ const VariantForm: React.FC<VariantFormProps> = ({ variant, onSubmit }) => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                {}
+                <Grid container justifyContent="flex-end" spacing={2} mt={4}>
+                    <Button onClick={onClose} style={{ marginRight: "8px" }}>
+                        Cancel
+                    </Button>
+                    <Button
+                        type="submit"
+                        form="variant-form"
+                        variant="contained"
+                        color="primary"
+                    >
+                        Save
+                    </Button>
+                </Grid>
             </Grid>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-            >
-                Save
-            </Button>
         </form>
     );
 };

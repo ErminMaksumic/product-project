@@ -20,9 +20,9 @@ interface VariantColumn {
 
 export const variantColumns: VariantColumn[] = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 400 },
-    { field: "price", headerName: "Price", width: 400 },
-    { field: "value", headerName: "Value", width: 400 },
+    { field: "name", headerName: "Name", width: 300 },
+    { field: "price", headerName: "Price", width: 300 },
+    { field: "value", headerName: "Value", width: 300 },
 ];
 
 export const variantColumnsWithEdit = [

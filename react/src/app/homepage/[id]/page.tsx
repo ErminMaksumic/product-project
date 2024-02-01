@@ -11,7 +11,12 @@ import {
 } from "@mui/material";
 import { CustomDataGrid } from "@/app/components/CustomDataGrid";
 import { orderStateButtons, Button as StateButton } from "@/lib/buttons";
-import { getAllowedActions, getProductById, updateProduct, updateVariant } from "@/lib/api";
+import {
+    getAllowedActions,
+    getProductById,
+    updateProduct,
+    updateVariant,
+} from "@/lib/api";
 import { Product } from "@/lib/product";
 import ProductForm from "@/app/components/ProductForm";
 import { Variant } from "@mui/material/styles/createTypography";
@@ -64,6 +69,7 @@ export default function Product({ params }: { params: { id: number } }) {
     };
 
     const handleSubmitForm = async (formData: Product) => {
+        console.log("hereee, handlesubmitform");
         await updateProduct(params.id, "", formData);
         await fetchData();
         handleCloseModal();
@@ -113,12 +119,10 @@ export default function Product({ params }: { params: { id: number } }) {
                             product={product}
                             variants={variants}
                             onSubmit={handleSubmitForm}
+                            onClose={() => setOpenModal(false)}
                         />
                     )}
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseModal}>Cancel</Button>
-                </DialogActions>
             </Dialog>
             <Dialog
                 open={openVariantModal}
@@ -130,14 +134,10 @@ export default function Product({ params }: { params: { id: number } }) {
                         <VariantForm
                             variant={selectedVariant}
                             onSubmit={handleSubmitVariantForm}
+                            onClose={() => setOpenVariantModal(false)}
                         />
                     )}
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenVariantModal(false)}>
-                        Cancel
-                    </Button>
-                </DialogActions>
             </Dialog>
         </>
     );
