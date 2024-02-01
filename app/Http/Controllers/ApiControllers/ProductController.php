@@ -87,12 +87,12 @@ class ProductController extends BaseController
         return VariantResource::make($this->productService->addVariant($validatedData));
     }
 
-    public function productActivate(Request $request, int $orderId)
+    public function productActivate(ActivateRequest $request, int $productId)
     {
         $formRequestInstance = new ActivateRequest();
         $validatedData = $this->validate($request, $formRequestInstance->rules());
 
-        return ProductResource::make($this->productService->activate($orderId, $validatedData));
+        return ProductResource::make($this->productService->activate($productId, $validatedData));
     }
 
     public function fullTextSearch()

@@ -22,8 +22,8 @@ class ActivateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'valid_from' => 'required|date',
-            'valid_to' => 'required|date|after:valid_from',
+            'valid_from' => 'sometimes|date',
+            'valid_to' => 'sometimes|date|after:valid_from',
         ];
     }
 }
