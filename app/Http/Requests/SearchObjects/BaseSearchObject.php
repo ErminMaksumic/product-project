@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\SearchObjects;
 
-class BaseSearchObject
+use Illuminate\Foundation\Http\FormRequest;
+
+class BaseSearchObject extends FormRequest
 {
     public int $page = 1;
     public int $size = 10;
@@ -14,6 +16,7 @@ class BaseSearchObject
 
     public function __construct($attributes = [])
     {
+        parent::__construct();
         foreach ($attributes as $key => $value) {
             $this->$key = $value;
         }

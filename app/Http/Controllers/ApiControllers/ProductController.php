@@ -100,4 +100,5 @@ class ProductController extends BaseController
     {
         return $this->createResourcePayload($this->service->getPageable(), true);
     }
+
 }
