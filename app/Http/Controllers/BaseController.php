@@ -53,7 +53,8 @@ abstract class BaseController extends Controller
 
     public function show(int $id)
     {
-        return $this->createResourcePayload($this->service->getById($id));
+        $searchObject = $this->getSearchObject(request()->query());
+        return $this->createResourcePayload($this->service->getById($id, $searchObject));
     }
 
     public function update(Request $request, int $id)

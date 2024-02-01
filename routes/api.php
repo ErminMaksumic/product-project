@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 // Resources
 Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('variant', VariantController::class);
-Route::apiResource('product', VariantController::class);
+Route::apiResource('product', ProductController::class);
 
 // Custom path
 Route::post('/product/variant', [ProductController::class, 'addVariant']);

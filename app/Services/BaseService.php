@@ -28,13 +28,12 @@ abstract class BaseService implements BaseServiceInterface
     }
 
 
-    public function getById(int $id)
+    public function getById(int $id, $searchObject)
     {
-        $searchObjectInstance = $this->getSearchObject(request()->query());
         $query = $this->getModelClass()->query();
 
-        $query = $this->includeRelation($searchObjectInstance, $query);
-        $query = $this->addFilter($searchObjectInstance, $query);
+        $query = $this->includeRelation($searchObject, $query);
+        $query = $this->addFilter($searchObject, $query);
 
         $result = $query->find($id);
 
@@ -77,7 +76,7 @@ abstract class BaseService implements BaseServiceInterface
         return $this->handleDeleteResponse();
     }
 
-    public function addFilter(BaseSearchObject $searchObject, $query){
+    public function addFilter($searchObject, $query){
         return $query;
     }
 
