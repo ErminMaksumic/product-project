@@ -11,6 +11,11 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
 {
     public function addFilter($searchObject, $query){
 
+        if($searchObject->name)
+        {
+            $query->where('name', 'ILIKE', '%' . $searchObject->name . '%');
+        }
+
         return $query;
     }
 
@@ -31,12 +36,13 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
 
     public function getPageable()
     {
-        if (Cache::has('product_types')) {
-            return Cache::get('product_types');
+        $cacheKey = $this->generateCacheKey(request()->query());
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
         }
-
         $all = parent::getPageable();
-        Cache::put('product_types', $all, 30);
+        Cache::put($cacheKey, $all, now()->addMinutes(1));
+
         return $all;
     }
 
@@ -57,6 +63,12 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
     {
         Cache::forget('product_type');
         return parent::getById($id);
+    }
+
+    protected function generateCacheKey($parameters)
+    {
+        ksort($parameters);
+        return 'product_types_' . http_build_query($parameters);
     }
 
 }
