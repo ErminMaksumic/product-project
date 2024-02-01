@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
+use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Services\Interfaces\BaseServiceInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-
 abstract class BaseService implements BaseServiceInterface
 {
     abstract protected function getModelClass();
@@ -77,7 +77,7 @@ abstract class BaseService implements BaseServiceInterface
         return $this->handleDeleteResponse();
     }
 
-    public function addFilter($searchObject, $query){
+    public function addFilter(BaseSearchObject $searchObject, $query){
         return $query;
     }
 

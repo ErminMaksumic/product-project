@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\SearchObjects\ProductSearchObject;
+use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
@@ -16,7 +17,6 @@ class ProductService extends BaseService implements ProductServiceInterface
     }
     public function addFilter($searchObject, $query)
     {
-
         if ($searchObject->name) {
             $query = $query->where(function ($query) use ($searchObject) {
                 $query->orWhere('name', 'ILIKE', '%' . $searchObject->name . '%');
@@ -73,10 +73,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $query;
     }
 
-    public function getSearchObject($params)
-    {
-        return new ProductSearchObject($params);
-    }
 
     protected function getModelClass()
     {

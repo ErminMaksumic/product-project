@@ -36,4 +36,9 @@ class ProductTypeController extends BaseController
 
         return new ProductTypeResource($request);
     }
+
+    public function getSearchObject($params)
+    {
+        return new ProductTypeSearchObject($params);
+    }
 }

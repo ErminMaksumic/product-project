@@ -7,7 +7,6 @@ use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
-use App\Http\Requests\SearchObjects\ProductTypeSearchObject;
 use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\VariantResource;
@@ -101,4 +100,8 @@ class ProductController extends BaseController
         return $this->createResourcePayload($this->service->getPageable(), true);
     }
 
+    public function getSearchObject($params)
+    {
+        return new ProductSearchObject($params);
+    }
 }

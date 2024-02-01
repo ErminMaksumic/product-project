@@ -20,14 +20,15 @@ use Illuminate\Support\Facades\Route;
 
 
 // Resources
-Route::apiResource('product', ProductController::class)->middleware('bindSearchObject:ProductSearchObject');
-Route::apiResource('productType', ProductTypeController::class)->middleware('bindSearchObject:ProductTypeSearchObject');
+Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('variant', VariantController::class);
+Route::apiResource('product', VariantController::class);
 
 // Custom path
 Route::post('/product/variant', [ProductController::class, 'addVariant']);
 Route::get('/product/fullTextSearch', [ProductController::class, 'fullTextSearch']);
 Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
+Route::get('/products', [ProductController::class, 'index']);
 
 // Auth
 Route::post('login', [AuthController::class, 'login']);

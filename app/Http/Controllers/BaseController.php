@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SearchObjects\ProductSearchObject;
 use Illuminate\Http\Request;
 
 abstract class BaseController extends Controller
@@ -14,10 +13,13 @@ abstract class BaseController extends Controller
 
     abstract function getInsertRequestClass();
     abstract function getUpdateRequestClass();
+    abstract public function getSearchObject($params);
+
     abstract function createResourcePayload($request, $collection = false);
 
-    public function index(ProductSearchObject $searchObject)
+    public function index()
     {
+        $searchObject = $this->getSearchObject(request()->query());
         return $this->createResourcePayload($this->service->getPageable($searchObject), true);
     }
 
@@ -65,4 +67,6 @@ abstract class BaseController extends Controller
     {
         $this->service->remove($id);
     }
+
+
 }

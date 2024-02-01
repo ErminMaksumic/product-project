@@ -18,6 +18,7 @@ class BindSearchObject
         {
             return $next($request);
         }
+
         return $next($searchObject);
     }
 }

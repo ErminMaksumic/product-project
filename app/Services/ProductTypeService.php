@@ -11,7 +11,7 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
 {
     public function addFilter($searchObject, $query){
 
-        if(!empty($searchObject->name))
+        if($searchObject->name)
         {
             $query->where('name', 'ILIKE', '%' . $searchObject->name . '%');
         }
