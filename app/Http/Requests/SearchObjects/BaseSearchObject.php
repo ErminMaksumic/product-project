@@ -4,25 +4,18 @@ namespace App\Http\Requests\SearchObjects;
 
 class BaseSearchObject
 {
-    public ?int $page;
-    public ?int $size;
+    public int $page = 1;
+    public int $size = 10;
 
-    public function __construct(array $attributes = [])
+    public function __set($key, $value)
     {
-        $this->fill($attributes);
+        $this->$key = $value;
     }
 
-    public function fill(array $attributes)
+    public function __construct($attributes = [])
     {
-        $this->page = $attributes['page'] ?? 1;
-        $this->size = $attributes['size'] ?? 10;
-    }
-
-    public function toArray()
-    {
-        return [
-            'page' => $this->page ?? null,
-            'size' => $this->size ?? null
-        ];
+        foreach ($attributes as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

@@ -28,9 +28,9 @@ class VariantService extends BaseService implements VariantServiceInterface
         return $query;
     }
 
-    public function getSearchObject()
+    public function getSearchObject($params)
     {
-        return new VariantSearchObject();
+        return new VariantSearchObject($params);
     }
 
     protected function getModelClass()

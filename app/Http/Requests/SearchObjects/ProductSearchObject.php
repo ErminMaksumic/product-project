@@ -13,20 +13,17 @@ class ProductSearchObject extends BaseSearchObject
     public ?string $validFrom = null;
     public ?string $validTo = null;
 
-    public function __construct(array $attributes = [])
+    public function __set($key, $value)
     {
-        $this->fill($attributes);
+        parent::__set($key, $value);
+        $this->$key = $value;
     }
 
-    public function fill(array $attributes)
+    public function __construct($attributes = [])
     {
-        parent::fill($attributes);
-        $this->name = $attributes['name'] ?? null;
-        $this->priceGT = $attributes['priceGT'] ?? null;
-        $this->priceLT = $attributes['priceLT'] ?? null;
-        $this->validFrom = $attributes['validFrom'] ?? null;
-        $this->validTo = $attributes['validTo'] ?? null;
-        $this->includeProductType = $attributes['includeProductType'] ?? null;
-        $this->includeVariants = $attributes['includeVariants'] ?? null;
+        parent::__construct($attributes);
+        foreach ($attributes as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

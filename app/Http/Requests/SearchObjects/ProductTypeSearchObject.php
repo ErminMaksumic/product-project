@@ -4,13 +4,17 @@ namespace App\Http\Requests\SearchObjects;
 
 class ProductTypeSearchObject extends BaseSearchObject
 {
-    public function __construct(array $attributes = [])
+    public function __set($key, $value)
     {
-        $this->fill($attributes);
+        parent::__set($key, $value);
+        $this->$key = $value;
     }
 
-    public function fill(array $attributes)
+    public function __construct($attributes = [])
     {
-        parent::fill($attributes);
+        parent::__construct($attributes);
+        foreach ($attributes as $key => $value) {
+            $this->$key = $value;
+        }
     }
 }

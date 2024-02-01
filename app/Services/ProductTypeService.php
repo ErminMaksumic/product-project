@@ -19,9 +19,9 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
         return $query;
     }
 
-    public function getSearchObject()
+    public function getSearchObject($params)
     {
-        return new ProductTypeSearchObject();
+        return new ProductTypeSearchObject($params);
     }
 
     protected function getModelClass()

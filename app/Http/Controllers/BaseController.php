@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchObjects\BaseSearchObject;
 use Illuminate\Http\Request;
 
 abstract class BaseController extends Controller
@@ -63,6 +64,8 @@ abstract class BaseController extends Controller
 
     public function destroy(int $id)
     {
+
+
         $this->service->remove($id);
     }
 }

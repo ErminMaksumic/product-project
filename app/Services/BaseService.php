@@ -19,8 +19,7 @@ abstract class BaseService implements BaseServiceInterface
 
     public function getPageable()
     {
-        $searchObjectInstance = $this->getSearchObject();
-        $searchObjectInstance->fill(request()->query());
+        $searchObjectInstance = $this->getSearchObject(request()->query());
 
         $query = $this->getModelClass()->query();
 
@@ -33,10 +32,9 @@ abstract class BaseService implements BaseServiceInterface
 
     public function getById(int $id)
     {
-        $searchObjectInstance = $this->getSearchObject();
+        $searchObjectInstance = $this->getSearchObject(request()->query());
         $query = $this->getModelClass()->query();
 
-        $searchObjectInstance->fill(request()->query());
         $query = $this->includeRelation($searchObjectInstance, $query);
         $query = $this->addFilter($searchObjectInstance, $query);
 
@@ -85,9 +83,9 @@ abstract class BaseService implements BaseServiceInterface
         return $query;
     }
 
-    public function getSearchObject()
+    public function getSearchObject($params)
     {
-        return new BaseSearchObject();
+        return new BaseSearchObject($params);
     }
 
     public function includeRelation($searchObject, $query)

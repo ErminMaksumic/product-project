@@ -6,9 +6,14 @@ import { TextField, Button, Grid } from "@mui/material";
 interface ProductFormProps {
     product: Product;
     onSubmit: (formData: Product) => void;
+    onClose: () => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
+const ProductForm: React.FC<ProductFormProps> = ({
+    product,
+    onSubmit,
+    onClose,
+}) => {
     const [formData, setFormData] = useState<Product>(product);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,6 +22,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        console.log("hereeee");
         e.preventDefault();
         onSubmit(formData);
     };
@@ -46,14 +52,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
                 </Grid>
                 {}
             </Grid>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-            >
-                Save
-            </Button>
+            <Grid container justifyContent="flex-end" spacing={2} mt={4}>
+                <Button onClick={onClose} style={{ marginRight: "8px" }}>
+                    Cancel
+                </Button>
+                <Button
+                    type="submit"
+                    form="variant-form"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleSubmit}
+                >
+                    Save
+                </Button>
+            </Grid>
         </form>
     );
 };
