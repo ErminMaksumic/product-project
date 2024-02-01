@@ -26,8 +26,6 @@ Route::apiResource('product', ProductController::class);
 
 // Custom path
 Route::post('/product/variant', [ProductController::class, 'addVariant']);
-Route::get('/product/fullTextSearch', [ProductController::class, 'fullTextSearch']);
-Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
 Route::get('/products', [ProductController::class, 'index']);
 
 // Auth

@@ -10,7 +10,6 @@ use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\VariantResource;
-use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -42,28 +41,6 @@ class ProductController extends BaseController
         return new ProductResource($request);
     }
 
-    public function newestVariant()
-    {
-        $productsWithNewestVariant = Product::with(['variants' => function ($query) {
-            $query->latest()->take(1);
-        }])->get();
-
-
-        $structuredData = $productsWithNewestVariant->map(function ($product) {
-            $newestVariant = $product->variants->first();
-
-            return [
-                'product_id' => $product->id,
-                'name' => $product->name,
-                'newest_variant_id' => $newestVariant ? $newestVariant->id : null,
-                'newest_variant_name' => $newestVariant ? $newestVariant->name : null,
-                'newest_variant_price' => $newestVariant ? $newestVariant->price : null,
-            ];
-        });
-
-        return response()->json(['data' => $structuredData]);
-    }
-
     public function allowedActions(int $id)
     {
         return $this->productService->allowedActions($id);
@@ -93,11 +70,6 @@ class ProductController extends BaseController
         $validatedData = $this->validate($request, $formRequestInstance->rules());
 
         return ProductResource::make($this->productService->activate($productId, $validatedData));
-    }
-
-    public function fullTextSearch()
-    {
-        return $this->createResourcePayload($this->service->getPageable(), true);
     }
 
     public function getSearchObject($params)
