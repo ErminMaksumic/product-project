@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use App\Exceptions\UserException;
-use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
+use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
@@ -74,10 +73,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $query;
     }
 
-    public function getSearchObject($params)
-    {
-        return new ProductSearchObject($params);
-    }
 
     protected function getModelClass()
     {

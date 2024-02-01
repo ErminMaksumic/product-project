@@ -34,13 +34,13 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
         return new ProductType();
     }
 
-    public function getPageable()
+    public function getPageable($searchObject)
     {
         $cacheKey = $this->generateCacheKey(request()->query());
         if (Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
         }
-        $all = parent::getPageable();
+        $all = parent::getPageable($searchObject);
         Cache::put($cacheKey, $all, now()->addMinutes(1));
 
         return $all;
@@ -70,5 +70,4 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
         ksort($parameters);
         return 'product_types_' . http_build_query($parameters);
     }
-
 }

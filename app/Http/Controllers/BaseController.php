@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\SearchObjects\BaseSearchObject;
 use Illuminate\Http\Request;
 
 abstract class BaseController extends Controller
@@ -15,11 +13,14 @@ abstract class BaseController extends Controller
 
     abstract function getInsertRequestClass();
     abstract function getUpdateRequestClass();
+    abstract public function getSearchObject($params);
+
     abstract function createResourcePayload($request, $collection = false);
 
     public function index()
     {
-        return $this->createResourcePayload($this->service->getPageable(), true);
+        $searchObject = $this->getSearchObject(request()->query());
+        return $this->createResourcePayload($this->service->getPageable($searchObject), true);
     }
 
     public function store(Request $request)
@@ -64,8 +65,8 @@ abstract class BaseController extends Controller
 
     public function destroy(int $id)
     {
-
-
         $this->service->remove($id);
     }
+
+
 }

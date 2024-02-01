@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 interface BaseServiceInterface
 {
-    public function getPageable();
+    public function getPageable($searchObject);
     public function getById(int $id);
     public function add(array $request);
     public function update(array $request, int $id);

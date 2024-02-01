@@ -18,23 +18,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+// Resources
+Route::apiResource('productType', ProductTypeController::class);
+Route::apiResource('variant', VariantController::class);
+Route::apiResource('product', VariantController::class);
+
+// Custom path
+Route::post('/product/variant', [ProductController::class, 'addVariant']);
+Route::get('/product/fullTextSearch', [ProductController::class, 'fullTextSearch']);
+Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
+Route::get('/products', [ProductController::class, 'index']);
+
+// Auth
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanctum");
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/product/variant', [ProductController::class, 'addVariant']);
-Route::get('/product/fullTextSearch', [ProductController::class, 'fullTextSearch']);
-Route::get('/product/newestVariant', [ProductController::class, 'newestVariant']);
-Route::apiResource('product', ProductController::class);
-Route::apiResource('productType', ProductTypeController::class);
-Route::apiResource('variant', VariantController::class);
-
-// auth
-Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanctum");
-
-// state machine
-
+// State machine
 Route::get('/product/{id}/allowedActions', [ProductController::class, 'allowedActions'])->name('product.allowedActions');
 Route::put('/product/{id}/productActivate', [ProductController::class, 'productActivate'])->name('product.productActivate');
 Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');

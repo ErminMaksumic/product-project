@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
+use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Services\Interfaces\BaseServiceInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-
 abstract class BaseService implements BaseServiceInterface
 {
     abstract protected function getModelClass();
@@ -17,16 +17,14 @@ abstract class BaseService implements BaseServiceInterface
         return response(content: "Resource removed successfully", status: 204);
     }
 
-    public function getPageable()
+    public function getPageable($searchObject)
     {
-        $searchObjectInstance = $this->getSearchObject(request()->query());
-
         $query = $this->getModelClass()->query();
 
-        $query = $this->includeRelation($searchObjectInstance, $query);
-        $query = $this->addFilter($searchObjectInstance, $query);
+        $query = $this->includeRelation($searchObject, $query);
+        $query = $this->addFilter($searchObject, $query);
 
-        return $query->paginate($searchObjectInstance->size);
+        return $query->paginate($searchObject->size);
     }
 
 
@@ -79,7 +77,7 @@ abstract class BaseService implements BaseServiceInterface
         return $this->handleDeleteResponse();
     }
 
-    public function addFilter($searchObject, $query){
+    public function addFilter(BaseSearchObject $searchObject, $query){
         return $query;
     }
 
