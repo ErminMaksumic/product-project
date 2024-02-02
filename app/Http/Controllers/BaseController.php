@@ -67,6 +67,8 @@ abstract class BaseController extends Controller
     public function destroy(int $id)
     {
         $this->service->remove($id);
+        return response(content: "Resource removed successfully", status: 204);
+
     }
 
 

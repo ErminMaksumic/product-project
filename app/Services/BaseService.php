@@ -12,10 +12,6 @@ abstract class BaseService implements BaseServiceInterface
 {
     abstract protected function getModelClass();
 
-    protected function handleDeleteResponse()
-    {
-        return response(content: "Resource removed successfully", status: 204);
-    }
 
     public function getPageable($searchObject)
     {
@@ -74,7 +70,8 @@ abstract class BaseService implements BaseServiceInterface
         }
 
         $model->delete();
-        return $this->handleDeleteResponse();
+
+        return $model;
     }
 
     public function addFilter($searchObject, $query){
