@@ -61,8 +61,6 @@ class ProductResource extends JsonResource
 
         $newestVariant = $this->variants->sortByDesc('created_at')->first();
 
-
-
         return [
             'id' => $newestVariant['id'],
             'name' => $newestVariant['name'],
