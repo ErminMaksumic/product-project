@@ -7,21 +7,29 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class VariantResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
+    public $id;
+    public $name;
+    public $product;
+
     public function toArray(Request $request): array
     {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'value' => $this->value,
-            'price' => $this->price,
-            'product' => new ProductResource($this->whenLoaded('product')),
-            'product_id' => $this->product_id,
-            'created_at' => $this->created_at,
-        ];
+        // get only public properties
+        $properties = get_object_vars($this);
+
+        // assign values
+        foreach ($this->resource->getAttributes() as $key => $value) {
+            if (array_key_exists($key, $properties)) {
+                $this->$key = $this->resource[$key];
+            }
+        }
+
+        // relations
+        $this->product = new ProductResource($this->whenLoaded('product'));
+
+
+        // return attributes without default attributes
+        $attributes = get_object_vars($this);
+        unset($attributes['resource'], $attributes['additional'], $attributes['with']);
+        return $attributes;
     }
 }

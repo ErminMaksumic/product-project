@@ -4,7 +4,7 @@ namespace App\Http\Requests\SearchObjects;
 
 class ProductTypeSearchObject extends BaseSearchObject
 {
-    public ?string $name;
+    public ?string $name = '';
     public function __set($key, $value)
     {
         parent::__set($key, $value);
@@ -17,5 +17,6 @@ class ProductTypeSearchObject extends BaseSearchObject
         foreach ($attributes as $key => $value) {
             $this->$key = $value;
         }
+
     }
 }

@@ -11,7 +11,6 @@ use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\VariantResource;
 use App\Services\Interfaces\ProductServiceInterface;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends BaseController

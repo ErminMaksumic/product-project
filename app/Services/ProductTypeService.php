@@ -59,10 +59,10 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
         return parent::update($request, $id);
     }
 
-    public function getById(int $id)
+    public function getById(int $id, $searchObject)
     {
         Cache::forget('product_type');
-        return parent::getById($id);
+        return parent::getById($id, $searchObject);
     }
 
     protected function generateCacheKey($parameters)
