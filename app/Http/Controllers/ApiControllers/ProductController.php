@@ -56,20 +56,14 @@ class ProductController extends BaseController
         return ProductResource::make($this->productService->hideProduct($productId));
     }
 
-    public function addVariant(Request $request)
+    public function addVariant(VariantCreateRequest $request)
     {
-        $formRequestInstance = new VariantCreateRequest();
-        $validatedData = $this->validate($request, $formRequestInstance->rules());
-
-        return VariantResource::make($this->productService->addVariant($validatedData));
+        return VariantResource::make($this->productService->addVariant($request->all()));
     }
 
     public function productActivate(ActivateRequest $request, int $productId)
     {
-        $formRequestInstance = new ActivateRequest();
-        $validatedData = $this->validate($request, $formRequestInstance->rules());
-
-        return ProductResource::make($this->productService->activate($productId, $validatedData));
+        return ProductResource::make($this->productService->activate($productId, $request->all()));
     }
 
     public function getSearchObject($params)
