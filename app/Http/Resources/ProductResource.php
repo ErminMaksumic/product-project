@@ -55,8 +55,7 @@ class ProductResource extends JsonResource
     private function getNewestVariant()
     {
 
-        // if there is no variants, return null
-        if ($this->variants instanceof AnonymousResourceCollection) {
+        if (!$this->variants->collection) {
             return null;
         }
 
