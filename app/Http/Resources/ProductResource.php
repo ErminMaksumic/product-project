@@ -54,12 +54,14 @@ class ProductResource extends JsonResource
 
     private function getNewestVariant()
     {
-
-        if (!$this->variants->collection) {
+        // return null if there are no variants
+        if ($this->variants instanceof AnonymousResourceCollection) {
             return null;
         }
 
         $newestVariant = $this->variants->sortByDesc('created_at')->first();
+
+
 
         return [
             'id' => $newestVariant['id'],
