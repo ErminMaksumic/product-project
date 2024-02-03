@@ -33,7 +33,6 @@ abstract class BaseService implements BaseServiceInterface
         $query = $this->getModelClass()->query();
 
         $query = $this->includeRelation($searchObject, $query);
-        $query = $this->addFilter($searchObject, $query);
 
         $result = $query->find($id);
 
