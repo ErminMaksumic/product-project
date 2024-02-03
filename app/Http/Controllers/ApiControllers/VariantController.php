@@ -30,7 +30,7 @@ class VariantController extends BaseController
         return VariantUpdateRequest::class;
     }
 
-    public function createResourcePayload($request, $collection = false) : VariantResource | AnonymousResourceCollection
+    public function createResourcePayload($request, bool $collection = false) : VariantResource | AnonymousResourceCollection
     {
         if($collection)
         {

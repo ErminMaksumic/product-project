@@ -27,7 +27,7 @@ class ProductTypeController extends BaseController
         return ProductTypeUpdateRequest::class;
     }
 
-    public function createResourcePayload($request, $collection = false) : ProductTypeResource | AnonymousResourceCollection
+    public function createResourcePayload($request, bool $collection = false) : ProductTypeResource | AnonymousResourceCollection
     {
         if($collection)
         {

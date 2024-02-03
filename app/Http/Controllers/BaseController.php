@@ -15,7 +15,7 @@ abstract class BaseController extends Controller
     abstract function getUpdateRequestClass();
     abstract function getSearchObject($params);
 
-    abstract function createResourcePayload($request, $collection = false);
+    abstract function createResourcePayload($request, bool $collection = false);
 
     public function index()
     {

@@ -30,7 +30,7 @@ class ProductController extends BaseController
         return ProductUpdateRequest::class;
     }
 
-    public function createResourcePayload($request, $collection = false) : ProductResource | AnonymousResourceCollection
+    public function createResourcePayload($request, bool $collection = false) : ProductResource | AnonymousResourceCollection
     {
         if($collection)
         {

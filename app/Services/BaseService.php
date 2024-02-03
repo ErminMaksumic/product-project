@@ -7,6 +7,7 @@ use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Services\Interfaces\BaseServiceInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,9 +32,7 @@ abstract class BaseService implements BaseServiceInterface
     public function getById(int $id, $searchObject)
     {
         $query = $this->getModelClass()->query();
-
         $query = $this->includeRelation($searchObject, $query);
-
         $result = $query->find($id);
 
         if(!$result)
@@ -79,7 +78,7 @@ abstract class BaseService implements BaseServiceInterface
         return $model;
     }
 
-    public function addFilter($searchObject, $query){
+    public function addFilter($searchObject, Builder $query){
         return $query;
     }
 
@@ -88,7 +87,7 @@ abstract class BaseService implements BaseServiceInterface
         return new BaseSearchObject($params);
     }
 
-    public function includeRelation($searchObject, $query)
+    public function includeRelation($searchObject, Builder $query)
     {
         return $query;
     }
