@@ -48,20 +48,20 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
 
     public function add(array $request)
     {
-        Cache::forget('product_type');
+        $this->clearCache();
         $request['status'] = 'DRAFT';
         return parent::add($request);
     }
 
     public function update(array $request, int $id)
     {
-        Cache::forget('product_type');
+        $this->clearCache();
         return parent::update($request, $id);
     }
 
     public function getById(int $id, $searchObject)
     {
-        Cache::forget('product_type');
+        $this->clearCache();
         return parent::getById($id, $searchObject);
     }
 
@@ -69,5 +69,11 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
     {
         ksort($parameters);
         return 'product_types_' . http_build_query($parameters);
+    }
+
+    public function clearCache()
+    {
+        $keys = Cache::getStore()->getPrefix() . 'productType;*';
+        Cache::forget($keys);
     }
 }
