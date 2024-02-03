@@ -2,8 +2,6 @@
 
 namespace App\StateMachine\States;
 
-use App\Models\Product;
-use App\Models\Variant;
 use App\Services\ProductService;
 use App\Services\VariantService;
 use App\StateMachine\Enums\ProductActions;

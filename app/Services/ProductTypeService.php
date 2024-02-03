@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Http\Requests\ProductTypeCreateRequest;
+use App\Http\Requests\ProductTypeUpdateRequest;
 use App\Http\Requests\SearchObjects\ProductTypeSearchObject;
 use App\Models\ProductType;
 use App\Services\Interfaces\ProductTypeServiceInterface;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class ProductTypeService extends BaseService implements ProductTypeServiceInterface
@@ -34,6 +37,16 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
         return new ProductType();
     }
 
+    public function getInsertRequestClass()
+    {
+        return ProductTypeCreateRequest::class;
+    }
+
+    public function getUpdateRequestClass()
+    {
+        return ProductTypeUpdateRequest::class;
+    }
+
     public function getPageable($searchObject)
     {
         $cacheKey = $this->generateCacheKey(request()->query());
@@ -46,14 +59,14 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
         return $all;
     }
 
-    public function add(array $request)
+    public function add(Request $request)
     {
         $this->clearCache();
         $request['status'] = 'DRAFT';
         return parent::add($request);
     }
 
-    public function update(array $request, int $id)
+    public function update(Request $request, int $id)
     {
         $this->clearCache();
         return parent::update($request, $id);

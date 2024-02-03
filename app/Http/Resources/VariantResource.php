@@ -10,6 +10,7 @@ class VariantResource extends JsonResource
     public $id;
     public $name;
     public $product;
+    public $value;
 
     public function toArray(Request $request): array
     {

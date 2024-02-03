@@ -3,12 +3,13 @@
 namespace App\Services;
 
 use App\Exceptions\UserException;
-use App\Http\Requests\SearchObjects\ProductSearchObject;
-use App\Http\Requests\SearchObjects\BaseSearchObject;
+use App\Http\Requests\ProductInsertRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
+use Illuminate\Http\Request;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
@@ -67,6 +68,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $query = $query->with('productType');
         }
 
+        // todo: variants.image
         if ($searchObject->includeVariants) {
             $query = $query->with('variants');
         }
@@ -80,17 +82,26 @@ class ProductService extends BaseService implements ProductServiceInterface
         return new Product();
     }
 
+    public function getInsertRequestClass()
+    {
+        return ProductInsertRequest::class;
+    }
+
+    public function getUpdateRequestClass()
+    {
+        return ProductUpdateRequest::class;
+    }
+
     public function add($request)
     {
         $state = BaseState::createState(ProductStatus::DRAFT->value);
 
-        return $state->addProduct($request);
+        return $state->addProduct($request->all());
     }
 
     public function insert($request)
     {
         $model = Product::create($request);
-
         return $model;
     }
 
@@ -128,7 +139,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->productDraft($id);
     }
 
-    public function update(array $request, int $id)
+    public function update(Request $request, int $id)
     {
         $model = Product::find($id);
 
@@ -142,7 +153,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->updateProduct($id, $request);
     }
 
-    public function updateProduct(array $request, int $id)
+    public function updateProduct($request, int $id)
     {
         $model = Product::find($id);
 
@@ -151,7 +162,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             throw new UserException("Resource not found!");
         }
 
-        $model->update($request);
+        $model->update($request->all());
         return $model;
     }
 

@@ -21,7 +21,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: any) => {
         console.log("hereeee");
         e.preventDefault();
         onSubmit(formData);

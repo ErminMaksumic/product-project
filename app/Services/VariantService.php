@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\SearchObjects\VariantSearchObject;
+use App\Http\Requests\VariantCreateRequest;
+use App\Http\Requests\VariantUpdateRequest;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Services\Interfaces\VariantServiceInterface;
@@ -38,6 +40,16 @@ class VariantService extends BaseService implements VariantServiceInterface
         return new Variant();
     }
 
+    public function getInsertRequestClass()
+    {
+        return VariantCreateRequest::class;
+    }
+
+    public function getUpdateRequestClass()
+    {
+        return VariantUpdateRequest::class;
+    }
+
     public function add($request)
     {
         $product = Product::find($request['product_id']);
@@ -52,7 +64,7 @@ class VariantService extends BaseService implements VariantServiceInterface
         return $model;
     }
 
-    public function update(array $request, int $id)
+    public function update(Request $request, int $id)
     {
         $model = Variant::find($id);
 
@@ -61,7 +73,7 @@ class VariantService extends BaseService implements VariantServiceInterface
             throw new UserException("Resource not found!");
         }
 
-        $model->update($request);
+        $model->update($request->all());
 
         return $model;
     }

@@ -8,7 +8,7 @@ interface BaseServiceInterface
 {
     public function getPageable($searchObject);
     public function getById(int $id, $searchObject);
-    public function add(array $request);
-    public function update(array $request, int $id);
+    public function add(Request $request);
+    public function update(Request $request, int $id);
     public function remove(int $id);
 }
