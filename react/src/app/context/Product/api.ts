@@ -91,3 +91,21 @@ export async function getProducts(includeVariant: boolean) {
         throw error;
     }
 }
+
+export async function insertVariant(variantData: Variant) {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/product/variant`,
+            variantData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting variant:", error);
+        throw error;
+    }
+}

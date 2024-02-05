@@ -1,27 +1,18 @@
 "use client";
 
 import { CustomDataGrid } from "@/components/CustomDataGrid";
-import { getProducts } from "@/lib/api";
 import { Product } from "@/lib/product";
 import { columns, columnsWithEdit } from "@/lib/productColumns";
 import { useEffect, useState } from "react";
-import Loader from "../../components/Loader/Loader";
+import { useProductApi } from "../context/Product/ProductContext";
 
 export default function Home() {
-    const [product, setProduct] = useState<Product>();
-    const [loading, setLoading] = useState(false);
+    const [product, setProduct] = useState<Product[]>();
+    const { getProducts } = useProductApi();
 
     async function fetchData() {
-        try {
-            setLoading(true);
-            const product = await getProducts(false);
-            const productJson = await product.json();
-            setProduct(productJson.data);
-        } catch(error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+        const product = await getProducts(false);
+        setProduct(product);
     }
 
     useEffect(() => {
@@ -29,16 +20,12 @@ export default function Home() {
     }, []);
 
     return (
-        <div>
-            {
-                loading ?
-                <Loader /> :
-                <CustomDataGrid
-                    params={product}
-                    columns={columns}
-                    columnsWithEdit={columnsWithEdit}
-                ></CustomDataGrid>
-            }
+        <div style={{ padding: "5%" }}>
+            <CustomDataGrid
+                params={product}
+                columns={columns}
+                columnsWithEdit={columnsWithEdit}
+            ></CustomDataGrid>
         </div>
     );
 }

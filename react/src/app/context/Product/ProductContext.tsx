@@ -6,6 +6,7 @@ import {
     getProducts,
     updateProduct,
     updateVariant,
+    insertVariant,
 } from "./api";
 import { Product } from "@/lib/product";
 import { Variant } from "@/lib/variant";
@@ -20,6 +21,7 @@ interface ProductContextProps {
         product: Product | null
     ) => Promise<Product>;
     updateVariant: (id: number, variant: Variant) => Promise<Variant>;
+    insertVariant: (variantData: Variant) => Promise<Variant>;
 }
 
 const ProductContext = createContext<ProductContextProps | undefined>(
@@ -37,6 +39,7 @@ export const ProductProvider: React.FC<{ children: ReactNode }> = ({
                 getProducts,
                 updateProduct,
                 updateVariant,
+                insertVariant,
             }}
         >
             {children}

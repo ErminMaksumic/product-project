@@ -11,14 +11,14 @@ const LoginPage: React.FC<any> = ({ props }) => {
     const handleLogin = async () => {
         const { success, error } = await login(email, password);
         if (success) {
-            window.location.href = "/homepage";
+            window.location.href = "/products";
         }
     };
 
     useEffect(() => {
         const bt = localStorage.getItem("bearerToken");
         if (bt) {
-            window.location.href = "/homepage";
+            window.location.href = "/products";
         }
     }, []);
     return (
