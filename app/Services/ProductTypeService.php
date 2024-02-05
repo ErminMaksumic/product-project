@@ -12,17 +12,18 @@ use Illuminate\Support\Facades\Cache;
 
 class ProductTypeService extends BaseService implements ProductTypeServiceInterface
 {
-    public function addFilter($searchObject, $query){
+    public function addFilter($searchObject, $query)
+    {
 
-        if($searchObject->name)
-        {
+        if ($searchObject->name) {
             $query->where('name', 'ILIKE', '%' . $searchObject->name . '%');
         }
 
         return $query;
     }
 
-    public function includeRelation($searchObject, $query){
+    public function includeRelation($searchObject, $query)
+    {
 
         return $query;
     }
@@ -49,44 +50,37 @@ class ProductTypeService extends BaseService implements ProductTypeServiceInterf
 
     public function getPageable($searchObject)
     {
-        $cacheKey = $this->generateCacheKey(request()->query());
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
         $all = parent::getPageable($searchObject);
-        Cache::put($cacheKey, $all, now()->addMinutes(1));
 
         return $all;
     }
 
     public function add(Request $request)
     {
-        $this->clearCache();
         $request['status'] = 'DRAFT';
+
+        $this->forgetCachedData('all_product_types');
         return parent::add($request);
     }
 
     public function update(Request $request, int $id)
     {
-        $this->clearCache();
+        $this->forgetCachedData('all_product_types');
+        $this->forgetCachedData('one_product_type');
         return parent::update($request, $id);
     }
 
     public function getById(int $id, $searchObject)
     {
-        $this->clearCache();
         return parent::getById($id, $searchObject);
     }
 
-    protected function generateCacheKey($parameters)
+    protected function getCachedName($key = 'getPageable')
     {
-        ksort($parameters);
-        return 'product_types_' . http_build_query($parameters);
-    }
-
-    public function clearCache()
-    {
-        $keys = Cache::getStore()->getPrefix() . 'productType;*';
-        Cache::forget($keys);
+        $cacheNames = [
+            'getPageable' => 'all_product_types',
+            'getOne' => 'one_product_type',
+        ];
+        return $cacheNames[$key] ?? $cacheNames['getPageable'];
     }
 }

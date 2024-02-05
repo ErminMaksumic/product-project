@@ -6,46 +6,56 @@ use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Services\Interfaces\BaseServiceInterface;
+use App\Traits\CacheTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 abstract class BaseService implements BaseServiceInterface
 {
+    use CacheTrait;
+
     abstract protected function getModelClass();
+    abstract protected function getCachedName($key);
     abstract function getInsertRequestClass();
     abstract function getUpdateRequestClass();
 
 
     public function getPageable($searchObject)
     {
-        $query = $this->getModelClass()->query();
+        return $this->getCachedData($this->getCachedName('getPageable'), 60, function () use ($searchObject) {
+            $query = $this->getModelClass()->query();
 
-        $query = $this->includeRelation($searchObject, $query);
-        $query = $this->addFilter($searchObject, $query);
+            $query = $this->includeRelation($searchObject, $query);
+            $query = $this->addFilter($searchObject, $query);
 
-        return $query->paginate($searchObject->size);
+            return $query->paginate($searchObject->size);
+        });
     }
 
 
     public function getById(int $id, $searchObject)
     {
-        $query = $this->getModelClass()->query();
-        $query = $this->includeRelation($searchObject, $query);
-        $result = $query->find($id);
+        return $this->getCachedData($this->getCachedName('getById'), 60, function () use ($id, $searchObject) {
+            $query = $this->getModelClass()->query();
+            $query = $this->includeRelation($searchObject, $query);
+            $result = $query->find($id);
 
-        if(!$result)
-        {
-            throw new UserException("Resource not found!");
-        }
+            if (!$result) {
+                throw new UserException("Resource not found!");
+            }
 
-        return $result;
+            return $result;
+        });
     }
 
     public function add(Request $request)
     {
         $this->validateRequest($request, $this->getInsertRequestClass());
+        $this->forgetCachedData($this->getCachedName('getPageable'));
+
         return $this->getModelInstance()->create($request->all());
     }
 
@@ -54,12 +64,15 @@ abstract class BaseService implements BaseServiceInterface
         $this->validateRequest($request, $this->getUpdateRequestClass());
         $model = $this->getModelInstance()->find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
         $model->update($request->all());
+
+
+        $this->forgetCachedData($this->getCachedName('getPageable'));
+        $this->forgetCachedData($this->getCachedName('getById'));
 
         return $model;
     }
@@ -68,17 +81,18 @@ abstract class BaseService implements BaseServiceInterface
     {
         $model = $this->getModelInstance()->find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
         $model->delete();
+        $this->forgetCachedData($this->getCachedName('getPageable'));
 
         return $model;
     }
 
-    public function addFilter($searchObject, Builder $query){
+    public function addFilter($searchObject, Builder $query)
+    {
         return $query;
     }
 
@@ -106,9 +120,8 @@ abstract class BaseService implements BaseServiceInterface
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            throw new Illuminate\Validation\ValidationException($validator);
+            throw new ValidationException($validator);
         }
         return $validator->validated();
     }
-
 }
