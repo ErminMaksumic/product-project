@@ -40,31 +40,10 @@ class ProductResource extends JsonResource
         $this->productType = new ProductTypeResource($this->whenLoaded('productType'));
         $this->variants = VariantResource::collection($this->whenLoaded('variants'));
 
-        $newestVariant = $this->getNewestVariant();
-        if ($newestVariant) {
-            $this->newestVariant = $newestVariant;
-        }
-
         // return attributes without default attributes
         $attributes = get_object_vars($this);
         unset($attributes['resource'], $attributes['additional'], $attributes['with']);
 
         return $attributes;
-    }
-
-    private function getNewestVariant()
-    {
-        // return null if there are no variants
-        if ($this->variants instanceof AnonymousResourceCollection) {
-            return null;
-        }
-
-        $newestVariant = $this->variants->sortByDesc('created_at')->first();
-
-        return [
-            'id' => $newestVariant['id'],
-            'name' => $newestVariant['name'],
-            'price' => $newestVariant['price'],
-        ];
     }
 }
