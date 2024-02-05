@@ -3,19 +3,18 @@
 namespace Tests;
 
 use App\Exceptions\UserException;
-use App\Http\Requests\SearchObjects\BaseSearchObject;
+use App\Http\Requests\ProductInsertRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
-use App\Http\Requests\SearchObjects\RentalCarSearchObject;
 use App\Models\Product;
 use App\Models\ProductType;
-use App\Models\RentalCar;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Variant;
-use App\Services\BaseService;
 use App\Services\ProductService;
-use Illuminate\Database\Eloquent\Collection;
+use App\Services\VariantService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\App;
 use Mockery;
@@ -24,6 +23,16 @@ use ReflectionMethod;
 class BaseServiceTest extends TestCase
 {
     use RefreshDatabase;
+
+    public ProductSearchObject $productSearchObject;
+    public VariantService $variantService;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->productSearchObject = new ProductSearchObject(['size' => 20]);
+        $this->variantService = new VariantService();
+    }
 
     public function tearDown(): void
     {
@@ -34,20 +43,15 @@ class BaseServiceTest extends TestCase
     {
         $this->seedData();
 
-        $searchObjectMock = Mockery::mock(ProductSearchObject::class);
-        $searchObjectMock->shouldReceive('fill')->andReturnNull();
-        $searchObjectMock->size = 10;
-
         $modelMock = Mockery::mock(Product::class);
         $modelMock->shouldReceive('query')->andReturnSelf();
         $modelMock->shouldReceive('paginate')->andReturn(new LengthAwarePaginator([], 0, 10, 1));
 
-        App::shouldReceive('make')->with(ProductSearchObject::class)->andReturn($searchObjectMock);
         App::shouldReceive('make')->with(Product::class)->andReturn($modelMock);
 
-        $productService = new ProductService();
+        $productService = new ProductService($this->variantService);
 
-        $result = $productService->getPageable();
+        $result = $productService->getPageable($this->productSearchObject);
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
         $this->assertEquals(10, $result->total());
     }
@@ -55,9 +59,9 @@ class BaseServiceTest extends TestCase
     public function testGetById()
     {
         $model = Product::factory()->create();
-        $service = new ProductService();
+        $productService = new ProductService($this->variantService);
 
-        $result = $service->getById($model->id);
+        $result = $productService->getById($model->id, $this->productSearchObject);
         $this->assertInstanceOf(Product::class, $result);
         $this->assertEquals($model->id, $result->id);
 
@@ -67,15 +71,15 @@ class BaseServiceTest extends TestCase
     public function testGetByIdWithNonexistentId()
     {
         $nonexistentId = 999;
-        $service = new ProductService();
+        $service = new ProductService($this->variantService);
 
         $this->expectException(UserException::class);
-        $service->getById($nonexistentId);
+        $service->getById($nonexistentId, $this->productSearchObject);
     }
 
     public function testAdd()
     {
-        $service = new ProductService();
+        $service = new ProductService($this->variantService);
         $requestData = [
             'name' => "test2000$",
 	        'description' => "test21000$",
@@ -84,9 +88,11 @@ class BaseServiceTest extends TestCase
             'validTo' => "2021-01-28 19:27:42.000"
         ];
 
-        $result = $service->add($requestData);
+        $request = new ProductInsertRequest($requestData);
+
+        $result = $service->add($request);
         $this->assertInstanceOf(Product::class, $result);
-        $this->assertDatabaseHas('products', $requestData);
+        $this->assertDatabaseHas('products', $request->all());
         $result->delete();
     }
 
@@ -94,26 +100,27 @@ class BaseServiceTest extends TestCase
     {
         $this->seedData();
 
-        $service = new ProductService();
+        $service = new ProductService($this->variantService);
         $product = Product::query()->first();
 
-        $requestData = [
+        $request = new ProductUpdateRequest([
             'name' => 'testProductName',
             'description' => 'testProductDescription'
-        ];
+        ]);
 
+        $request->replace($request->all());
 
-        $result = $service->update($requestData, $product->id);
-        $this->assertDatabaseHas('products', $requestData);
-        $this->assertEquals($result['name'], $requestData['name']);
-        $this->assertEquals($result['description'], $requestData['description']);
+        $result = $service->update($request, $product->id);
+        $this->assertDatabaseHas('products', $request->all());
+        $this->assertEquals($result['name'], $request->all()['name']);
+        $this->assertEquals($result['description'], $request->all()['description']);
     }
 
     public function testDelete()
     {
         $this->seedData();
 
-        $service = new ProductService();
+        $service = new ProductService($this->variantService);
         $product = Product::query()->first();
         $service->remove($product->id);
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
@@ -121,24 +128,16 @@ class BaseServiceTest extends TestCase
 
     public function testAddFilter()
     {
-        $service = new ProductService();
+        $service = new ProductService($this->variantService);
         $query = Product::query();
         $searchObject = new ProductSearchObject();
         $result = $service->addFilter($searchObject, $query);
         $this->assertSame($query, $result);
     }
 
-    public function testGetSearchObject()
-    {
-        $service = new ProductService();
-        $expectedSearchObj = new ProductSearchObject();
-        $result = $service->getSearchObject();
-        $this->assertEquals($expectedSearchObj, $result);
-    }
-
     public function testIncludeRelation()
     {
-        $service = new ProductService();
+        $service = new ProductService($this->variantService);
         $query = Product::query();
         $searchObject = new ProductSearchObject();
         $result = $service->includeRelation($searchObject, $query);
@@ -147,7 +146,7 @@ class BaseServiceTest extends TestCase
 
     public function testGetModelInstance()
     {
-        $service = new ProductService();
+        $service = new ProductService($this->variantService);
         $expectedModelClass = new Product();
         $reflectionMethod = new ReflectionMethod($service, 'getModelInstance');
         $result = $reflectionMethod->invoke($service);
