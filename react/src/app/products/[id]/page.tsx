@@ -6,44 +6,51 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
+    DialogActions,
     Typography,
 } from "@mui/material";
+import { CustomDataGrid } from "@/components/CustomDataGrid";
 import { orderStateButtons, Button as StateButton } from "@/lib/buttons";
+import {
+    getAllowedActions,
+    getProductById,
+    updateProduct,
+    updateVariant,
+} from "@/lib/api";
 import { Product } from "@/lib/product";
 import ProductForm from "@/components/ProductForm";
+import { Variant } from "@mui/material/styles/createTypography";
 import { columnsWithEdit, columns } from "@/lib/productColumns";
 import { variantColumns, variantColumnsWithEdit } from "@/lib/variantColumns";
-import { CustomDataGrid } from "@/components/CustomDataGrid";
-import ProductForm from "@/components/ProductForm";
 import { ProductDetails } from "@/components/ProductDetails";
 import VariantForm from "@/components/VariantForm";
-import { useProductApi } from "@/app/context/Product/ProductContext";
-import { Variant } from "@/lib/variant";
 
 export default function Product({ params }: { params: { id: number } }) {
-    const { getProductById, getAllowedActions, updateProduct, updateVariant } =
-        useProductApi();
-    const [selectedVariant, setSelectedVariant] = useState<Variant>();
+    const [selectedVariant, setSelectedVariant] = useState();
     const [openVariantModal, setOpenVariantModal] = useState(false);
     const [product, setProduct] = useState<Product | null>(null);
     const [variants, setVariants] = useState<Variant[]>([]);
-    const [allowedActions, setAllowedActions] = useState<string[]>([]);
+    const [allowedActions, setAllowedActions] = useState([]);
     const [buttons, setButtons] = useState<StateButton[]>([]);
     const [openModal, setOpenModal] = useState(false);
 
     async function fetchData() {
+        // fetch data
         const productResponse = await getProductById(params.id, true);
         const allowedActionsResponse = await getAllowedActions(params.id);
 
-        const variantsJson = productResponse.variants;
-        console.log("allowedActionsJson", allowedActionsResponse);
+        const productJson = await productResponse.json();
+        const variantsJson = productJson.data.variants;
+        const allowedActionsJson = await allowedActionsResponse.json();
+        console.log("allowedActionsJson", allowedActionsJson);
 
-        setProduct(productResponse);
+        // state
+        setProduct(productJson.data);
         setVariants(variantsJson);
-        setAllowedActions(allowedActionsResponse);
+        setAllowedActions(allowedActionsJson.data);
         setButtons(
             orderStateButtons.filter((x) =>
-                allowedActionsResponse?.includes(x.state)
+                allowedActionsJson?.includes(x.state)
             )
         );
     }
@@ -68,29 +75,15 @@ export default function Product({ params }: { params: { id: number } }) {
         handleCloseModal();
     };
 
-    const handleEditVariant = (variant: Variant) => {
+    const handleEditVariant = (variant) => {
         setSelectedVariant(variant);
         setOpenVariantModal(true);
     };
 
     const handleSubmitVariantForm = async (formData) => {
-        if (formData.id) {
-            await updateVariant(formData.id, formData);
-        } else {
-            await insertVariant(formData);
-        }
+        await updateVariant(selectedVariant?.id, formData);
         setOpenVariantModal(false);
         fetchData();
-    };
-
-    const handleOpenVariantModalForInsert = () => {
-        setSelectedVariant({
-            name: "",
-            price: "",
-            value: "",
-            product_id: params.id,
-        });
-        setOpenVariantModal(true);
     };
 
     useEffect(() => {
@@ -99,7 +92,7 @@ export default function Product({ params }: { params: { id: number } }) {
 
     return (
         <>
-            <div style={{ padding: "5%" }}>
+            <div>
                 <div style={{ marginBottom: "20px" }}>
                     <ProductDetails product={product}></ProductDetails>
                 </div>
@@ -111,12 +104,6 @@ export default function Product({ params }: { params: { id: number } }) {
                 <Typography variant="h5" sx={{ mt: 3 }}>
                     Product Variants
                 </Typography>
-                <Button
-                    variant="outlined"
-                    onClick={handleOpenVariantModalForInsert}
-                >
-                    Add Variant
-                </Button>
                 <CustomDataGrid
                     params={variants}
                     columns={variantColumns}
@@ -130,6 +117,7 @@ export default function Product({ params }: { params: { id: number } }) {
                     {product && (
                         <ProductForm
                             product={product}
+                            variants={variants}
                             onSubmit={handleSubmitForm}
                             onClose={() => setOpenModal(false)}
                         />

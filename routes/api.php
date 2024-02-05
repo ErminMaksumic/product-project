@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 // Custom path
 Route::get('/product/newestVariant', [ProductController::class, 'getNewestVariant']);
+Route::post('/product/variant', [ProductController::class, 'addVariant']);
 
 
 // Resources

@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "./context/User/UserContext";
 import { ProductProvider } from "./context/Product/ProductContext";
+import Sidebar from "../../src/components/Sidebar/Sidebar";
+import { Box, Toolbar } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +22,21 @@ export default function RootLayout({
         <ProductProvider>
             <UserProvider>
                 <html lang="en">
-                    <body className={inter.className}>{children}</body>
+                    <body className={inter.className}>
+                        <Sidebar />
+                        <Box
+                            component="main"
+                            sx={{
+                                flexGrow: 1,
+                                p: 3,
+                                width: { sm: `calc(100% - 240px)` },
+                                marginLeft: "240px",
+                            }}
+                        >
+                            <Toolbar />
+                            {children}
+                        </Box>
+                    </body>
                 </html>
             </UserProvider>
         </ProductProvider>
