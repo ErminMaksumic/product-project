@@ -141,21 +141,21 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->productDraft($model);
     }
 
-    public function update(Request $request, int $id)
-    {
-        $model = Product::find($id);
+//    public function update(Request $request, int $id)
+//    {
+//        $model = Product::find($id);
+//
+//        if(!$model)
+//        {
+//            throw new UserException("Resource not found!");
+//        }
+//
+//        $state = BaseState::createState($model->status);
+//
+//        return $state->updateProduct($id, $request);
+//    }
 
-        if(!$model)
-        {
-            throw new UserException("Resource not found!");
-        }
-
-        $state = BaseState::createState($model->status);
-
-        return $state->updateProduct($id, $request);
-    }
-
-    public function updateProduct($request, int $id)
+    public function update($request, int $id)
     {
         $model = Product::find($id);
 
