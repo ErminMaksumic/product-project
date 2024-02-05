@@ -1,6 +1,6 @@
 "use client";
 
-import { CustomDataGrid } from "@/app/components/CustomDataGrid";
+import { CustomDataGrid } from "@/components/CustomDataGrid";
 import { getProducts } from "@/lib/api";
 import { Product } from "@/lib/product";
 import { columns, columnsWithEdit } from "@/lib/productColumns";

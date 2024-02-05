@@ -9,7 +9,7 @@ import {
     DialogActions,
     Typography,
 } from "@mui/material";
-import { CustomDataGrid } from "@/app/components/CustomDataGrid";
+import { CustomDataGrid } from "@/components/CustomDataGrid";
 import { orderStateButtons, Button as StateButton } from "@/lib/buttons";
 import {
     getAllowedActions,
@@ -18,12 +18,12 @@ import {
     updateVariant,
 } from "@/lib/api";
 import { Product } from "@/lib/product";
-import ProductForm from "@/app/components/ProductForm";
+import ProductForm from "@/components/ProductForm";
 import { Variant } from "@mui/material/styles/createTypography";
 import { columnsWithEdit, columns } from "@/lib/productColumns";
 import { variantColumns, variantColumnsWithEdit } from "@/lib/variantColumns";
-import { ProductDetails } from "@/app/components/ProductDetails";
-import VariantForm from "@/app/components/VariantForm";
+import { ProductDetails } from "@/components/ProductDetails";
+import VariantForm from "@/components/VariantForm";
 
 export default function Product({ params }: { params: { id: number } }) {
     const [selectedVariant, setSelectedVariant] = useState();
