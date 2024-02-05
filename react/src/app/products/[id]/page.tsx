@@ -105,11 +105,9 @@ export default function Product({ params }: { params: { id: number } }) {
                 <div style={{ marginBottom: "20px" }}>
                     <ProductDetails product={product}></ProductDetails>
                 </div>
-                {allowedActions?.includes("DraftToActive") && (
-                    <Button variant="outlined" onClick={handleOpenModal}>
-                        Edit Product
-                    </Button>
-                )}
+                <Button variant="outlined" onClick={handleOpenModal}>
+                    Edit Product
+                </Button>
                 {buttons?.map((button, index) => (
                     <Button
                         key={index}
