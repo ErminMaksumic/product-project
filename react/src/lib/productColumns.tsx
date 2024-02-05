@@ -11,9 +11,8 @@ interface Column {
 }
 
 export const columns: Column[] = [
-    { field: "id", headerName: "ID", width: 70 },
+    { field: "id", headerName: "ID", width: 200 },
     { field: "name", headerName: "Name", width: 400 },
-    { field: "description", headerName: "Description", width: 400 },
     { field: "status", headerName: "Status", width: 400 },
 ];
 
@@ -24,7 +23,7 @@ export const columnsWithEdit: Column[] = [
         headerName: "Actions",
         width: 100,
         renderCell: (params) => (
-            <Link href={`/homepage/${params.row.id}`}>Edit</Link>
+            <Link href={`/products/${params.row.id}`}>Edit</Link>
         ),
     },
 ];
