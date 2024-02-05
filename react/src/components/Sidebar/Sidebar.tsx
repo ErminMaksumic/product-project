@@ -1,23 +1,24 @@
-"use client"
+"use client";
 
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import MailIcon from "@mui/icons-material/Mail";
+import MenuIcon from "@mui/icons-material/Menu";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import Link from "next/link";
 
 export const drawerWidth = 240;
 
@@ -50,29 +51,34 @@ export default function Sidebar(props: Props) {
     };
 
     const drawer = (
-        <div>
+        <>
             <Toolbar />
             <Divider />
             <List>
-                <ListItem key={"products"} disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <FormatListBulletedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Products"} />
-                    </ListItemButton>
-                </ListItem>
-                
+                <Link
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    href={"/products"}
+                >
+                    <ListItem key={"products"} disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FormatListBulletedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={"Products"} />
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
             </List>
             <Divider />
-        </div>
+        </>
     );
 
     // Remove this const when copying and pasting into your project.
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const container =
+        window !== undefined ? () => window().document.body : undefined;
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: "flex" }}>
             <CssBaseline />
             <AppBar
                 position="fixed"
@@ -87,7 +93,7 @@ export default function Sidebar(props: Props) {
                         aria-label="open drawer"
                         edge="start"
                         onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: 'none' } }}
+                        sx={{ mr: 2, display: { sm: "none" } }}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -112,8 +118,11 @@ export default function Sidebar(props: Props) {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        display: { xs: "block", sm: "none" },
+                        "& .MuiDrawer-paper": {
+                            boxSizing: "border-box",
+                            width: drawerWidth,
+                        },
                     }}
                 >
                     {drawer}
@@ -121,8 +130,11 @@ export default function Sidebar(props: Props) {
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: { xs: 'none', sm: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        display: { xs: "none", sm: "block" },
+                        "& .MuiDrawer-paper": {
+                            boxSizing: "border-box",
+                            width: drawerWidth,
+                        },
                     }}
                     open
                 >
