@@ -1,18 +1,18 @@
 "use client";
 
 import { CustomDataGrid } from "@/components/CustomDataGrid";
-import { getProducts } from "@/lib/api";
 import { Product } from "@/lib/product";
 import { columns, columnsWithEdit } from "@/lib/productColumns";
 import { useEffect, useState } from "react";
+import { useProductApi } from "../context/Product/ProductContext";
 
 export default function Home() {
-    const [product, setProduct] = useState<Product>();
+    const [product, setProduct] = useState<Product[]>();
+    const { getProducts } = useProductApi();
 
     async function fetchData() {
         const product = await getProducts(false);
-        const productJson = await product.json();
-        setProduct(productJson.data);
+        setProduct(product);
     }
 
     useEffect(() => {
