@@ -3,6 +3,8 @@
 namespace App\StateMachine\States;
 
 use App\Exceptions\UserException;
+use App\Http\Requests\ActivateRequest;
+use App\Http\Requests\VariantCreateRequest;
 use App\Models\Product;
 use App\Services\ProductService;
 use App\Services\VariantService;
@@ -32,12 +34,12 @@ class BaseState
         throw new Exception("Not allowed");
     }
 
-    public function hideProduct($product)
+    public function hideProduct(Product $product)
     {
         throw new Exception("Not allowed");
     }
 
-    public function activate($request, $model)
+    public function activate(ActivateRequest $request, Product $model)
     {
         throw new Exception("Not allowed");
     }
@@ -47,12 +49,12 @@ class BaseState
         throw new Exception("Not allowed");
     }
 
-    public function addVariant($request)
+    public function addVariant(VariantCreateRequest $request)
     {
         throw new Exception("Not allowed");
     }
 
-    static function createState($stateName)
+    static function createState(string $stateName)
     {
         switch ($stateName) {
             case 'ACTIVATED':

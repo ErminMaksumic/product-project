@@ -57,12 +57,12 @@ class ProductController extends BaseController
 
     public function addVariant(VariantCreateRequest $request)
     {
-        return VariantResource::make($this->productService->addVariant($request->all()));
+        return VariantResource::make($this->productService->addVariant($request));
     }
 
     public function productActivate(ActivateRequest $request, int $productId)
     {
-        return ProductResource::make($this->productService->activate($productId, $request->all()));
+        return ProductResource::make($this->productService->activate($productId, $request));
     }
 
     public function getSearchObject($params)

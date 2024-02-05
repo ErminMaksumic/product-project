@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Exceptions\UserException;
+use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Requests\VariantCreateRequest;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
@@ -68,7 +70,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             $query = $query->with('productType');
         }
 
-        // todo: variants.image
         if ($searchObject->includeVariants) {
             $query = $query->with('variants');
         }
@@ -105,7 +106,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $model;
     }
 
-    public function addVariant(array $request)
+    public function addVariant(VariantCreateRequest $request)
     {
         $model = Product::find($request['product_id']);
 
@@ -114,7 +115,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->addVariant($request);
     }
 
-    public function activate($id, array $request)
+    public function activate($id, ActivateRequest $request)
     {
         $model = Product::find($id);
 
@@ -123,7 +124,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->activate($request, $model);
     }
 
-    public function hideProduct($id)
+    public function hideProduct(int $id)
     {
         $product = Product::find($id);
 
@@ -132,11 +133,11 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->hideProduct($product);
     }
 
-    public function draftProduct($id)
+    public function draftProduct(int $id)
     {
         $model = Product::find($id);
         $state = BaseState::createState($model->status);
-        return $state->productDraft($id);
+        return $state->productDraft($model);
     }
 
     public function update(Request $request, int $id)

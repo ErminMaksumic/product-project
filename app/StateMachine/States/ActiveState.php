@@ -34,15 +34,12 @@ class ActiveState extends BaseState
         return $product;
     }
 
-    public function productDraft(int $productId)
+    public function productDraft($product)
     {
+        $product->update([
+            'status' => ProductStatus::DRAFT->value
+        ]);
 
-        $allowedActions = $this->allowedActions();
-
-        return $this->updateProductModel(
-            ProductActions::ActiveToDraft,
-            ProductStatus::DRAFT,
-            $productId,
-            $allowedActions);
+        return $product;
     }
 }

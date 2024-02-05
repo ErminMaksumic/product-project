@@ -2,10 +2,13 @@
 
 namespace App\StateMachine\States;
 
+use App\Http\Requests\ActivateRequest;
+use App\Http\Requests\VariantCreateRequest;
 use App\Services\ProductService;
 use App\Services\VariantService;
 use App\StateMachine\Enums\ProductActions;
 use App\StateMachine\Enums\ProductStatus;
+use Illuminate\Support\Facades\Auth;
 
 class DraftState extends BaseState
 {
@@ -34,20 +37,19 @@ class DraftState extends BaseState
         return $product;
     }
 
-    public function addVariant($request)
+    public function addVariant(VariantCreateRequest $request)
     {
-        $variant = $this->variantService->insert($request);
+        $data = $request->all();
+        $variant = $this->variantService->insert($data);
         return $variant;
     }
 
     public function activate($request, $product)
     {
-        $product->update([
-            'status' => ProductStatus::ACTIVATED->value,
-            'valid_from' => $request['valid_from'],
-            'valid_to' => $request['valid_to']
-        ]);
-
+        $data = $request->all();
+        $data['status'] = ProductStatus::ACTIVATED->value;
+        $data['activatedBy'] = Auth::user()->email;
+        $product->update($data);
         return $product;
     }
 }
