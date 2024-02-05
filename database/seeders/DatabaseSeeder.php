@@ -23,8 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Role::create([
-            "name" => "admin",
-            "description" => "admin"
+            "name" => "admin"
         ]);
 
         User::factory(10)->create();
