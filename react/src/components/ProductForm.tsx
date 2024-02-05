@@ -1,4 +1,3 @@
-// ProductForm.tsx
 import React, { useState } from "react";
 import { Product } from "@/lib/product";
 import { TextField, Button, Grid } from "@mui/material";
@@ -22,7 +21,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
     };
 
     const handleSubmit = (e: any) => {
-        console.log("hereeee");
         e.preventDefault();
         onSubmit(formData);
     };
@@ -56,13 +54,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <Button onClick={onClose} style={{ marginRight: "8px" }}>
                     Cancel
                 </Button>
-                <Button
-                    type="submit"
-                    form="variant-form"
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleSubmit}
-                >
+                <Button type="submit" variant="contained" color="primary">
                     Save
                 </Button>
             </Grid>
