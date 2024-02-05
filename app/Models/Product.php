@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
@@ -14,12 +13,13 @@ class Product extends Model
 
     protected $fillable = ['product_type_id', 'name', 'description', 'status', 'validFrom', 'validTo', 'activatedBy'];
 
-    public function productType() : BelongsTo
+
+    public function productType(): BelongsTo
     {
         return $this->belongsTo(ProductType::class);
     }
 
-    public function variants() : HasMany
+    public function variants(): HasMany
     {
         return $this->hasMany(Variant::class);
     }

@@ -69,4 +69,9 @@ class ProductController extends BaseController
     {
         return new ProductSearchObject($params);
     }
+
+    public function getNewestVariant()
+    {
+        return $this->productService->getNewestVariants();
+    }
 }

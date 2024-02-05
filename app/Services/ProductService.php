@@ -7,6 +7,7 @@ use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\VariantCreateRequest;
+use App\Models\NewestVariant;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
@@ -179,5 +180,10 @@ class ProductService extends BaseService implements ProductServiceInterface
         $state = BaseState::createState($model->status);
 
         return $state->allowedActions($id);
+    }
+
+    public function getNewestVariants()
+    {
+        return NewestVariant::withNewestVariant();
     }
 }

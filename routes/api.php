@@ -19,14 +19,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+// Custom path
+Route::get('/product/newestVariant', [ProductController::class, 'getNewestVariant']);
+
+
 // Resources
 Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('variant', VariantController::class);
 Route::apiResource('product', ProductController::class);
-
-// Custom path
-Route::post('/product/variant', [ProductController::class, 'addVariant']);
-Route::get('/products', [ProductController::class, 'index']);
 
 // Auth
 Route::post('login', [AuthController::class, 'login']);
