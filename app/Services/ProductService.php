@@ -18,7 +18,6 @@ class ProductService extends BaseService implements ProductServiceInterface
 {
     public function __construct(protected VariantService $variantService)
     {
-
     }
     public function addFilter($searchObject, $query)
     {
@@ -98,6 +97,8 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $state = BaseState::createState(ProductStatus::DRAFT->value);
 
+        $this->forgetCachedData('all_products');
+
         return $state->addProduct($request->all());
     }
 
@@ -145,12 +146,12 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
         $state = BaseState::createState($model->status);
+        $this->forgetCachedData('all_products');
 
         return $state->updateProduct($id, $request);
     }
@@ -159,12 +160,12 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
         $model->update($request->all());
+        $this->forgetCachedData('all_products');
         return $model;
     }
 
@@ -172,8 +173,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
@@ -185,5 +185,15 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function getNewestVariants()
     {
         return NewestVariant::withNewestVariant();
+    }
+
+    protected function getCachedName($key = 'getPageable')
+    {
+        $cacheNames = [
+            'getPageable' => 'all_products',
+            'getOne' => 'one_product',
+        ];
+
+        return $cacheNames[$key] ?? $cacheNames['getPageable'];
     }
 }

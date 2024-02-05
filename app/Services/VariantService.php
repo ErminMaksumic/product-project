@@ -15,15 +15,16 @@ use Illuminate\Http\Request;
 
 class VariantService extends BaseService implements VariantServiceInterface
 {
-    public function addFilter($searchObject, $query){
+    public function addFilter($searchObject, $query)
+    {
 
         return $query;
     }
 
-    public function includeRelation($searchObject, $query){
+    public function includeRelation($searchObject, $query)
+    {
 
-        if($searchObject->includeProduct)
-        {
+        if ($searchObject->includeProduct) {
             $query = $query->with('product');
         }
 
@@ -68,13 +69,21 @@ class VariantService extends BaseService implements VariantServiceInterface
     {
         $model = Variant::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
         $model->update($request->all());
 
         return $model;
+    }
+
+    protected function getCachedName($key = 'getPageable')
+    {
+        $cacheNames = [
+            'getPageable' => 'none',
+            'getOne' => 'none',
+        ];
+        return $cacheNames[$key] ?? $cacheNames['getPageable'];
     }
 }
