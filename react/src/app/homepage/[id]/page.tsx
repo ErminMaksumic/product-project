@@ -6,22 +6,21 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions,
     Typography,
 } from "@mui/material";
-import { CustomDataGrid } from "@/components/CustomDataGrid";
 import { orderStateButtons, Button as StateButton } from "@/lib/buttons";
 import {
     getAllowedActions,
     getProductById,
     updateProduct,
     updateVariant,
+    insertVariant,
 } from "@/lib/api";
 import { Product } from "@/lib/product";
-import ProductForm from "@/components/ProductForm";
 import { Variant } from "@mui/material/styles/createTypography";
-import { columnsWithEdit, columns } from "@/lib/productColumns";
 import { variantColumns, variantColumnsWithEdit } from "@/lib/variantColumns";
+import { CustomDataGrid } from "@/components/CustomDataGrid";
+import ProductForm from "@/components/ProductForm";
 import { ProductDetails } from "@/components/ProductDetails";
 import VariantForm from "@/components/VariantForm";
 
@@ -81,9 +80,23 @@ export default function Product({ params }: { params: { id: number } }) {
     };
 
     const handleSubmitVariantForm = async (formData) => {
-        await updateVariant(selectedVariant?.id, formData);
+        if (formData.id) {
+            await updateVariant(formData.id, formData);
+        } else {
+            await insertVariant(formData);
+        }
         setOpenVariantModal(false);
         fetchData();
+    };
+
+    const handleOpenVariantModalForInsert = () => {
+        setSelectedVariant({
+            name: "",
+            price: "",
+            value: "",
+            product_id: params.id,
+        });
+        setOpenVariantModal(true);
     };
 
     useEffect(() => {
@@ -104,6 +117,12 @@ export default function Product({ params }: { params: { id: number } }) {
                 <Typography variant="h5" sx={{ mt: 3 }}>
                     Product Variants
                 </Typography>
+                <Button
+                    variant="outlined"
+                    onClick={handleOpenVariantModalForInsert}
+                >
+                    Add Variant
+                </Button>
                 <CustomDataGrid
                     params={variants}
                     columns={variantColumns}

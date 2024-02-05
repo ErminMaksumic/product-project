@@ -65,3 +65,18 @@ export async function getProducts(includeVariant: boolean) {
         },
     });
 }
+
+export async function insertVariant(variantData: Variant) {
+    const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/product/variant`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH}`,
+            },
+            body: JSON.stringify(variantData),
+        }
+    );
+    return response.json();
+}
