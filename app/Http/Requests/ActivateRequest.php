@@ -23,7 +23,7 @@ class ActivateRequest extends FormRequest
     {
         return [
             'validFrom' => 'required|date',
-            'validTo' => 'required|date|after:valid_from',
+            'validTo' => 'required|date|after:validFrom',
         ];
     }
 }

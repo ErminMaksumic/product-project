@@ -28,7 +28,7 @@ export async function getAllowedActions(id: number) {
             `${process.env.NEXT_PUBLIC_URL}/api/product/${id}/allowedActions`
         );
 
-        return response.data.data;
+        return response.data;
     } catch (error) {
         console.error("Error getting allowed actions:", error);
         throw error;
@@ -38,7 +38,7 @@ export async function getAllowedActions(id: number) {
 export async function updateProduct(
     id: number,
     path: string,
-    product: Product | null
+    product: Product | null | {},
 ) {
     try {
         const response = await axios.put(

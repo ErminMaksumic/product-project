@@ -40,7 +40,6 @@ export default function Product({ params }: { params: { id: number } }) {
         const allowedActionsResponse = await getAllowedActions(params.id);
 
         const variantsJson = productResponse.variants;
-        console.log("allowedActionsJson", allowedActionsResponse);
 
         setProduct(productResponse);
         setVariants(variantsJson);
@@ -52,8 +51,8 @@ export default function Product({ params }: { params: { id: number } }) {
         );
     }
 
-    const updateState = async (path: string) => {
-        await updateProduct(params.id, path, null);
+    const updateState = async (path: string, object: any) => {
+        await updateProduct(params.id, path, object);
         await fetchData();
     };
 
@@ -66,7 +65,6 @@ export default function Product({ params }: { params: { id: number } }) {
     };
 
     const handleSubmitForm = async (formData: Product) => {
-        console.log("hereee, handlesubmitform");
         await updateProduct(params.id, "", formData);
         await fetchData();
         handleCloseModal();
@@ -107,20 +105,33 @@ export default function Product({ params }: { params: { id: number } }) {
                 <div style={{ marginBottom: "20px" }}>
                     <ProductDetails product={product}></ProductDetails>
                 </div>
-
-                <Button variant="outlined" onClick={handleOpenModal}>
-                    Edit Product
-                </Button>
+                {allowedActions?.includes("DraftToActive") && (
+                    <Button variant="outlined" onClick={handleOpenModal}>
+                        Edit Product
+                    </Button>
+                )}
+                {buttons?.map((button, index) => (
+                    <Button
+                        key={index}
+                        variant="outlined"
+                        sx={{ marginLeft: "80px", color: button.color }}
+                        onClick={() => updateState(button.link, button.request)}
+                    >
+                        {button?.text}
+                    </Button>
+                ))}
 
                 <Typography variant="h5" sx={{ mt: 3 }}>
                     Product Variants
                 </Typography>
-                <Button
-                    variant="outlined"
-                    onClick={handleOpenVariantModalForInsert}
-                >
-                    Add Variant
-                </Button>
+                {allowedActions?.includes("DraftToActive") && (
+                    <Button
+                        variant="outlined"
+                        onClick={handleOpenVariantModalForInsert}
+                    >
+                        Add Variant
+                    </Button>
+                )}
                 <CustomDataGrid
                     params={variants}
                     columns={variantColumns}
