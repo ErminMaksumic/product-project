@@ -332,12 +332,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/products?name=test&includeVariants=true&includeProductType=true&size=2&page=2",
+							"raw": "{{baseUrl}}/product?name=test&includeVariants=true&includeProductType=true&size=2&page=2",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"products"
+								"product"
 							],
 							"query": [
 								{
