@@ -6,9 +6,11 @@ use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Services\Interfaces\BaseServiceInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 abstract class BaseService implements BaseServiceInterface
@@ -45,8 +47,16 @@ abstract class BaseService implements BaseServiceInterface
 
     public function add(Request $request)
     {
-        $this->validateRequest($request, $this->getInsertRequestClass());
-        return $this->getModelInstance()->create($request->all());
+        DB::beginTransaction();
+
+        try {
+            $this->validateRequest($request, $this->getInsertRequestClass());
+            $result = $this->getModelInstance()->create($request->all());
+            DB::commit();
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
     }
 
     public function update(Request $request, int $id)

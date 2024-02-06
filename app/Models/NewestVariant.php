@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Http\Requests\ProductInsertRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class NewestVariant extends Model
 {
@@ -19,5 +21,11 @@ class NewestVariant extends Model
             }
             )->orderBy('product_id')
             ->get();
+
+//        $query = Variant::select('price')->where('price', '>', 100)->toSql();
+//        $queryBindings = Variant::where('price', '>', 100)->getBindings();
+//        $executionPlan = DB::select('EXPLAIN ' . $query, $queryBindings);
+//        dump($executionPlan);
+
     }
 }
