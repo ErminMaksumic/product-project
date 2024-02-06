@@ -27,6 +27,9 @@ abstract class BaseService implements BaseServiceInterface
         $query = $this->includeRelation($searchObject, $query);
         $query = $this->addFilter($searchObject, $query);
 
+        if($searchObject->size > 100)
+            $searchObject->size = 10;
+
         return $query->paginate($searchObject->size);
     }
 
