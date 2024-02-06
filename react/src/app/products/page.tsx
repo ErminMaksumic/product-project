@@ -54,6 +54,7 @@ export default function Home() {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentPage(1);
         const { name, value } = e.target;
 
         setFilters({
@@ -90,6 +91,7 @@ export default function Home() {
         });
         setParamValues({});
         setQuery("");
+        setCurrentPage(1);
     };
 
     return (
