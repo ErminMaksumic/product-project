@@ -77,15 +77,16 @@ export async function updateVariant(id: number, variant: Variant) {
     }
 }
 
-export async function getProducts(includeVariant: boolean) {
+export async function getProducts(
+    includeVariant: boolean = false,
+    page: number = 1,
+    query: string | undefined
+) {
     try {
-        let url = `${process.env.NEXT_PUBLIC_URL}/api/product`;
-        if (includeVariant) {
-            url = `${process.env.NEXT_PUBLIC_URL}/api/product?includeVariant=true`;
-        }
+        const url = `${process.env.NEXT_PUBLIC_URL}/api/product?includeVariant=${includeVariant}}&page=${page}&${query}`;
 
         const response = await axios.get(url);
-        return response.data.data;
+        return response.data;
     } catch (error) {
         console.error("Error fetching products:", error);
         throw error;

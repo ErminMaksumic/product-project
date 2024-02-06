@@ -8,13 +8,17 @@ import {
     updateVariant,
     insertVariant,
 } from "./api";
-import { Product } from "@/lib/product";
+import { Product, ApiProductResponse } from "@/lib/product";
 import { Variant } from "@/lib/variant";
 
 interface ProductContextProps {
     getAllowedActions: (id: number) => Promise<string[]>;
     getProductById: (id: number, includeVariant: boolean) => Promise<Product>;
-    getProducts: (includeVariant: boolean) => Promise<Product[]>;
+    getProducts: (
+        includeVariant: boolean,
+        page: number,
+        query: string | undefined
+    ) => Promise<ApiProductResponse>;
     updateProduct: (
         id: number,
         path: string,

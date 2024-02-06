@@ -68,6 +68,19 @@ export default function Sidebar(props: Props) {
                         </ListItemButton>
                     </ListItem>
                 </Link>
+                 <Link
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    href={"/product-types"}
+                >
+                    <ListItem key={"product-types"} disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <FormatListBulletedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={"Product Types"} />
+                        </ListItemButton>
+                    </ListItem>
+                </Link>
             </List>
             <Divider />
         </>
