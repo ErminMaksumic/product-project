@@ -62,7 +62,6 @@ const TableComponent: React.FC<TableProps> = ({
                                 </button>
                             </li>
                         )}
-                        {/* Display up to 3 previous page numbers */}
                         {Array.from(
                             { length: Math.min(2, currentPage - 1) },
                             (_, i) => currentPage - i - 1
@@ -81,7 +80,6 @@ const TableComponent: React.FC<TableProps> = ({
                                 {currentPage}
                             </button>
                         </li>
-                        {/* Display up to 3 next page numbers */}
                         {Array.from(
                             {
                                 length: Math.min(2, totalPages - currentPage),
