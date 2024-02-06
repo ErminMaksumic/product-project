@@ -38,10 +38,7 @@ const TableComponent: React.FC<TableProps> = ({
                             <td>{product.name}</td>
                             <td>{product.status}</td>
                             <td>
-                                <Link
-                                    href={`/products/${product.id}`}
-                                    as="button"
-                                >
+                                <Link href={`/products/${product.id}`}>
                                     EDIT
                                 </Link>
                             </td>
@@ -67,7 +64,7 @@ const TableComponent: React.FC<TableProps> = ({
                         )}
                         {/* Display up to 3 previous page numbers */}
                         {Array.from(
-                            { length: Math.min(3, currentPage - 1) },
+                            { length: Math.min(2, currentPage - 1) },
                             (_, i) => currentPage - i - 1
                         ).map((page) => (
                             <li key={page} className={styles.pageItem}>
@@ -87,7 +84,7 @@ const TableComponent: React.FC<TableProps> = ({
                         {/* Display up to 3 next page numbers */}
                         {Array.from(
                             {
-                                length: Math.min(3, totalPages - currentPage),
+                                length: Math.min(2, totalPages - currentPage),
                             },
                             (_, i) => i + currentPage + 1
                         ).map((page) => (

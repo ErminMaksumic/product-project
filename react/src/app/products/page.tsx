@@ -8,6 +8,7 @@ import { useProductApi } from "../context/Product/ProductContext";
 import debounce from "lodash.debounce";
 import { Table } from "@mui/material";
 import TableComponent from "@/components/Table/TableComponent";
+import styles from "./page.module.scss";
 
 export default function Home() {
     const { getProducts } = useProductApi();
@@ -52,18 +53,127 @@ export default function Home() {
         }
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        setFilters({
+            ...filters,
+            [name]: value,
+        });
+
+        setParamValues((prevValues) => {
+            const updatedValues = {
+                ...prevValues,
+                [name]: value,
+            };
+
+            const newQuery = Object.keys(updatedValues)
+                .map(
+                    (param) =>
+                        `${param}=${encodeURIComponent(updatedValues[param])}`
+                )
+                .join("&");
+
+            setQuery(newQuery);
+
+            return updatedValues;
+        });
+    };
+
+    const handleResetFilters = () => {
+        setFilters({
+            name: "",
+            priceGT: "",
+            priceLT: "",
+            validFrom: "",
+            validTo: "",
+        });
+        setParamValues({});
+        setQuery("");
+    };
+
     return (
         <div style={{ padding: "5%" }}>
-            {/* <CustomDataGrid
-                params={product}
-                columns={columns}
-                columnsWithEdit={columnsWithEdit}
-                currentPage={currentPage}
-                lastPage={lastPage}
-                onPageChange={handlePageChange}
-                filters={filters}
-                onFilterChange={setFilters}
-            /> */}
+            <div className={styles.filterInputs}>
+                <div className={styles.twinInputs}>
+                    <div className={styles.filterInput}>
+                        <label htmlFor="priceGT" className={styles.label}>
+                            Price Greater Than:
+                        </label>
+                        <input
+                            type="number"
+                            name="priceGT"
+                            placeholder="Price Greater Than"
+                            value={filters.priceGT}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                        />
+                    </div>
+                    <div className={styles.filterInput}>
+                        <label htmlFor="priceLTE" className={styles.label}>
+                            Price Less Than or Equal:
+                        </label>
+                        <input
+                            type="number"
+                            name="priceLT"
+                            placeholder="Price Less Than"
+                            value={filters.priceLT}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                        />
+                    </div>
+                </div>
+                <div className={styles.twinInputs}>
+                    <div className={styles.filterInput}>
+                        <label htmlFor="valid_from" className={styles.label}>
+                            Valid From:
+                        </label>
+                        <input
+                            type="date"
+                            name="validFrom"
+                            placeholder="Valid From"
+                            value={filters.validFrom}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                        />
+                    </div>
+                    <div className={styles.filterInput}>
+                        <label htmlFor="valid_to" className={styles.label}>
+                            Valid To:
+                        </label>
+                        <input
+                            type="date"
+                            name="validTo"
+                            placeholder="Valid To"
+                            value={filters.validTo}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                        />
+                    </div>
+                </div>
+                <div className={styles.twinInputs}>
+                    <div className={styles.filterInput}>
+                        <label htmlFor="name" className={styles.label}>
+                            Name:
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                            value={filters.name}
+                            onChange={handleInputChange}
+                            className={styles.input}
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleResetFilters}
+                        className={styles.resetButton}
+                    >
+                        Reset All Filters
+                    </button>
+                </div>
+            </div>
             <TableComponent
                 products={product}
                 currentPage={currentPage}
