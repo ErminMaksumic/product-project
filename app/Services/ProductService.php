@@ -9,10 +9,12 @@ use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\VariantCreateRequest;
 use App\Models\NewestVariant;
 use App\Models\Product;
+use App\Models\Variant;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
@@ -51,7 +53,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         }])
             ->whereHas('variants', function ($variantQuery) use ($searchObject) {
                 $this->addPriceConditions($variantQuery, $searchObject);
-            });
+            })->toSql()->dd();
     }
 
     private function addPriceConditions($query, $searchObject)
@@ -185,5 +187,18 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function getNewestVariants()
     {
         return NewestVariant::withNewestVariant();
+    }
+
+    public function getProductSumPrice()
+    {
+        $result = Variant::select('variants')
+            ->select('product_id', DB::raw('SUM(price) as TotalPrice'))
+            ->groupBy('product_id')
+            ->having('product_id', '<=', 5)
+            ->orderBy('product_id', 'asc')
+            ->toSql();
+
+
+        return $result;
     }
 }

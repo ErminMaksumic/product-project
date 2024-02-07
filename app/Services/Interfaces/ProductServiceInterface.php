@@ -11,4 +11,5 @@ interface ProductServiceInterface extends BaseServiceInterface
     public function draftProduct(int $id);
     public function allowedActions(int $id);
     public function getNewestVariants();
+    public function getProductSumPrice();
 }

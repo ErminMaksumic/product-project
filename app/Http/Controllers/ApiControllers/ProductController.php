@@ -74,4 +74,9 @@ class ProductController extends BaseController
     {
         return $this->productService->getNewestVariants();
     }
+
+    public function getProductVariantSumPrice()
+    {
+        return $this->service->getProductSumPrice();
+    }
 }
