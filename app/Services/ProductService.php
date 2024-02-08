@@ -14,11 +14,16 @@ use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
 
+use PHPJasper\PHPJasper;
+
 class ProductService extends BaseService implements ProductServiceInterface
 {
+
+    protected $jasper;
+
     public function __construct(protected VariantService $variantService)
     {
-
+        $this->jasper = new PHPJasper();
     }
     public function addFilter($searchObject, $query)
     {
@@ -141,26 +146,25 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->productDraft($model);
     }
 
-//    public function update(Request $request, int $id)
-//    {
-//        $model = Product::find($id);
-//
-//        if(!$model)
-//        {
-//            throw new UserException("Resource not found!");
-//        }
-//
-//        $state = BaseState::createState($model->status);
-//
-//        return $state->updateProduct($id, $request);
-//    }
+    //    public function update(Request $request, int $id)
+    //    {
+    //        $model = Product::find($id);
+    //
+    //        if(!$model)
+    //        {
+    //            throw new UserException("Resource not found!");
+    //        }
+    //
+    //        $state = BaseState::createState($model->status);
+    //
+    //        return $state->updateProduct($id, $request);
+    //    }
 
     public function update($request, int $id)
     {
         $model = Product::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
@@ -172,8 +176,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
@@ -185,5 +188,34 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function getNewestVariants()
     {
         return NewestVariant::withNewestVariant();
+    }
+
+
+    public function generateReportForOneProduct($request, int $id)
+    {
+        $parameters = [
+            'productId' => $id
+        ];
+        $fileName = 'Product-variants';
+
+        return parent::generateReport($parameters, $fileName, $request);
+    }
+
+    public function generateReportForExpensiveProducts($request)
+    {
+        $parameters = [
+            'price' => 9900
+        ];
+        $fileName = 'Expensive_products';
+
+        return parent::generateReport($parameters, $fileName, $request);
+    }
+
+    public function generateReportForProductStatesGraph($request)
+    {
+        $parameters = [];
+        $fileName = 'Chart';
+
+        return parent::generateReport($parameters, $fileName, $request);
     }
 }

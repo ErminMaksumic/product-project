@@ -11,4 +11,7 @@ interface ProductServiceInterface extends BaseServiceInterface
     public function draftProduct(int $id);
     public function allowedActions(int $id);
     public function getNewestVariants();
+    public function generateReportForOneProduct($request, int $id);
+    public function generateReportForExpensiveProducts($request);
+    public function generateReportForProductStatesGraph($request);
 }

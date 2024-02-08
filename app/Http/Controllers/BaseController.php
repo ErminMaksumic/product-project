@@ -8,7 +8,7 @@ abstract class BaseController extends Controller
 {
     public function __construct(protected $service)
     {
-        $this->middleware('auth:sanctum')->except(['index']);
+        $this->middleware('auth:sanctum')->except(['index', 'generateReportForOneProduct']);
     }
 
     abstract function getInsertRequestClass();
@@ -68,8 +68,5 @@ abstract class BaseController extends Controller
     {
         $this->service->remove($id);
         return response(content: "Resource removed successfully", status: 204);
-
     }
-
-
 }

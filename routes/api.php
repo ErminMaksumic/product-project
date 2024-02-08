@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 // Custom path
 Route::get('/product/newestVariant', [ProductController::class, 'getNewestVariant']);
 Route::post('/product/variant', [ProductController::class, 'addVariant']);
+Route::post('/product/{id}/generateReport', [ProductController::class, 'generateReportForOneProduct']);
+Route::post('/product/generateReport', [ProductController::class, 'generateReportForExpensiveProducts']);
+Route::post('/product/generateReportChart', [ProductController::class, 'generateReportForProductStatesGraph']);
 
 
 // Resources
