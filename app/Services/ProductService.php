@@ -22,12 +22,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     }
     public function addFilter($searchObject, $query)
     {
-        if ($searchObject->name) {
-            $query = $query->where(function ($query) use ($searchObject) {
-                $query->orWhere('name', 'ILIKE', '%' . $searchObject->name . '%');
-                $query->orWhereRaw("to_tsvector('english', name) @@ to_tsquery(?)", [$searchObject->name]);
-            });
-        }
+
 
         if ($searchObject->validFrom) {
             $query = $query->where('validFrom', '>=', $searchObject->validFrom);
@@ -35,6 +30,15 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         if ($searchObject->validTo) {
             $query = $query->where('validTo', '<=', $searchObject->validTo);
+        }
+
+        dd($query->toSql());
+
+        if ($searchObject->name) {
+            $query = $query->where(function ($query) use ($searchObject) {
+                $query->orWhere('name', 'ILIKE', '%' . $searchObject->name . '%');
+                $query->orWhereRaw("to_tsvector('english', name) @@ to_tsquery(?)", [$searchObject->name]);
+            });
         }
 
         if ($searchObject->priceGT || $searchObject->priceLT) {
@@ -46,12 +50,14 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function applyPriceFilter($query, $searchObject)
     {
-        return $query->with(['variants' => function ($variantQuery) use ($searchObject) {
+        $test = $query->with(['variants' => function ($variantQuery) use ($searchObject) {
             $this->addPriceConditions($variantQuery, $searchObject);
         }])
             ->whereHas('variants', function ($variantQuery) use ($searchObject) {
                 $this->addPriceConditions($variantQuery, $searchObject);
-            });
+            })->toSql();
+
+        dd($test);
     }
 
     private function addPriceConditions($query, $searchObject)

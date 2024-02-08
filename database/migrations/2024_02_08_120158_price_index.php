@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->index(['validFrom', 'validTo']);
+        Schema::table('variants', function (Blueprint $table)
+        {
+            $table->index('price');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropIndex(['validFrom', 'validTo']);
+        Schema::table('variants', function (Blueprint $table)
+        {
+            $table->dropIndex('price');
         });
     }
 };
