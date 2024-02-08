@@ -38,7 +38,7 @@ export async function getAllowedActions(id: number) {
 export async function updateProduct(
     id: number,
     path: string,
-    product: Product | null | {},
+    product: Product | null | {}
 ) {
     try {
         const response = await axios.put(
@@ -89,6 +89,58 @@ export async function getProducts(
         return response.data;
     } catch (error) {
         console.error("Error fetching products:", error);
+        throw error;
+    }
+}
+
+export async function generateReportForOneProduct(
+    id: number,
+    body: { formats: string[] }
+) {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/product/${id}/generateReport`,
+            {
+                formats: body.formats.map((format) => format.toLowerCase()),
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting variant:", error);
+        throw error;
+    }
+}
+
+export async function generateReportForExpensiveProducts(body: {
+    formats: string[];
+}) {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/product/generateReport`,
+            {
+                formats: body.formats.map((format) => format.toLowerCase()),
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting variant:", error);
+        throw error;
+    }
+}
+
+export async function generateReportForProductStatesGraph(body: {
+    formats: string[];
+}) {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/product/generateReportChart`,
+            {
+                formats: body.formats.map((format) => format.toLowerCase()),
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting variant:", error);
         throw error;
     }
 }

@@ -9,6 +9,7 @@ import debounce from "lodash.debounce";
 import { Table } from "@mui/material";
 import TableComponent from "@/components/Table/TableComponent";
 import styles from "./page.module.scss";
+import ReportComponent from "@/components/Report/ReportComponent";
 
 export default function Home() {
     const { getProducts } = useProductApi();
@@ -176,6 +177,8 @@ export default function Home() {
                     </button>
                 </div>
             </div>
+            <hr/>
+            <ReportComponent/>
             <TableComponent
                 products={product}
                 currentPage={currentPage}

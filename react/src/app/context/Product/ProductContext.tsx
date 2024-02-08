@@ -7,6 +7,9 @@ import {
     updateProduct,
     updateVariant,
     insertVariant,
+    generateReportForExpensiveProducts,
+    generateReportForOneProduct,
+    generateReportForProductStatesGraph,
 } from "./api";
 import { Product, ApiProductResponse } from "@/lib/product";
 import { Variant } from "@/lib/variant";
@@ -26,6 +29,16 @@ interface ProductContextProps {
     ) => Promise<Product>;
     updateVariant: (id: number, variant: Variant) => Promise<Variant>;
     insertVariant: (variantData: Variant) => Promise<Variant>;
+    generateReportForOneProduct: (
+        id: number,
+        body: { formats: string[] }
+    ) => Promise<any>;
+    generateReportForExpensiveProducts: (body: {
+        formats: string[];
+    }) => Promise<any>;
+    generateReportForProductStatesGraph: (body: {
+        formats: string[];
+    }) => Promise<any>;
 }
 
 const ProductContext = createContext<ProductContextProps | undefined>(
@@ -44,6 +57,9 @@ export const ProductProvider: React.FC<{ children: ReactNode }> = ({
                 updateProduct,
                 updateVariant,
                 insertVariant,
+                generateReportForExpensiveProducts,
+                generateReportForOneProduct,
+                generateReportForProductStatesGraph,
             }}
         >
             {children}

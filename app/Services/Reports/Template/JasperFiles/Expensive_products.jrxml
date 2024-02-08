@@ -71,7 +71,7 @@ WHERE
 		<band height="102" splitType="Stretch">
 			<image>
 				<reportElement x="725" y="0" width="77" height="102" uuid="651ccc4b-e999-40fe-bcbf-1f25bcfc98af"/>
-    <imageExpression><![CDATA["C:\\Users\\User\\OneDrive\\Desktop\\Project\\PHP-project\\product-project\\app\\Services\\Reports\\Template\\Assets\\bernes.jpg"]]></imageExpression>
+    <imageExpression><![CDATA["C:\\Users\\User\\OneDrive\\Desktop\\Project\\PHP-project\\product-project\\app\\Services\\Reports\\Template\\Assets\\cherry.jpg"]]></imageExpression>
 			</image>
 			<frame>
 				<reportElement mode="Opaque" x="0" y="0" width="721" height="66" backcolor="#000000" uuid="d8d9e644-3a32-491d-97cb-a277aff17133"/>
@@ -81,14 +81,14 @@ WHERE
 					<textElement verticalAlignment="Bottom">
 						<font isBold="false"/>
 					</textElement>
-					<text><![CDATA[Bernes Title]]></text>
+					<text><![CDATA[Expensive products]]></text>
 				</staticText>
 				<staticText>
 					<reportElement style="SubTitle" x="370" y="37" width="316" height="29" uuid="cfa21334-0634-4605-9ea7-aca4981f67e4"/>
 					<textElement textAlignment="Right">
 						<font size="22" isBold="false"/>
 					</textElement>
-					<text><![CDATA[Cherry SubTitle]]></text>
+					<text><![CDATA[Price over 9900]]></text>
 				</staticText>
 			</frame>
 			<frame>
