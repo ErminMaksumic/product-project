@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.0.final using JasperReports Library version 6.21.0-4f56c4f36cd19e17675219a9ac4692d5f0f13b06  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Chart" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="99cc078d-6d80-4502-bba2-3164f00d6505">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PHP-project"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT  products.status , COUNT( products.id ) AS product_count
+FROM products
+GROUP BY  products.status]]>
+	</queryString>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="products"/>
+	</field>
+	<field name="product_count" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="product_count"/>
+		<property name="com.jaspersoft.studio.field.label" value="product_count"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="-20" y="0" width="595" height="60" uuid="b223ce99-dd1a-4323-851b-118b2d082851"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[Strasna tabela]]></text>
+			</staticText>
+		</band>
+	</title>
+	<summary>
+		<band height="265" splitType="Stretch">
+			<pie3DChart>
+				<chart evaluationTime="Report">
+					<reportElement x="-20" y="-10" width="595" height="210" uuid="e0e3eaa3-9e8e-402a-8bef-f4c02e4eedf0"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset maxCount="3">
+					<keyExpression><![CDATA[$F{status}]]></keyExpression>
+					<valueExpression><![CDATA[$F{product_count}]]></valueExpression>
+					<labelExpression><![CDATA[$F{product_count}+""]]></labelExpression>
+				</pieDataset>
+				<pie3DPlot>
+					<plot/>
+					<itemLabel/>
+				</pie3DPlot>
+			</pie3DChart>
+		</band>
+	</summary>
+</jasperReport>
