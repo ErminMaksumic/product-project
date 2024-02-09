@@ -16,6 +16,7 @@
 	<parameter name="price" class="java.lang.Integer">
         <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
     </parameter>
+	<parameter name="IMAGE_PATH" class="java.lang.String" isForPrompting="false"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT products.id,
 	products.name,
@@ -71,7 +72,7 @@ WHERE
 		<band height="102" splitType="Stretch">
 			<image>
 				<reportElement x="725" y="0" width="77" height="102" uuid="651ccc4b-e999-40fe-bcbf-1f25bcfc98af"/>
-    <imageExpression><![CDATA["C:\\Users\\User\\OneDrive\\Desktop\\Project\\PHP-project\\product-project\\app\\Services\\Reports\\Template\\Assets\\cherry.jpg"]]></imageExpression>
+    <imageExpression><![CDATA[$P{IMAGE_PATH}]]></imageExpression>
 			</image>
 			<frame>
 				<reportElement mode="Opaque" x="0" y="0" width="721" height="66" backcolor="#000000" uuid="d8d9e644-3a32-491d-97cb-a277aff17133"/>
