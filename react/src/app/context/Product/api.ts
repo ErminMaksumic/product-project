@@ -38,7 +38,7 @@ export async function getAllowedActions(id: number) {
 export async function updateProduct(
     id: number,
     path: string,
-    product: Product | null | {},
+    product: Product | null | {}
 ) {
     try {
         const response = await axios.put(
@@ -93,6 +93,65 @@ export async function getProducts(
     }
 }
 
+export async function generateReportForOneProduct(
+    id: number,
+    body: { formats: string[] }
+) {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/product/${id}/generateReport`,
+            {
+                formats: body.formats.map((format) => format.toLowerCase()),
+            }
+        );
+        download(response);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting variant:", error);
+        throw error;
+    }
+}
+
+export async function generateReportForExpensiveProducts(body: {
+    formats: string[];
+}) {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/product/generateReport`,
+            {
+                formats: body.formats.map((format) => format.toLowerCase()),
+            }
+        );
+        download(response);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting variant:", error);
+        throw error;
+    }
+}
+
+export async function generateReportForProductStatesGraph(body: {
+    formats: string[];
+}) {
+    try {
+        const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/product/generateReportChart`,
+            {
+                formats: body.formats.map((format) => format.toLowerCase()),
+            }
+        );
+
+        download(response);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error inserting variant:", error);
+        throw error;
+    }
+}
+
 export async function insertVariant(variantData: Variant) {
     try {
         const response = await axios.post(
@@ -108,5 +167,21 @@ export async function insertVariant(variantData: Variant) {
     } catch (error) {
         console.error("Error inserting variant:", error);
         throw error;
+    }
+}
+
+async function download(response: any) {
+    const { filePaths } = response.data;
+
+    for (let i = 0; i < filePaths.length; i++) {
+        const filePath = filePaths[i];
+        const url = `${
+            process.env.NEXT_PUBLIC_URL
+        }/api/download?filePath=${encodeURIComponent(filePath)}`;
+        const isPopupsBlocked = window.open(url, "_blank");
+        if (!isPopupsBlocked) {
+            alert("Please enable pop-ups to download multiple files.");
+            return;
+        }
     }
 }
