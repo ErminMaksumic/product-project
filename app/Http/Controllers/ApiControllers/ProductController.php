@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
@@ -72,6 +73,7 @@ class ProductController extends BaseController
 
     public function getNewestVariant()
     {
-        return $this->productService->getNewestVariants();
+        $searchObject = new BaseSearchObject(request()->query());
+        return $this->productService->getNewestVariants($searchObject);
     }
 }

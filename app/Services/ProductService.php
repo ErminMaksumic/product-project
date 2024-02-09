@@ -6,6 +6,7 @@ use App\Exceptions\UserException;
 use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\VariantCreateRequest;
 use App\Models\NewestVariant;
 use App\Models\Product;
@@ -22,8 +23,6 @@ class ProductService extends BaseService implements ProductServiceInterface
     }
     public function addFilter($searchObject, $query)
     {
-
-
         if ($searchObject->validFrom) {
             $query = $query->where('validFrom', '>=', $searchObject->validFrom);
         }
@@ -31,8 +30,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($searchObject->validTo) {
             $query = $query->where('validTo', '<=', $searchObject->validTo);
         }
-
-        dd($query->toSql());
 
         if ($searchObject->name) {
             $query = $query->where(function ($query) use ($searchObject) {
@@ -50,14 +47,17 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function applyPriceFilter($query, $searchObject)
     {
-        $test = $query->with(['variants' => function ($variantQuery) use ($searchObject) {
+        return $query->with(['variants' => function ($variantQuery) use ($searchObject) {
             $this->addPriceConditions($variantQuery, $searchObject);
         }])
             ->whereHas('variants', function ($variantQuery) use ($searchObject) {
                 $this->addPriceConditions($variantQuery, $searchObject);
-            })->toSql();
+            });
 
-        dd($test);
+
+//        dd($test);
+//
+//        return $test;
     }
 
     private function addPriceConditions($query, $searchObject)
@@ -188,8 +188,8 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->allowedActions($id);
     }
 
-    public function getNewestVariants()
+    public function getNewestVariants(BaseSearchObject $searchObject)
     {
-        return NewestVariant::withNewestVariant();
+        return NewestVariant::withNewestVariant($searchObject);
     }
 }

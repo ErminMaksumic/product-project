@@ -55,11 +55,15 @@ abstract class BaseService implements BaseServiceInterface
         try {
             $this->validateRequest($request, $this->getInsertRequestClass());
             $result = $this->getModelInstance()->create($request->all());
+            // create order
+            // decrement stock
             DB::commit();
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
         }
+
+        return $result;
     }
 
     public function update(Request $request, int $id)
