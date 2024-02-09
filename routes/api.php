@@ -27,7 +27,6 @@ Route::post('/product/{id}/generateReport', [ProductController::class, 'generate
 Route::post('/product/generateReport', [ProductController::class, 'generateReportForExpensiveProducts']);
 Route::post('/product/generateReportChart', [ProductController::class, 'generateReportForProductStatesGraph']);
 Route::get('/download', [ProductController::class, 'download'])->name('download');
-Route::get('/deleteFile', [ProductController::class, 'deleteFile'])->name('deleteFile');
 
 
 // Resources

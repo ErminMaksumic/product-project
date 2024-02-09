@@ -76,11 +76,7 @@ abstract class BaseController extends Controller
         $filePath = $request->query('filePath');
         $fileName = basename($filePath);
 
-        if (!$filePath) {
-            abort(404);
-        }
-
-        if (!file_exists($filePath)) {
+        if (!$filePath || !file_exists($filePath)) {
             abort(404);
         }
 

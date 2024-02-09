@@ -1,6 +1,5 @@
 import { Product } from "@/lib/product";
 import { Variant } from "@/lib/variant";
-import { daDK } from "@mui/x-data-grid";
 import axios from "axios";
 
 const authToken = localStorage.getItem("bearerToken");
