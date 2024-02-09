@@ -203,8 +203,10 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function generateReportForExpensiveProducts($request)
     {
+        $imagePath = __DIR__ . '\Reports\Template\Assets\cherry.jpg';
         $parameters = [
-            'price' => 9900
+            'price' => 9900,
+            'IMAGE_PATH' => $imagePath,
         ];
         $fileName = 'Expensive_products';
 
