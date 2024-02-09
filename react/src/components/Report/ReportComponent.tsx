@@ -1,5 +1,5 @@
-'use client';
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./ReportComponent.module.scss";
 import { useProductApi } from "@/app/context/Product/ProductContext";
 
@@ -37,6 +37,24 @@ const ReportComponent: React.FC = () => {
     );
     const [multiSelectDropdownOpen, setMultiSelectDropdownOpen] =
         useState<boolean>(false);
+
+    const multiSelectRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                multiSelectRef.current &&
+                !multiSelectRef.current.contains(event.target as Node)
+            ) {
+                setMultiSelectDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     const handleSingleSelectChange = (
         event: React.ChangeEvent<HTMLSelectElement>
@@ -107,9 +125,8 @@ const ReportComponent: React.FC = () => {
                 console.error("Invalid option selected");
                 return;
         }
-        
+
         setSelectedMultiOptions([]);
-        
     };
 
     return (
@@ -139,6 +156,7 @@ const ReportComponent: React.FC = () => {
                     <div
                         className={styles.multiSelectDropdown}
                         onClick={toggleMultiSelectDropdown}
+                        ref={multiSelectRef}
                     >
                         Select types
                         {multiSelectDropdownOpen && (
