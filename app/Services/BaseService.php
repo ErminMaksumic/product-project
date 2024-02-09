@@ -10,7 +10,9 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PHPJasper\PHPJasper;
 
@@ -127,7 +129,7 @@ abstract class BaseService implements BaseServiceInterface
     {
         //Checking and getting formats from request
         $acceptedFormats = [
-            'PDF', 'XLS', 'XLSX', 'DOCX', 'PPTX', 'CSV', 'HTML', 'RTF', 'TXT', 'XML',
+            'PDF', 'XLS', 'XLSX', 'DOCX', 'PPTX', 'CSV', 'HTML', 'RTF', 'XML',
             'ODT', 'ODS',
         ];
 
@@ -157,6 +159,7 @@ abstract class BaseService implements BaseServiceInterface
             'db_connection' => $jasperConfig
         ];
 
+
         //Where the magic happens
         $jasper->process(
             $jasperFile,
@@ -164,6 +167,18 @@ abstract class BaseService implements BaseServiceInterface
             $options,
         )->execute();
 
-        return $outputFile;
+
+        $filePaths = [];
+
+        foreach ($formats as $format) {
+            $outputFilePath = $outputFile . '.' . strtolower($format);
+
+            $filePaths[] = $outputFilePath;
+        }
+
+
+        return [
+            'filePaths' => $filePaths,
+        ];
     }
 }

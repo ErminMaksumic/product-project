@@ -30,7 +30,6 @@ export default function Home() {
     const debouncedFetchData = debounce(async () => {
         try {
             const response = await getProducts(false, 1, query);
-            console.log(response.data);
             setProduct(response.data);
             setLastPage(response.meta.last_page);
         } catch (error) {

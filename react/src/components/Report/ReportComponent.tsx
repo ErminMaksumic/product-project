@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from "react";
 import styles from "./ReportComponent.module.scss";
 import { useProductApi } from "@/app/context/Product/ProductContext";
@@ -23,7 +24,6 @@ const ReportComponent: React.FC = () => {
         "CSV",
         "HTML",
         "RTF",
-        "TXT",
         "XML",
         "ODT",
         "ODS",
@@ -107,6 +107,9 @@ const ReportComponent: React.FC = () => {
                 console.error("Invalid option selected");
                 return;
         }
+        
+        setSelectedMultiOptions([]);
+        
     };
 
     return (

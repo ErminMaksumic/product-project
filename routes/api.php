@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\ProductTypeController;
 use App\Http\Controllers\ApiControllers\VariantController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,8 @@ Route::post('/product/variant', [ProductController::class, 'addVariant']);
 Route::post('/product/{id}/generateReport', [ProductController::class, 'generateReportForOneProduct']);
 Route::post('/product/generateReport', [ProductController::class, 'generateReportForExpensiveProducts']);
 Route::post('/product/generateReportChart', [ProductController::class, 'generateReportForProductStatesGraph']);
+Route::get('/download', [ProductController::class, 'download'])->name('download');
+Route::get('/deleteFile', [ProductController::class, 'deleteFile'])->name('deleteFile');
 
 
 // Resources

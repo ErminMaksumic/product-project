@@ -1,5 +1,6 @@
 import { Product } from "@/lib/product";
 import { Variant } from "@/lib/variant";
+import { daDK } from "@mui/x-data-grid";
 import axios from "axios";
 
 const authToken = localStorage.getItem("bearerToken");
@@ -104,6 +105,8 @@ export async function generateReportForOneProduct(
                 formats: body.formats.map((format) => format.toLowerCase()),
             }
         );
+        download(response);
+
         return response.data;
     } catch (error) {
         console.error("Error inserting variant:", error);
@@ -121,6 +124,8 @@ export async function generateReportForExpensiveProducts(body: {
                 formats: body.formats.map((format) => format.toLowerCase()),
             }
         );
+        download(response);
+
         return response.data;
     } catch (error) {
         console.error("Error inserting variant:", error);
@@ -138,6 +143,9 @@ export async function generateReportForProductStatesGraph(body: {
                 formats: body.formats.map((format) => format.toLowerCase()),
             }
         );
+
+        download(response);
+
         return response.data;
     } catch (error) {
         console.error("Error inserting variant:", error);
@@ -160,5 +168,21 @@ export async function insertVariant(variantData: Variant) {
     } catch (error) {
         console.error("Error inserting variant:", error);
         throw error;
+    }
+}
+
+async function download(response: any) {
+    const { filePaths } = response.data;
+
+    for (let i = 0; i < filePaths.length; i++) {
+        const filePath = filePaths[i];
+        const url = `${
+            process.env.NEXT_PUBLIC_URL
+        }/api/download?filePath=${encodeURIComponent(filePath)}`;
+        const isPopupsBlocked = window.open(url, "_blank");
+        if (!isPopupsBlocked) {
+            alert("Please enable pop-ups to download multiple files.");
+            return;
+        }
     }
 }
