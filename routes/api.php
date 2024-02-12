@@ -28,7 +28,7 @@ Route::post('/product/generateReport', [ProductController::class, 'generateRepor
 Route::post('/product/generateReportChart', [ProductController::class, 'generateReportForProductStatesGraph']);
 Route::get('/download', [ProductController::class, 'download'])->name('download');
 Route::post('/upload', [ProductController::class, 'upload'])->name('upload');
-Route::post('/batch', [ProductController::class, 'batch'])->name('batch');
+Route::get('/batch/progress/{batch_id}', [ProductController::class, 'batchProgress'])->name('batch');
 
 
 // Resources

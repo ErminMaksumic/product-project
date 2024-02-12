@@ -40,3 +40,7 @@ export interface ApiProductResponse {
     links: Link;
     meta: Meta;
 }
+
+export interface Batch {
+    batch_id: string;
+}

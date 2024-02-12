@@ -186,7 +186,7 @@ async function download(response: any) {
     }
 }
 
-export async function upload(file: File): Promise<void> {
+export async function upload(file: File) {
     try {
         const formData = new FormData();
         formData.append("mycsv", file);
@@ -204,8 +204,21 @@ export async function upload(file: File): Promise<void> {
         }
 
         const responseData = await response.json();
-        console.log("File uploaded successfully:", responseData);
+
+        return responseData;
     } catch (error) {
         console.error("Error uploading file:", error);
+    }
+}
+
+export async function fetchBatchProgress(batchId: string) {
+    try {
+        const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_URL}/api/batch/progress/${batchId}`
+        );
+        return response.data.progress;
+    } catch (error) {
+        console.error("Error fetching batch progress:", error);
+        return 0;
     }
 }

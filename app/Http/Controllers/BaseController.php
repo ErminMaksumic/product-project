@@ -11,7 +11,7 @@ abstract class BaseController extends Controller
     {
         $this->middleware('auth:sanctum')->except([
             'index', 'generateReportForOneProduct', 'generateReportForExpensiveProducts',
-            'generateReportForProductStatesGraph', 'download', 'upload', 'batch'
+            'generateReportForProductStatesGraph', 'download', 'upload', 'batchProgress'
         ]);
     }
 

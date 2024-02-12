@@ -229,10 +229,6 @@ class ProductService extends BaseService implements ProductServiceInterface
     Log::info('Request object:', $request->all());
         if ($request->has('mycsv')) {
             $data = file(request()->mycsv);
-            
-
-            // if ($filePath) {
-            //     $data = file($filePath);
 
             $batch = Bus::batch([])->dispatch();
 
@@ -250,15 +246,20 @@ class ProductService extends BaseService implements ProductServiceInterface
 
                 $batch->add(new ProductCsvProcess($data, $header));
             }
-            return $this->batch(['id' => $batch->id]);
+            return response()->json(['batch_id' => $batch->id]);
         }
         return 'please upload file';
     }
-    public function batch($requestData)
+    public function batchProgress($request,$batch_id)
     {
-        $batchId = $requestData['id'];
-        $batch = Bus::findBatch($batchId);
+        $batch = Bus::findBatch($batch_id);
 
-        return $batch;
+        if (!$batch) {
+            return response()->json(['error' => 'Batch not found'], 404);
+        }
+
+        $progress = $batch->progress(); 
+
+        return response()->json(['progress' => $progress], 200);
     }
 }

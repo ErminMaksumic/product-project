@@ -95,8 +95,8 @@ class ProductController extends BaseController
         return $this->productService->upload($request);
     }
 
-    public function batch(Request $request)
+    public function batchProgress(Request $request, $batch_id)
     {
-        return $this->productService->batch($request);
+        return $this->productService->batchProgress($request, $batch_id);
     }
 }

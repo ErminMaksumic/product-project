@@ -1,15 +1,20 @@
-import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useRef, useState } from "react";
 import styles from "./FileUploader.module.scss";
+import { Batch } from "@/lib/product";
+import { useProductApi } from "@/app/context/Product/ProductContext";
 
 interface FileUploaderProps {
     title: string;
-    onFileUpload: (file: File) => Promise<void>;
+    onFileUpload: (file: File) => Promise<Batch>;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
+    const { fetchBatchProgress } = useProductApi();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [uploading, setUploading] = useState<boolean>(false);
+    const [batchProgress, setBatchProgress] = useState<number>(0);
 
     const handleButtonClick = () => {
         if (fileInputRef.current) {
@@ -17,7 +22,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
         }
     };
 
-    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
         if (file) {
             const allowedTypes = [
@@ -34,15 +39,28 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
         }
     };
 
-    const handleUploadDataClick = async (e: any) => {
-        e.preventDefault(); // Prevent the default form submission behavior
-        console.log(e);
+    const handleUploadDataClick = async () => {
         if (selectedFile) {
-            console.log(fileInputRef);
-            console.log("Uploading data...");
-            console.log(selectedFile);
-            await onFileUpload(selectedFile);
+            setUploading(true);
+            try {
+                const response = await onFileUpload(selectedFile);
+                console.log("batch_id: " + response.batch_id);
+                await pollProgress(response.batch_id);
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
         }
+    };
+
+    const pollProgress = async (batch_id: string) => {
+        const interval = setInterval(async () => {
+            const progress = await fetchBatchProgress(batch_id);
+            setBatchProgress(progress);
+            if (progress === 100) {
+                clearInterval(interval);
+                setUploading(false);
+            }
+        }, 1000);
     };
 
     return (
@@ -72,14 +90,24 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                         Choose File
                     </button>
                 </div>
-                {selectedFile && (
+                {selectedFile && !uploading && (
                     <button
-                        type="submit"
+                        disabled={uploading}
                         onClick={handleUploadDataClick}
                         className={styles.uploadDataButton}
                     >
                         Upload Data
                     </button>
+                )}
+                {uploading && (
+                    <div className={styles.progressBarContainer}>
+                        <div
+                            className={styles.progressBar}
+                            style={{ width: `${batchProgress}%` }}
+                        >
+                            {batchProgress}%
+                        </div>
+                    </div>
                 )}
                 {error && <p className={styles.error}>{error}</p>}
             </div>

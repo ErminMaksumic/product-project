@@ -15,5 +15,5 @@ interface ProductServiceInterface extends BaseServiceInterface
     public function generateReportForExpensiveProducts($request);
     public function generateReportForProductStatesGraph($request);
     public function upload($request);
-    public function batch($request);
+    public function batchProgress($request,$batch_id);
 }
