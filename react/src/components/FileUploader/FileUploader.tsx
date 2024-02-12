@@ -60,7 +60,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                 clearInterval(interval);
                 setUploading(false);
             }
-        }, 1000);
+        }, 3000);
     };
 
     return (
