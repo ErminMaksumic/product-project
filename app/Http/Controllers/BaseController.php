@@ -9,7 +9,10 @@ abstract class BaseController extends Controller
 {
     public function __construct(protected $service)
     {
-        $this->middleware('auth:sanctum')->except(['index', 'generateReportForOneProduct', 'generateReportForExpensiveProducts', 'generateReportForProductStatesGraph', 'download']);
+        $this->middleware('auth:sanctum')->except([
+            'index', 'generateReportForOneProduct', 'generateReportForExpensiveProducts',
+            'generateReportForProductStatesGraph', 'download', 'upload', 'batch'
+        ]);
     }
 
     abstract function getInsertRequestClass();

@@ -7,13 +7,14 @@ use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\VariantCreateRequest;
+use App\Jobs\ProductCsvProcess;
 use App\Models\NewestVariant;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Bus;
 use PHPJasper\PHPJasper;
 
 class ProductService extends BaseService implements ProductServiceInterface
@@ -219,5 +220,43 @@ class ProductService extends BaseService implements ProductServiceInterface
         $fileName = 'Chart';
 
         return parent::generateReport($parameters, $fileName, $request);
+    }
+
+    public function upload($request)
+    {
+
+        $filePath = __DIR__ . '\tmp\mycsv.csv';
+        if ($request->has('mycsv')) {
+            $data = file($request->mycsv);
+
+            // if ($filePath) {
+            //     $data = file($filePath);
+
+            $batch = Bus::batch([])->dispatch();
+
+
+            $chunks = array_chunk($data, 10000);
+
+            $header = [];
+            foreach ($chunks as $key => $chunk) {
+                $data = array_map('str_getcsv', $chunk);
+
+                if ($key === 0) {
+                    $header = $data[0];
+                    unset($data[0]);
+                }
+
+                $batch->add(new ProductCsvProcess($data, $header));
+            }
+            return $this->batch(['id' => $batch->id]);
+        }
+        return 'please upload file';
+    }
+    public function batch($requestData)
+    {
+        $batchId = $requestData['id'];
+        $batch = Bus::findBatch($batchId);
+
+        return $batch;
     }
 }

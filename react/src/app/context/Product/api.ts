@@ -184,4 +184,20 @@ async function download(response: any) {
             return;
         }
     }
+
+    async function upload(response: any) {
+        const { filePaths } = response.data;
+
+        for (let i = 0; i < filePaths.length; i++) {
+            const filePath = filePaths[i];
+            const url = `${
+                process.env.NEXT_PUBLIC_URL
+            }/api/download?filePath=${encodeURIComponent(filePath)}`;
+            const isPopupsBlocked = window.open(url, "_blank");
+            if (!isPopupsBlocked) {
+                alert("Please enable pop-ups to download multiple files.");
+                return;
+            }
+        }
+    }
 }

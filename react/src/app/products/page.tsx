@@ -10,6 +10,7 @@ import { Table } from "@mui/material";
 import TableComponent from "@/components/Table/TableComponent";
 import styles from "./page.module.scss";
 import ReportComponent from "@/components/Report/ReportComponent";
+import FileUploader from "@/components/FileUploader/FileUploader";
 
 export default function Home() {
     const { getProducts } = useProductApi();
@@ -178,6 +179,8 @@ export default function Home() {
             </div>
             <hr/>
             <ReportComponent/>
+            <hr/>
+            <FileUploader title="Products File Uploader" onFileUpload={()=>{}}/>
             <TableComponent
                 products={product}
                 currentPage={currentPage}

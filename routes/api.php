@@ -27,6 +27,8 @@ Route::post('/product/{id}/generateReport', [ProductController::class, 'generate
 Route::post('/product/generateReport', [ProductController::class, 'generateReportForExpensiveProducts']);
 Route::post('/product/generateReportChart', [ProductController::class, 'generateReportForProductStatesGraph']);
 Route::get('/download', [ProductController::class, 'download'])->name('download');
+Route::post('/upload', [ProductController::class, 'upload'])->name('upload');
+Route::post('/batch', [ProductController::class, 'batch'])->name('batch');
 
 
 // Resources
