@@ -10,6 +10,7 @@ import {
     generateReportForExpensiveProducts,
     generateReportForOneProduct,
     generateReportForProductStatesGraph,
+    upload,
 } from "./api";
 import { Product, ApiProductResponse } from "@/lib/product";
 import { Variant } from "@/lib/variant";
@@ -39,6 +40,7 @@ interface ProductContextProps {
     generateReportForProductStatesGraph: (body: {
         formats: string[];
     }) => Promise<any>;
+    upload(file: File): Promise<void>;
 }
 
 const ProductContext = createContext<ProductContextProps | undefined>(
@@ -60,6 +62,7 @@ export const ProductProvider: React.FC<{ children: ReactNode }> = ({
                 generateReportForExpensiveProducts,
                 generateReportForOneProduct,
                 generateReportForProductStatesGraph,
+                upload,
             }}
         >
             {children}

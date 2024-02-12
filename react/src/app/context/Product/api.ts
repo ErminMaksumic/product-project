@@ -184,20 +184,28 @@ async function download(response: any) {
             return;
         }
     }
+}
 
-    async function upload(response: any) {
-        const { filePaths } = response.data;
+export async function upload(file: File): Promise<void> {
+    try {
+        const formData = new FormData();
+        formData.append("mycsv", file);
 
-        for (let i = 0; i < filePaths.length; i++) {
-            const filePath = filePaths[i];
-            const url = `${
-                process.env.NEXT_PUBLIC_URL
-            }/api/download?filePath=${encodeURIComponent(filePath)}`;
-            const isPopupsBlocked = window.open(url, "_blank");
-            if (!isPopupsBlocked) {
-                alert("Please enable pop-ups to download multiple files.");
-                return;
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_URL}/api/upload`,
+            {
+                method: "POST",
+                body: formData,
             }
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to upload file");
         }
+
+        const responseData = await response.json();
+        console.log("File uploaded successfully:", responseData);
+    } catch (error) {
+        console.error("Error uploading file:", error);
     }
 }

@@ -15,6 +15,7 @@ use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 use PHPJasper\PHPJasper;
 
 class ProductService extends BaseService implements ProductServiceInterface
@@ -225,9 +226,10 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function upload($request)
     {
 
-        $filePath = __DIR__ . '\tmp\mycsv.csv';
+    Log::info('Request object:', $request->all());
         if ($request->has('mycsv')) {
-            $data = file($request->mycsv);
+            $data = file(request()->mycsv);
+            
 
             // if ($filePath) {
             //     $data = file($filePath);
