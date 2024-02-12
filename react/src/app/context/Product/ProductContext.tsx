@@ -10,8 +10,10 @@ import {
     generateReportForExpensiveProducts,
     generateReportForOneProduct,
     generateReportForProductStatesGraph,
+    upload,
+    fetchBatchProgress,
 } from "./api";
-import { Product, ApiProductResponse } from "@/lib/product";
+import { Product, ApiProductResponse, Batch } from "@/lib/product";
 import { Variant } from "@/lib/variant";
 
 interface ProductContextProps {
@@ -39,6 +41,8 @@ interface ProductContextProps {
     generateReportForProductStatesGraph: (body: {
         formats: string[];
     }) => Promise<any>;
+    upload(file: File): Promise<Batch>;
+    fetchBatchProgress(batchId: string): Promise<number>;
 }
 
 const ProductContext = createContext<ProductContextProps | undefined>(
@@ -60,6 +64,8 @@ export const ProductProvider: React.FC<{ children: ReactNode }> = ({
                 generateReportForExpensiveProducts,
                 generateReportForOneProduct,
                 generateReportForProductStatesGraph,
+                upload,
+                fetchBatchProgress,
             }}
         >
             {children}
