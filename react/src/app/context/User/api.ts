@@ -6,7 +6,7 @@ interface LoginResponse {
 
 const api: AxiosInstance = axios.create({
   baseURL: "http://localhost:8000/",
-  withCredentials: true,
+    withCredentials: false
 });
 
 export const setBearerToken = (token: string | null): void => {
@@ -24,11 +24,11 @@ export const login = async (
   password: string
 ): Promise<{ success: boolean; token?: string; error?: string }> => {
   try {
-    const csrfResponse = await api.get("/sanctum/csrf-cookie", {
-      withCredentials: true,
-    });
-
-    console.log(csrfResponse);
+    // const csrfResponse = await api.get("/sanctum/csrf-cookie", {
+    //   withCredentials: true,
+    // });
+    //
+    // console.log(csrfResponse);
 
     const response: AxiosResponse<LoginResponse> = await api.post(
       "/api/login",
@@ -37,7 +37,7 @@ export const login = async (
         password,
       }
     );
-
+    console.log(response);
     const { token } = response.data;
 
     setBearerToken(token);
