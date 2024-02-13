@@ -11,7 +11,8 @@ abstract class BaseController extends Controller
     {
         $this->middleware('auth:sanctum')->except([
             'index', 'generateReportForOneProduct', 'generateReportForExpensiveProducts',
-            'generateReportForProductStatesGraph', 'download', 'upload', 'batchProgress'
+            'generateReportForProductStatesGraph', 'download', 'upload', 'batchProgress',
+            'uploadFile'
         ]);
     }
 
@@ -84,5 +85,15 @@ abstract class BaseController extends Controller
         }
 
         return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
+    }
+
+    public function upload(Request $request)
+    {
+        return $this->productService->uploadFile($request);
+    }
+
+    public function batchProgress(Request $request, $batch_id)
+    {
+        return $this->productService->batchProgress($request, $batch_id);
     }
 }
