@@ -43,7 +43,7 @@ export const login = async (
     setBearerToken(token);
 
     return { success: true, token };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error during login:", error);
     return { success: false, error: error };
   }

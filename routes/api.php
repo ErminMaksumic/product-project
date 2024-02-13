@@ -34,9 +34,17 @@ Route::get('/batch/progress/{batch_id}', [ProductController::class, 'batchProgre
 
 // Resources
 //Route::apiResource('productType', ProductTypeController::class);
+// Route::middleware(['auth:api', 'scopes:product-types'])->group(function () {
+//     Route::apiResource('productType', ProductTypeController::class);
+// });
+
+// Route::middleware(['auth:api', 'scopes:products'])->group(function () {
+//     Route::apiResource('product', ProductController::class);
+// });
+
 Route::apiResource('productType', ProductTypeController::class);
-Route::apiResource('product', ProductController::class);
 Route::apiResource('variant', VariantController::class);
+Route::apiResource('product', ProductController::class);
 
 // Auth
 Route::post('login', [AuthController::class, 'login']);
