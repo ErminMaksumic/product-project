@@ -10,8 +10,11 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use PHPJasper\PHPJasper;
 
 abstract class BaseService implements BaseServiceInterface
 {
@@ -27,7 +30,7 @@ abstract class BaseService implements BaseServiceInterface
         $query = $this->includeRelation($searchObject, $query);
         $query = $this->addFilter($searchObject, $query);
 
-        if($searchObject->size > 100)
+        if ($searchObject->size > 100)
             $searchObject->size = 10;
 
         return $query->paginate($searchObject->size);
@@ -40,8 +43,7 @@ abstract class BaseService implements BaseServiceInterface
         $query = $this->includeRelation($searchObject, $query);
         $result = $query->find($id);
 
-        if(!$result)
-        {
+        if (!$result) {
             throw new UserException("Resource not found!");
         }
 
@@ -67,8 +69,7 @@ abstract class BaseService implements BaseServiceInterface
         $this->validateRequest($request, $this->getUpdateRequestClass());
         $model = $this->getModelInstance()->find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
@@ -81,8 +82,7 @@ abstract class BaseService implements BaseServiceInterface
     {
         $model = $this->getModelInstance()->find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
@@ -91,7 +91,8 @@ abstract class BaseService implements BaseServiceInterface
         return $model;
     }
 
-    public function addFilter($searchObject, Builder $query){
+    public function addFilter($searchObject, Builder $query)
+    {
         return $query;
     }
 
@@ -124,4 +125,60 @@ abstract class BaseService implements BaseServiceInterface
         return $validator->validated();
     }
 
+    public function generateReport(array $parameters, string $fileName, $request)
+    {
+        //Checking and getting formats from request
+        $acceptedFormats = [
+            'PDF', 'XLS', 'XLSX', 'DOCX', 'PPTX', 'CSV', 'HTML', 'RTF', 'XML',
+            'ODT', 'ODS',
+        ];
+
+        $jsonBody = $request->getContent();
+        $requestData = json_decode($jsonBody, true);
+        $formats = $requestData['formats'] ?? [];
+
+        foreach ($formats as $format) {
+            if (!in_array(strtoupper($format), $acceptedFormats)) {
+                throw new \InvalidArgumentException('Invalid format: ' . $format);
+            }
+        }
+
+        //Fetching, preparing and creating files
+        $jrxmlFile = __DIR__ . '\Reports\Template\\JasperFiles\\' . $fileName . '.jrxml';
+
+        $jasper = new PHPJasper();
+        $jasper->compile($jrxmlFile)->execute();
+
+        $jasperFile = __DIR__ . '\Reports\Template\\JasperFiles\\' . $fileName . '.jasper';
+        $outputFile = __DIR__ . '\Reports\Output\\' . $fileName;
+
+        $jasperConfig = config('jasper.db_connection');
+        $options = [
+            'format' => $formats,
+            'params' => $parameters,
+            'db_connection' => $jasperConfig
+        ];
+
+
+        //Where the magic happens
+        $jasper->process(
+            $jasperFile,
+            $outputFile,
+            $options,
+        )->execute();
+
+
+        $filePaths = [];
+
+        foreach ($formats as $format) {
+            $outputFilePath = $outputFile . '.' . strtolower($format);
+
+            $filePaths[] = $outputFilePath;
+        }
+
+
+        return [
+            'filePaths' => $filePaths,
+        ];
+    }
 }

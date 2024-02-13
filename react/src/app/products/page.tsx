@@ -9,9 +9,11 @@ import debounce from "lodash.debounce";
 import { Table } from "@mui/material";
 import TableComponent from "@/components/Table/TableComponent";
 import styles from "./page.module.scss";
+import ReportComponent from "@/components/Report/ReportComponent";
+import FileUploader from "@/components/FileUploader/FileUploader";
 
 export default function Home() {
-    const { getProducts } = useProductApi();
+    const { getProducts, upload } = useProductApi();
     const [product, setProduct] = useState<Product[]>();
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
@@ -29,7 +31,6 @@ export default function Home() {
     const debouncedFetchData = debounce(async () => {
         try {
             const response = await getProducts(false, 1, query);
-            console.log(response.data);
             setProduct(response.data);
             setLastPage(response.meta.last_page);
         } catch (error) {
@@ -176,6 +177,13 @@ export default function Home() {
                     </button>
                 </div>
             </div>
+            <hr />
+            <ReportComponent />
+            <hr />
+            <FileUploader
+                title="Products File Uploader"
+                onFileUpload={upload}
+            />
             <TableComponent
                 products={product}
                 currentPage={currentPage}

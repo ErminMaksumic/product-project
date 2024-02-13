@@ -7,18 +7,25 @@ use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductInsertRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\VariantCreateRequest;
+use App\Jobs\ProductCsvProcess;
 use App\Models\NewestVariant;
 use App\Models\Product;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use PHPJasper\PHPJasper;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
+
+    protected $jasper;
+
     public function __construct(protected VariantService $variantService)
     {
-
+        $this->jasper = new PHPJasper();
     }
     public function addFilter($searchObject, $query)
     {
@@ -141,26 +148,25 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $state->productDraft($model);
     }
 
-//    public function update(Request $request, int $id)
-//    {
-//        $model = Product::find($id);
-//
-//        if(!$model)
-//        {
-//            throw new UserException("Resource not found!");
-//        }
-//
-//        $state = BaseState::createState($model->status);
-//
-//        return $state->updateProduct($id, $request);
-//    }
+    //    public function update(Request $request, int $id)
+    //    {
+    //        $model = Product::find($id);
+    //
+    //        if(!$model)
+    //        {
+    //            throw new UserException("Resource not found!");
+    //        }
+    //
+    //        $state = BaseState::createState($model->status);
+    //
+    //        return $state->updateProduct($id, $request);
+    //    }
 
     public function update($request, int $id)
     {
         $model = Product::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
@@ -172,8 +178,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $model = Product::find($id);
 
-        if(!$model)
-        {
+        if (!$model) {
             throw new UserException("Resource not found!");
         }
 
@@ -185,5 +190,76 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function getNewestVariants()
     {
         return NewestVariant::withNewestVariant();
+    }
+
+
+    public function generateReportForOneProduct($request, int $id)
+    {
+        $parameters = [
+            'productId' => $id
+        ];
+        $fileName = 'Product-variants';
+
+        return parent::generateReport($parameters, $fileName, $request);
+    }
+
+    public function generateReportForExpensiveProducts($request)
+    {
+        $imagePath = __DIR__ . '\Reports\Template\Assets\cherry.jpg';
+        $parameters = [
+            'price' => 9900,
+            'IMAGE_PATH' => $imagePath,
+        ];
+        $fileName = 'Expensive_products';
+
+        return parent::generateReport($parameters, $fileName, $request);
+    }
+
+    public function generateReportForProductStatesGraph($request)
+    {
+        $parameters = [];
+        $fileName = 'Chart';
+
+        return parent::generateReport($parameters, $fileName, $request);
+    }
+
+    public function upload($request)
+    {
+
+    Log::info('Request object:', $request->all());
+        if ($request->has('mycsv')) {
+            $data = file(request()->mycsv);
+
+            $batch = Bus::batch([])->dispatch();
+
+
+            $chunks = array_chunk($data, 10000);
+
+            $header = [];
+            foreach ($chunks as $key => $chunk) {
+                $data = array_map('str_getcsv', $chunk);
+
+                if ($key === 0) {
+                    $header = $data[0];
+                    unset($data[0]);
+                }
+
+                $batch->add(new ProductCsvProcess($data, $header));
+            }
+            return response()->json(['batch_id' => $batch->id]);
+        }
+        return 'please upload file';
+    }
+    public function batchProgress($request,$batch_id)
+    {
+        $batch = Bus::findBatch($batch_id);
+
+        if (!$batch) {
+            return response()->json(['error' => 'Batch not found'], 404);
+        }
+
+        $progress = $batch->progress(); 
+
+        return response()->json(['progress' => $progress], 200);
     }
 }

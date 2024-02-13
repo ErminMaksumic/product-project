@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\ProductTypeController;
 use App\Http\Controllers\ApiControllers\VariantController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -23,6 +24,12 @@ use Illuminate\Support\Str;
 // Custom path
 Route::get('/product/newestVariant', [ProductController::class, 'getNewestVariant']);
 Route::post('/product/variant', [ProductController::class, 'addVariant']);
+Route::post('/product/{id}/generateReport', [ProductController::class, 'generateReportForOneProduct']);
+Route::post('/product/generateReport', [ProductController::class, 'generateReportForExpensiveProducts']);
+Route::post('/product/generateReportChart', [ProductController::class, 'generateReportForProductStatesGraph']);
+Route::get('/download', [ProductController::class, 'download'])->name('download');
+Route::post('/upload', [ProductController::class, 'upload'])->name('upload');
+Route::get('/batch/progress/{batch_id}', [ProductController::class, 'batchProgress'])->name('batch');
 
 
 // Resources

@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 abstract class BaseController extends Controller
 {
     public function __construct(protected $service)
     {
-        $this->middleware('auth:sanctum')->except(['index']);
+        $this->middleware('auth:sanctum')->except([
+            'index', 'generateReportForOneProduct', 'generateReportForExpensiveProducts',
+            'generateReportForProductStatesGraph', 'download', 'upload', 'batchProgress'
+        ]);
     }
 
     abstract function getInsertRequestClass();
@@ -68,8 +72,17 @@ abstract class BaseController extends Controller
     {
         $this->service->remove($id);
         return response(content: "Resource removed successfully", status: 204);
-
     }
 
+    public function download(Request $request)
+    {
+        $filePath = $request->query('filePath');
+        $fileName = basename($filePath);
 
+        if (!$filePath || !file_exists($filePath)) {
+            abort(404);
+        }
+
+        return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
+    }
 }

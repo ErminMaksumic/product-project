@@ -11,6 +11,7 @@ use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\VariantResource;
 use App\Services\Interfaces\ProductServiceInterface;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends BaseController
@@ -30,10 +31,9 @@ class ProductController extends BaseController
         return ProductUpdateRequest::class;
     }
 
-    public function createResourcePayload($request, bool $collection = false) : ProductResource | AnonymousResourceCollection
+    public function createResourcePayload($request, bool $collection = false): ProductResource | AnonymousResourceCollection
     {
-        if($collection)
-        {
+        if ($collection) {
             return ProductResource::collection($request);
         }
 
@@ -73,5 +73,30 @@ class ProductController extends BaseController
     public function getNewestVariant()
     {
         return $this->productService->getNewestVariants();
+    }
+
+    public function generateReportForOneProduct(Request $request, int $productId)
+    {
+        return $this->productService->generateReportForOneProduct($request, $productId);
+    }
+
+    public function generateReportForExpensiveProducts(Request $request)
+    {
+        return $this->productService->generateReportForExpensiveProducts($request);
+    }
+
+    public function generateReportForProductStatesGraph(Request $request)
+    {
+        return $this->productService->generateReportForProductStatesGraph($request);
+    }
+
+    public function upload(Request $request)
+    {
+        return $this->productService->upload($request);
+    }
+
+    public function batchProgress(Request $request, $batch_id)
+    {
+        return $this->productService->batchProgress($request, $batch_id);
     }
 }
