@@ -8,8 +8,6 @@ use App\Http\Requests\VariantCreateRequest;
 use App\Http\Requests\VariantUpdateRequest;
 use App\Http\Resources\VariantResource;
 use App\Services\Interfaces\VariantServiceInterface;
-use App\StateMachine\ProductStateMahineService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class VariantController extends BaseController

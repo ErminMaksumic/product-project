@@ -89,14 +89,4 @@ class ProductController extends BaseController
     {
         return $this->productService->generateReportForProductStatesGraph($request);
     }
-
-    public function upload(Request $request)
-    {
-        return $this->productService->upload($request);
-    }
-
-    public function batchProgress(Request $request, $batch_id)
-    {
-        return $this->productService->batchProgress($request, $batch_id);
-    }
 }

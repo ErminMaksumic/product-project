@@ -232,17 +232,4 @@ class ProductService extends BaseService implements ProductServiceInterface
         }
         return 'please upload file';
     }
-
-    public function batchProgress($request,$batch_id)
-    {
-        $batch = Bus::findBatch($batch_id);
-
-        if (!$batch) {
-            return response()->json(['error' => 'Batch not found'], 404);
-        }
-
-        $progress = $batch->progress();
-
-        return response()->json(['progress' => $progress], 200);
-    }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,24 +28,28 @@ Route::post('/product/{id}/generateReport', [ProductController::class, 'generate
 Route::post('/product/generateReport', [ProductController::class, 'generateReportForExpensiveProducts']);
 Route::post('/product/generateReportChart', [ProductController::class, 'generateReportForProductStatesGraph']);
 Route::get('/download', [ProductController::class, 'download'])->name('download');
-Route::post('/upload', [ProductController::class, 'uploadFile'])->name('uploadFile');
+Route::post('/upload', [ProductController::class, 'upload'])->name('upload');
 Route::get('/batch/progress/{batch_id}', [ProductController::class, 'batchProgress'])->name('batch');
 
 
 // Resources
+//Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('productType', ProductTypeController::class);
-Route::apiResource('variant', VariantController::class);
 Route::apiResource('product', ProductController::class);
+Route::apiResource('variant', VariantController::class);
 
 // Auth
 Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanctum");
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 // State machine
 Route::get('/product/{id}/allowedActions', [ProductController::class, 'allowedActions'])->name('product.allowedActions');
 Route::put('/product/{id}/productActivate', [ProductController::class, 'productActivate'])->name('product.productActivate');
 Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');
 Route::put('/product/{id}/productDelete', [ProductController::class, 'productHide'])->name('product.productHide');
+
+

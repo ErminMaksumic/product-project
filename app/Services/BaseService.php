@@ -65,6 +65,8 @@ abstract class BaseService implements BaseServiceInterface
         } catch (\Exception $e) {
             DB::rollBack();
         }
+
+        return $result;
     }
 
     public function update(Request $request, int $id)
@@ -207,5 +209,18 @@ abstract class BaseService implements BaseServiceInterface
         }
 
         return $batch->id;
+    }
+
+    public function batchProgress($request, $batch_id)
+    {
+        $batch = Bus::findBatch($batch_id);
+
+        if (!$batch) {
+            return response()->json(['error' => 'Batch not found'], 404);
+        }
+
+        $progress = $batch->progress();
+
+        return response()->json(['progress' => $progress], 200);
     }
 }
