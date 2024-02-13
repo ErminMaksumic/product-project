@@ -25,13 +25,9 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
         if (file) {
-            const allowedTypes = [
-                "text/csv",
-                "application/vnd.ms-excel",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            ];
+            const allowedTypes = ["text/csv"];
             if (!allowedTypes.includes(file.type)) {
-                setError("Only CSV, XLS, and XLSX files are allowed.");
+                setError("Only CSV files are allowed.");
             } else {
                 setSelectedFile(file);
                 setError(null);
@@ -47,18 +43,36 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                 console.log("batch_id: " + response.batch_id);
                 await pollProgress(response.batch_id);
             } catch (error) {
+                setUploading(false);
                 console.error("Error uploading file:", error);
             }
         }
     };
 
     const pollProgress = async (batch_id: string) => {
+        let previousProgress = 0;
+        let consecutiveSameProgressCount = 0;
+        const timeoutDuration = 15000;
+
         const interval = setInterval(async () => {
             const progress = await fetchBatchProgress(batch_id);
             setBatchProgress(progress);
+
             if (progress === 100) {
                 clearInterval(interval);
                 setUploading(false);
+            } else if (progress === previousProgress) {
+                consecutiveSameProgressCount += 3000;
+
+                if (consecutiveSameProgressCount >= timeoutDuration) {
+                    clearInterval(interval);
+                    setUploading(false);
+                    setSelectedFile(null);
+                    setError("Upload failed please try again");
+                }
+            } else {
+                previousProgress = progress;
+                consecutiveSameProgressCount = 0;
             }
         }, 3000);
     };
@@ -72,7 +86,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                         type="file"
                         name="mycsv"
                         ref={fileInputRef}
-                        accept=".csv,.xls,.xlsx"
+                        accept=".csv"
                         onChange={handleFileChange}
                         className={styles.fileInput}
                         hidden

@@ -46,6 +46,6 @@ class ProductCsvProcess implements ShouldQueue
 
     public function failed(Throwable $exception)
     {
-        // Send user notification of failure, etc...
+        throw new \Exception('Job failed: ' . $exception->getMessage());
     }
 }
