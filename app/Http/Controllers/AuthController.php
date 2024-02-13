@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     public function register(Request $request): JsonResponse {
-//        dd($request['role_id']);
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
@@ -31,7 +30,7 @@ class AuthController extends Controller
             // successfull authentication
             $user = User::find(Auth::user()->id);
 
-            $user_token['token'] = $user->createToken('appToken')->accessToken;
+            $user_token = $user->createToken('appToken')->accessToken;
 
             return response()->json([
                 'success' => true,

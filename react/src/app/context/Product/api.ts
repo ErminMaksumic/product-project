@@ -2,7 +2,7 @@ import { Product } from "@/lib/product";
 import { Variant } from "@/lib/variant";
 import axios from "axios";
 
-const authToken = localStorage.getItem("bearerToken");
+const authToken = localStorage.getItem("accessToken");
 axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
 export async function getProductById(id: number, includeVariant = false) {

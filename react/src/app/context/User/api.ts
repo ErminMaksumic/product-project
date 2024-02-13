@@ -12,10 +12,10 @@ const api: AxiosInstance = axios.create({
 export const setBearerToken = (token: string | null): void => {
   if (token) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    localStorage.setItem("bearerToken", token);
+    localStorage.setItem("accessToken", token);
   } else {
     delete api.defaults.headers.common["Authorization"];
-    localStorage.removeItem("bearerToken");
+    localStorage.removeItem("accessToken");
   }
 };
 
@@ -39,7 +39,7 @@ export const login = async (
     );
 
     const { token } = response.data;
-
+    console.log(response);
     setBearerToken(token);
 
     return { success: true, token };

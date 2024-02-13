@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const authToken = localStorage.getItem("bearerToken");
+const authToken = localStorage.getItem("accessToken");
 axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
 export async function getProductTypeById(id: number): Promise<ProductType[]> {

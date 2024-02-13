@@ -25,10 +25,10 @@ class AppServiceProvider extends ServiceProvider
 
         // exception handler
 
-        $this->app->singleton(
-            ExceptionHandler::class,
-            CustomExceptionHandler::class
-        );
+//        $this->app->singleton(
+//            ExceptionHandler::class,
+//            CustomExceptionHandler::class
+//        );
     }
 
     /**
