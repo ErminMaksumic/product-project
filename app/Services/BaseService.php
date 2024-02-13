@@ -5,13 +5,16 @@ namespace App\Services;
 use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
+use App\Jobs\ProductCsvProcess;
 use App\Services\Interfaces\BaseServiceInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PHPJasper\PHPJasper;
@@ -180,5 +183,29 @@ abstract class BaseService implements BaseServiceInterface
         return [
             'filePaths' => $filePaths,
         ];
+    }
+
+    public function upload($file, $processJob)
+    {
+        Log::info('Processing CSV Upload');
+
+        $data = file($file);
+
+        $batch = Bus::batch([])->dispatch();
+
+        $chunks = array_chunk($data, 10000);
+
+        $header = [];
+        foreach ($chunks as $key => $chunk) {
+            $chunkData = array_map('str_getcsv', $chunk);
+            if ($key === 0) {
+                $header = $chunkData[0];
+                unset($chunkData[0]);
+            }
+
+            $batch->add(new $processJob($chunkData, $header));
+        }
+
+        return $batch->id;
     }
 }

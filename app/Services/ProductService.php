@@ -223,33 +223,16 @@ class ProductService extends BaseService implements ProductServiceInterface
         return parent::generateReport($parameters, $fileName, $request);
     }
 
-    public function upload($request)
+    public function uploadFile($request)
     {
-
-    Log::info('Request object:', $request->all());
         if ($request->has('mycsv')) {
-            $data = file(request()->mycsv);
-
-            $batch = Bus::batch([])->dispatch();
-
-
-            $chunks = array_chunk($data, 10000);
-
-            $header = [];
-            foreach ($chunks as $key => $chunk) {
-                $data = array_map('str_getcsv', $chunk);
-
-                if ($key === 0) {
-                    $header = $data[0];
-                    unset($data[0]);
-                }
-
-                $batch->add(new ProductCsvProcess($data, $header));
-            }
-            return response()->json(['batch_id' => $batch->id]);
+            $file = $request->file('mycsv');
+            $batchId = parent::upload($file, ProductCsvProcess::class);
+            return response()->json(['batch_id' => $batchId]);
         }
         return 'please upload file';
     }
+
     public function batchProgress($request,$batch_id)
     {
         $batch = Bus::findBatch($batch_id);
@@ -258,7 +241,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             return response()->json(['error' => 'Batch not found'], 404);
         }
 
-        $progress = $batch->progress(); 
+        $progress = $batch->progress();
 
         return response()->json(['progress' => $progress], 200);
     }
