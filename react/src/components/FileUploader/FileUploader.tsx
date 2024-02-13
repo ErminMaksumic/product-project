@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import styles from "./FileUploader.module.scss";
 import { Batch } from "@/lib/product";
 import { useProductApi } from "@/app/context/Product/ProductContext";
@@ -23,6 +23,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        
         const file = e.target.files && e.target.files[0];
         if (file) {
             const allowedTypes = ["text/csv"];
@@ -34,6 +35,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
             }
         }
     };
+    
 
     const handleUploadDataClick = async () => {
         if (selectedFile) {
@@ -49,10 +51,21 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
         }
     };
 
+    //IZBRISI
+   useEffect(() => {
+    const fetchData = async () => {
+        setUploading(true);
+        await pollProgress('9b538511-f657-4a7b-b112-f3b056253f5c');
+    };
+
+    fetchData();
+}, []);
+
+
     const pollProgress = async (batch_id: string) => {
         let previousProgress = 0;
         let consecutiveSameProgressCount = 0;
-        const timeoutDuration = 15000;
+        const timeoutDuration = 40000;
 
         const interval = setInterval(async () => {
             const progress = await fetchBatchProgress(batch_id);
