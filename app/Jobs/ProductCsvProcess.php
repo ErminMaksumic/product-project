@@ -33,16 +33,21 @@ class ProductCsvProcess implements ShouldQueue
      */
     public function handle()
     {
+         $productsToInsert = [];
+
         foreach ($this->data as $product) {
             $productData = array_combine($this->header, $product);
-
             if (isset($productData['id'])) {
                 $productId = $productData['id'];
                 unset($productData['id']);
                 Product::updateOrCreate(['id' => $productId], $productData);
             } else {
-                Product::create($productData);
+                $productsToInsert[] = $productData;
             }
+        }
+        
+        if (!empty($productsToInsert)) {
+            Product::insert($productsToInsert);
         }
     }
 
