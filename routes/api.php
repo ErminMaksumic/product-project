@@ -3,11 +3,8 @@
 use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\ProductTypeController;
 use App\Http\Controllers\ApiControllers\VariantController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,18 +30,12 @@ Route::get('/batch/progress/{batch_id}', [ProductController::class, 'batchProgre
 
 
 // Resources
-//Route::apiResource('productType', ProductTypeController::class);
-// Route::middleware(['auth:api', 'scopes:product-types'])->group(function () {
-//     Route::apiResource('productType', ProductTypeController::class);
-// });
+ Route::middleware(['auth:api'])->group(function () {
+     Route::apiResource('productType', ProductTypeController::class);
+     Route::apiResource('product', ProductController::class);
+ });
 
-// Route::middleware(['auth:api', 'scopes:products'])->group(function () {
-//     Route::apiResource('product', ProductController::class);
-// });
-
-Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('variant', VariantController::class);
-Route::apiResource('product', ProductController::class);
 
 // Auth
 Route::post('login', [AuthController::class, 'login']);
