@@ -51,17 +51,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
         }
     };
 
-    //IZBRISI
-   useEffect(() => {
-    const fetchData = async () => {
-        setUploading(true);
-        await pollProgress('9b538511-f657-4a7b-b112-f3b056253f5c');
-    };
-
-    fetchData();
-}, []);
-
-
     const pollProgress = async (batch_id: string) => {
         let previousProgress = 0;
         let consecutiveSameProgressCount = 0;
