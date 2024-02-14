@@ -18,7 +18,7 @@ const LoginPage: React.FC<any> = ({ props }) => {
 
     const signInWithOauth2 = () => {
         const queryString = {
-            client_id: '4',
+            client_id: '5',
             redirect_uri: 'http://localhost:3000/callback',
             response_type: 'code',
             scope: ['products']

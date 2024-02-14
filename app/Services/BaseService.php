@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PHPJasper\PHPJasper;
+use Symfony\Component\Process\Process;
 
 abstract class BaseService implements BaseServiceInterface
 {
@@ -189,26 +190,42 @@ abstract class BaseService implements BaseServiceInterface
 
     public function upload($file, $processJob)
     {
-        Log::info('Processing CSV Upload');
+        $path = 'kratki.csv';
+        $stream = Storage::readStream($path);
 
-        $data = file($file);
+        $batchSize = 10000;
+        $batch = [];
 
-        $batch = Bus::batch([])->dispatch();
+        while (($line = fgetcsv($stream)) !== false) {
+            $batch[] = $line;
+            if (count($batch) >= $batchSize) {
+                $copyData = implode("\n", array_map(function ($row) {
+                    return implode("\t", $row);
+                }, $batch));
 
-        $chunks = array_chunk($data, 10000);
+                $testData = ['2024-02-05 13:34:01.000',
+                    '2024-02-05 13:34:01.000', 'testing212', 'desc', 1, '2024-02-05 13:34:01.000',
+                    '2063-02-05 13:34:01.000', 'DRAFT', 'test@gmail.com'];
 
-        $header = [];
-        foreach ($chunks as $key => $chunk) {
-            $chunkData = array_map('str_getcsv', $chunk);
-            if ($key === 0) {
-                $header = $chunkData[0];
-                unset($chunkData[0]);
+                $csvLine = implode(",", array_map(function ($field) {
+                        return '"' . str_replace('"', '""', $field) . '"';
+                    }, $testData)) . "\n";
+
+                $command = "psql -d product-db -c \"\\COPY products FROM STDIN WITH (FORMAT csv)\"";
+                $process = Process::fromShellCommandline($command);
+                $process->setInput($csvLine);
+                $process->run();
+                if (!$process->isSuccessful()) {
+                    throw new \RuntimeException($process->getErrorOutput());
+                }
+
+                $batch = [];
             }
-
-            $batch->add(new $processJob($chunkData, $header));
         }
 
-        return $batch->id;
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
     }
 
     public function batchProgress($request, $batch_id)
