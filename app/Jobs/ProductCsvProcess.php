@@ -33,7 +33,7 @@ class ProductCsvProcess implements ShouldQueue
      */
     public function handle()
     {
-         $productsToInsert = [];
+        $productsToInsert = [];
 
         foreach ($this->data as $product) {
             $productData = array_combine($this->header, $product);
@@ -45,7 +45,7 @@ class ProductCsvProcess implements ShouldQueue
                 $productsToInsert[] = $productData;
             }
         }
-        
+
         if (!empty($productsToInsert)) {
             Product::insert($productsToInsert);
         }
