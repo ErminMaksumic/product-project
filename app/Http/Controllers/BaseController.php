@@ -87,13 +87,5 @@ abstract class BaseController extends Controller
         return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
     }
 
-    public function upload(Request $request)
-    {
-        return $this->productService->uploadFile($request);
-    }
-
-    public function batchProgress(Request $request, $batch_id)
-    {
-        return $this->productService->batchProgress($request, $batch_id);
-    }
+   
 }

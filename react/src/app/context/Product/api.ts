@@ -187,28 +187,41 @@ async function download(response: any) {
 }
 
 export async function upload(file: File) {
-    try {
-        const formData = new FormData();
-        formData.append("mycsv", file);
+   try {
+        const stream = file.stream();
+        const reader = stream.getReader();
+        let chunks = [];
+        let result = await reader.read();
 
-        const response = await fetch(
+        while (!result.done) {
+            chunks.push(result.value);
+            result = await reader.read();
+        }
+
+        const blob = new Blob(chunks);
+
+        const formData = new FormData();
+        formData.append('file', blob, file.name);
+
+        console.log('BLOB', blob);
+        console.log(formData);
+
+        const response = await axios.post(
             `${process.env.NEXT_PUBLIC_URL}/api/upload`,
+            formData,
             {
-                method: "POST",
-                body: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data', 
+                },
             }
         );
 
-        if (!response.ok) {
-            throw new Error("Failed to upload file");
-        }
-
-        const responseData = await response.json();
-
-        return responseData;
+        return response.data;
     } catch (error) {
         console.error("Error uploading file:", error);
+        throw error;
     }
+
 }
 
 export async function fetchBatchProgress(batchId: string) {

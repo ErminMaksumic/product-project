@@ -223,13 +223,16 @@ class ProductService extends BaseService implements ProductServiceInterface
         return parent::generateReport($parameters, $fileName, $request);
     }
 
-    public function uploadFile($request)
+    public function upload(Request $request)
     {
-        if ($request->has('mycsv')) {
-            $file = $request->file('mycsv');
-            $batchId = parent::upload($file, ProductCsvProcess::class);
-            return response()->json(['batch_id' => $batchId]);
+        Log::info($request);
+        if ($request->hasFile('file') && $request->file('file')->isValid()) {
+            dd($request);
+            $filePath = $request->file('file')->store('uploads');
+
+            return response()->json(['message' => 'File uploaded successfully', 'path' => $filePath]);
+        } else {
+            return response()->json(['error' => 'Invalid file'], 400);
         }
-        return 'please upload file';
     }
 }

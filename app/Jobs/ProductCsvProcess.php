@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -31,10 +32,9 @@ class ProductCsvProcess implements ShouldQueue
     /**
      * Execute the job.
      */
+
     public function handle()
     {
-         $productsToInsert = [];
-
         foreach ($this->data as $product) {
             $productData = array_combine($this->header, $product);
             if (isset($productData['id'])) {
@@ -42,14 +42,11 @@ class ProductCsvProcess implements ShouldQueue
                 unset($productData['id']);
                 Product::updateOrCreate(['id' => $productId], $productData);
             } else {
-                $productsToInsert[] = $productData;
+                Product::insert($productData);
             }
         }
-        
-        if (!empty($productsToInsert)) {
-            Product::insert($productsToInsert);
-        }
     }
+
 
     public function failed(Throwable $exception)
     {

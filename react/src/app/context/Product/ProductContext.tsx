@@ -41,7 +41,7 @@ interface ProductContextProps {
     generateReportForProductStatesGraph: (body: {
         formats: string[];
     }) => Promise<any>;
-    upload(file: File): Promise<Batch>;
+    upload(file: File): Promise<any>;
     fetchBatchProgress(batchId: string): Promise<number>;
 }
 
