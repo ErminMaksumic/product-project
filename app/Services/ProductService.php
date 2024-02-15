@@ -15,7 +15,9 @@ use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use PHPJasper\PHPJasper;
 
 class ProductService extends BaseService implements ProductServiceInterface
@@ -226,13 +228,41 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function upload(Request $request)
     {
         Log::info($request);
-        if ($request->hasFile('file') && $request->file('file')->isValid()) {
-            dd($request);
-            $filePath = $request->file('file')->store('uploads');
 
-            return response()->json(['message' => 'File uploaded successfully', 'path' => $filePath]);
+        $stream = fopen('php://input', 'r');
+
+        if ($stream) {
+            fseek($stream, 0);
+
+            $contents = stream_get_contents($stream);
+
+            if ($contents !== false) {
+                $result = Storage::disk('local')->put('uploads/tmp.csv', $contents);
+
+                fclose($stream);
+
+                if ($result !== false) {
+                    $filePath = storage_path('app/uploads/tmp.csv');
+
+                    //If it says there is no permission to read file just in the properties of the 'upload' folder -> settings add permission (read and execute)
+                    DB::statement("COPY products(name, description, product_type_id, created_at, updated_at,\"validFrom\", \"validTo\", status)
+                                FROM '$filePath'
+                                DELIMITER ','
+                                CSV HEADER;
+                    ");
+
+                    unlink($filePath);
+
+                    return response()->json(['message' => 'File uploaded successfully']);
+                } else {
+                    return response()->json(['error' => 'Failed to write to the file'], 500);
+                }
+            } else {
+                fclose($stream);
+                return response()->json(['error' => 'Failed to read stream contents'], 500);
+            }
         } else {
-            return response()->json(['error' => 'Invalid file'], 400);
+            return response()->json(['error' => 'Failed to open the stream'], 500);
         }
     }
 }
