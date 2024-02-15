@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use PHPJasper\PHPJasper;
 
@@ -234,33 +235,38 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($stream) {
             fseek($stream, 0);
 
-            $contents = stream_get_contents($stream);
+            $batchSize = 10000;
+            $filePath = storage_path('app/uploads/tmp.csv');
+            $headerSkipped = false;
+            $rowCount = 0;
 
-            if ($contents !== false) {
-                $result = Storage::disk('local')->put('uploads/tmp.csv', $contents);
-
-                fclose($stream);
-
-                if ($result !== false) {
-                    $filePath = storage_path('app/uploads/tmp.csv');
-
-                    //If it says there is no permission to read file just in the properties of the 'upload' folder -> settings add permission (read and execute)
-                    DB::statement("COPY products(name, description, product_type_id, created_at, updated_at,\"validFrom\", \"validTo\", status)
-                                FROM '$filePath'
-                                DELIMITER ','
-                                CSV HEADER;
-                    ");
-
-                    unlink($filePath);
-
-                    return response()->json(['message' => 'File uploaded successfully']);
-                } else {
-                    return response()->json(['error' => 'Failed to write to the file'], 500);
+            // Read the stream and split it into batches
+            while (!feof($stream)) {
+                $batch = '';
+                while ($rowCount < $batchSize && !feof($stream)) {
+                    if (!$headerSkipped) {
+                        // Skip the header row
+                        fgets($stream);
+                        $headerSkipped = true;
+                        continue;
+                    }
+                    $batch .= fgets($stream);
+                    $rowCount++;
                 }
-            } else {
-                fclose($stream);
-                return response()->json(['error' => 'Failed to read stream contents'], 500);
+
+                // Write the batch to a temporary file
+                file_put_contents($filePath, $batch);
+
+                // Dispatch a job to process each batch
+                Queue::push(new ProductCsvProcess($filePath));
+
+                // Reset row count
+                $rowCount = 0;
             }
+
+            fclose($stream);
+
+            return response()->json(['message' => 'File upload processing started']);
         } else {
             return response()->json(['error' => 'Failed to open the stream'], 500);
         }
