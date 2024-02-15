@@ -188,43 +188,25 @@ abstract class BaseService implements BaseServiceInterface
         ];
     }
 
-    public function upload($file, $processJob)
+    public function upload(Request $request)
     {
-        $path = 'kratki.csv';
-        $stream = Storage::readStream($path);
+        if ($request->file('mycsv')->isValid()) {
+            $uploadedFile = $request->file('mycsv');
+            $filename = time() . '_' . $uploadedFile->getClientOriginalName();
+            $path = $uploadedFile->storeAs('uploads', $filename, 'local');
+            $absolutePath = storage_path('app/' . $path);
 
-        $batchSize = 10000;
-        $batch = [];
+        DB::beginTransaction();
 
-        while (($line = fgetcsv($stream)) !== false) {
-            $batch[] = $line;
-            if (count($batch) >= $batchSize) {
-                $copyData = implode("\n", array_map(function ($row) {
-                    return implode("\t", $row);
-                }, $batch));
-
-                $testData = ['2024-02-05 13:34:01.000',
-                    '2024-02-05 13:34:01.000', 'testing212', 'desc', 1, '2024-02-05 13:34:01.000',
-                    '2063-02-05 13:34:01.000', 'DRAFT', 'test@gmail.com'];
-
-                $csvLine = implode(",", array_map(function ($field) {
-                        return '"' . str_replace('"', '""', $field) . '"';
-                    }, $testData)) . "\n";
-
-                $command = "psql -d product-db -c \"\\COPY products FROM STDIN WITH (FORMAT csv)\"";
-                $process = Process::fromShellCommandline($command);
-                $process->setInput($csvLine);
-                $process->run();
-                if (!$process->isSuccessful()) {
-                    throw new \RuntimeException($process->getErrorOutput());
-                }
-
-                $batch = [];
-            }
+        try {
+            DB::statement("COPY products FROM '$absolutePath' WITH CSV HEADER;");
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
         }
-
-        if (is_resource($stream)) {
-            fclose($stream);
+        } else {
+            return response()->json(['error' => 'Invalid file or upload error.'], 400);
         }
     }
 

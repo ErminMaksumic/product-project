@@ -83,11 +83,11 @@ abstract class BaseController extends Controller
 
     public function upload(Request $request)
     {
-        return $this->productService->uploadFile($request);
+        return $this->service->upload($request);
     }
 
     public function batchProgress(Request $request, $batch_id)
     {
-        return $this->productService->batchProgress($request, $batch_id);
+        return $this->service->batchProgress($request, $batch_id);
     }
 }

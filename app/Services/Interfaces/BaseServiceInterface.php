@@ -3,6 +3,7 @@
 namespace App\Services\Interfaces;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 
 interface BaseServiceInterface
 {
@@ -11,6 +12,6 @@ interface BaseServiceInterface
     public function add(Request $request);
     public function update(Request $request, int $id);
     public function remove(int $id);
-    public function upload($request, $processJob);
+    public function upload(Request $request);
     public function batchProgress($request,$batch_id);
 }
