@@ -240,12 +240,10 @@ class ProductService extends BaseService implements ProductServiceInterface
             $headerSkipped = false;
             $rowCount = 0;
 
-            // Read the stream and split it into batches
             while (!feof($stream)) {
                 $batch = '';
                 while ($rowCount < $batchSize && !feof($stream)) {
                     if (!$headerSkipped) {
-                        // Skip the header row
                         fgets($stream);
                         $headerSkipped = true;
                         continue;
@@ -254,17 +252,16 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $rowCount++;
                 }
 
-                // Write the batch to a temporary file
                 file_put_contents($filePath, $batch);
 
-                // Dispatch a job to process each batch
                 Queue::push(new ProductCsvProcess($filePath));
 
-                // Reset row count
                 $rowCount = 0;
             }
 
             fclose($stream);
+
+
 
             return response()->json(['message' => 'File upload processing started']);
         } else {

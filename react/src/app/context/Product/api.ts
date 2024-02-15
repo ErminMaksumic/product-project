@@ -186,20 +186,68 @@ async function download(response: any) {
     }
 }
 
-export async function upload(file: File) {
-    try {
-        const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_URL}/api/upload`,
-            file,
-            {
-                headers: {
-                    'Content-Type': 'application/octet-stream',
-                    'Content-Disposition': `attachment; filename="${file.name}"`
-                },
-            }
-        );
+export async function upload(file:File) {
+    const chunkSize = 1024 * 1024 * 50; // 50 MB chunks (adjust as needed)
+    let start = 0;
+    let end = Math.min(chunkSize, file.size);
 
-        return response.data;
+     // Add the CSV header row
+    const headerRow = 'name,description,product_type_id,created_at,updated_at,validFrom,validTo,status\n';
+
+    try {
+        while (start < file.size) {
+            const chunk = file.slice(start, end);
+
+            // Read the chunk as text
+            const chunkText = await chunk.text();
+
+            // Calculate the position of the last line break within the chunk
+            const lastLineBreakIndex = chunkText.lastIndexOf('\n');
+
+            // Adjust the end position to ensure the last line break is included in the chunk
+            if (lastLineBreakIndex !== -1) {
+                end = start + lastLineBreakIndex + 1; // Include the line break
+            } else {
+                // If no line break is found, set end to the end of the chunk
+                end = start + chunk.size;
+            }
+
+            // Create a new Blob with header row + chunk data
+            const blobData = headerRow + chunkText.substring(0, end - start); // Include only the portion up to the adjusted end position
+            
+            const blob = new Blob([blobData], { type: 'text/csv' });
+
+            // Convert chunk to ArrayBuffer
+            const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as ArrayBuffer); // Type assertion
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(blob);
+            });
+
+            // Create Uint8Array from ArrayBuffer
+            const uint8Array = new Uint8Array(arrayBuffer);
+
+            // Convert Uint8Array to regular array
+            const dataArray = Array.from(uint8Array);
+
+            // Send chunk as application/octet-stream
+            await axios.post(
+                `${process.env.NEXT_PUBLIC_URL}/api/upload`,
+                new Uint8Array(dataArray), 
+                {
+                    headers: {
+                        'Content-Type': 'application/octet-stream',
+                        'Content-Disposition': `attachment; filename="${file.name}"`,
+                    },
+                }
+            );
+
+            start = end;
+            end = Math.min(start + chunkSize, file.size);
+        }
+
+        console.log('Upload complete');
     } catch (error) {
         console.error("Error uploading file:", error);
         throw error;
