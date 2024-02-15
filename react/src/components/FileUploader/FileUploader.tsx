@@ -9,7 +9,9 @@ interface FileUploaderProps {
 const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [message, setMessage] = useState<{ message: string; color: string } | null>(
+        null
+    );
 
     const handleButtonClick = () => {
         if (fileInputRef.current) {
@@ -22,10 +24,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
         if (file) {
             const allowedTypes = ["text/csv"];
             if (!allowedTypes.includes(file.type)) {
-                setError("Only CSV files are allowed.");
+                setMessage({ message: "Only CSV files are allowed.", color: "red" });
+                setSelectedFile(null);
             } else {
                 setSelectedFile(file);
-                setError(null);
+                setMessage(null);
             }
         }
     };
@@ -33,9 +36,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     const handleUploadDataClick = async () => {
         if (selectedFile) {
             try {
-                const response = await onFileUpload(selectedFile);
-                console.log(response);
+                setMessage({ message: "File is uploading please wait...", color: "#007bff" });
+                await onFileUpload(selectedFile);
+                setMessage({ message: "File uploaded successfully", color: "green" });
             } catch (error) {
+                setMessage({ message: "File uploading failed", color: "red" });
                 console.error("Error uploading file:", error);
             }
         }
@@ -68,7 +73,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                         Choose File
                     </button>
                 </div>
-                {selectedFile && (
+                {selectedFile && !message?.message &&(
                     <button
                         onClick={handleUploadDataClick}
                         className={styles.uploadDataButton}
@@ -77,7 +82,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                     </button>
                 )}
 
-                {error && <p className={styles.error}>{error}</p>}
+                {message && <p style={{ color: message.color }}>{message.message}</p>}
             </div>
         </div>
     );
