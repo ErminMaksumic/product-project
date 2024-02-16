@@ -186,38 +186,36 @@ async function download(response: any) {
     }
 }
 
-export async function upload(file:File) {
-    const chunkSize = 1024 * 1024 * 50; // 50 MB chunks (adjust as needed)
-    let start = 0;
-    let end = Math.min(chunkSize, file.size);
-
-     // Add the CSV header row
-    const headerRow = 'name,description,product_type_id,created_at,updated_at,validFrom,validTo,status\n';
+export async function upload(file: File) {
+    const rowsPerChunk = 350000; // Adjust as needed
+    const fileText = await file.text();
+    const rows = fileText.split('\n');
+    const minimumDelay = 7000; // 7 seconds delay between requests (For data storing)
 
     try {
-        while (start < file.size) {
-            const chunk = file.slice(start, end);
+        const processChunkWithDelay = (start:number, end:number) => {
+            return new Promise<void>(resolve => {
+                const startTime = Date.now();
+                const processTime = async () => {
+                    await processChunk(start, end);
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingDelay = Math.max(0, minimumDelay - elapsedTime);
+                    setTimeout(() => resolve(), remainingDelay);
+                };
+                processTime();
+            });
+        };
 
-            // Read the chunk as text
-            const chunkText = await chunk.text();
+        const processChunk = async (start:number, end:number) => {
+            const chunkRows = rows.slice(start, end);
+            const cleanedRows = chunkRows.map(row => row.replace(/""/g, ''));
 
-            // Calculate the position of the last line break within the chunk
-            const lastLineBreakIndex = chunkText.lastIndexOf('\n');
+            const quotedRows = cleanedRows.map(row => row.split(',').map(field => field.trim() === '' ? '' : `"${field}"`).join(','));
 
-            // Adjust the end position to ensure the last line break is included in the chunk
-            if (lastLineBreakIndex !== -1) {
-                end = start + lastLineBreakIndex + 1; // Include the line break
-            } else {
-                // If no line break is found, set end to the end of the chunk
-                end = start + chunk.size;
-            }
+            const blobData = quotedRows.join('\n');
 
-            // Create a new Blob with header row + chunk data
-            const blobData = headerRow + chunkText.substring(0, end - start); // Include only the portion up to the adjusted end position
-            
             const blob = new Blob([blobData], { type: 'text/csv' });
 
-            // Convert chunk to ArrayBuffer
             const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () => resolve(reader.result as ArrayBuffer); // Type assertion
@@ -225,16 +223,13 @@ export async function upload(file:File) {
                 reader.readAsArrayBuffer(blob);
             });
 
-            // Create Uint8Array from ArrayBuffer
             const uint8Array = new Uint8Array(arrayBuffer);
 
-            // Convert Uint8Array to regular array
             const dataArray = Array.from(uint8Array);
 
-            // Send chunk as application/octet-stream
             await axios.post(
                 `${process.env.NEXT_PUBLIC_URL}/api/upload`,
-                new Uint8Array(dataArray), 
+                new Uint8Array(dataArray),
                 {
                     headers: {
                         'Content-Type': 'application/octet-stream',
@@ -242,9 +237,11 @@ export async function upload(file:File) {
                     },
                 }
             );
+        };
 
-            start = end;
-            end = Math.min(start + chunkSize, file.size);
+        for (let start = 0; start < rows.length; start += rowsPerChunk) {
+            const end = Math.min(start + rowsPerChunk, rows.length);
+            await processChunkWithDelay(start, end);
         }
 
         console.log('Upload complete');
@@ -253,6 +250,8 @@ export async function upload(file:File) {
         throw error;
     }
 }
+
+
 
 export async function fetchBatchProgress(batchId: string) {
     try {

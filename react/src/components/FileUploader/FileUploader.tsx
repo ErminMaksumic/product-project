@@ -38,7 +38,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
             try {
                 setMessage({ message: "File is uploading please wait...", color: "#007bff" });
                 await onFileUpload(selectedFile);
-                setMessage({ message: "File uploaded successfully", color: "green" });
+                setMessage({ message: "File uploaded successfully", color: "green" }); 
+                setSelectedFile(null);
             } catch (error) {
                 setMessage({ message: "File uploading failed", color: "red" });
                 console.error("Error uploading file:", error);
