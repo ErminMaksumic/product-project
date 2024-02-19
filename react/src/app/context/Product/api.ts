@@ -186,28 +186,61 @@ async function download(response: any) {
     }
 }
 
-export async function upload(file: File) {
+async function processChunk(
+    start: number,
+    end: number,
+    rows: string[],
+    file: File,
+    progressCallback: (progress: number) => void
+) {
     try {
-        const formData = new FormData();
-        formData.append("mycsv", file);
-
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_URL}/api/upload`,
-            {
-                method: "POST",
-                body: formData,
-            }
+        const chunkRows = rows.slice(start, end);
+        const cleanedRows = chunkRows.map((row) =>
+            row.replace(/\r\n|\n|\r/g, "\\n")
         );
+        const blobData = cleanedRows.join("\n");
+        const blob = new Blob([blobData], { type: "application/octet-stream" });
 
-        if (!response.ok) {
-            throw new Error("Failed to upload file");
+        await axios.post(`${process.env.NEXT_PUBLIC_URL}/api/upload`, blob, {
+            headers: {
+                "Content-Type": "application/octet-stream",
+                "Content-Disposition": `attachment; filename="${file.name}"`,
+            },
+        });
+
+        const progress = (end / rows.length) * 100;
+        progressCallback(progress);
+    } catch (error) {
+        console.error("Error processing chunk:", error);
+        throw error;
+    }
+}
+
+export async function upload(
+    file: File,
+    progressCallback: (progress: number) => void
+) {
+    const rowsPerChunk = 200000;
+    const fileText = await file.text();
+    const rows = fileText.split("\n");
+
+    try {
+        const totalChunks = Math.ceil(rows.length / rowsPerChunk);
+        let processedChunks = 0;
+
+        for (let start = 0; start < rows.length; start += rowsPerChunk) {
+            const end = Math.min(start + rowsPerChunk, rows.length);
+            await processChunk(start, end, rows, file, (chunkProgress) => {
+                processedChunks++;
+                const overallProgress = (processedChunks / totalChunks) * 100;
+                progressCallback(overallProgress);
+            });
         }
 
-        const responseData = await response.json();
-
-        return responseData;
+        console.log("Upload complete");
     } catch (error) {
         console.error("Error uploading file:", error);
+        throw error;
     }
 }
 

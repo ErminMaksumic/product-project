@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -16,40 +17,33 @@ class ProductCsvProcess implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $data;
-    public $header;
+    protected $filePath;
 
     /**
      * Create a new job instance.
+     *
+     * @param string $filePath The path to the CSV file
+     * @return void
      */
-    public function __construct($data, $header)
+    public function __construct(string $filePath)
     {
-        $this->data   = $data;
-        $this->header = $header;
+        $this->filePath = $filePath;
     }
 
     /**
      * Execute the job.
      */
+
     public function handle()
     {
-        $productsToInsert = [];
-
-        foreach ($this->data as $product) {
-            $productData = array_combine($this->header, $product);
-            if (isset($productData['id'])) {
-                $productId = $productData['id'];
-                unset($productData['id']);
-                Product::updateOrCreate(['id' => $productId], $productData);
-            } else {
-                $productsToInsert[] = $productData;
-            }
-        }
-
-        if (!empty($productsToInsert)) {
-            Product::insert($productsToInsert);
-        }
+        DB::statement("
+            COPY products(name, description, product_type_id, created_at, updated_at, \"validFrom\", \"validTo\", status)
+            FROM '{$this->filePath}'
+            DELIMITER ','
+            CSV HEADER;
+        ");
     }
+
 
     public function failed(Throwable $exception)
     {
