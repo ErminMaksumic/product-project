@@ -9,9 +9,10 @@ interface FileUploaderProps {
 const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [message, setMessage] = useState<{ message: string; color: string } | null>(
-        null
-    );
+    const [message, setMessage] = useState<{
+        message: string;
+        color: string;
+    } | null>(null);
 
     const handleButtonClick = () => {
         if (fileInputRef.current) {
@@ -24,8 +25,14 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
         if (file) {
             const allowedTypes = ["text/csv"];
             if (!allowedTypes.includes(file.type)) {
-                setMessage({ message: "Only CSV files are allowed.", color: "red" });
+                setMessage({
+                    message: "Only CSV files are allowed.",
+                    color: "red",
+                });
                 setSelectedFile(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
             } else {
                 setSelectedFile(file);
                 setMessage(null);
@@ -36,13 +43,23 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     const handleUploadDataClick = async () => {
         if (selectedFile) {
             try {
-                setMessage({ message: "File is uploading please wait...", color: "#007bff" });
+                setMessage({
+                    message: "File is uploading please wait...",
+                    color: "#007bff",
+                });
                 await onFileUpload(selectedFile);
-                setMessage({ message: "File uploaded successfully", color: "green" }); 
+
+                setMessage({
+                    message: "File uploaded successfully",
+                    color: "green",
+                });
                 setSelectedFile(null);
             } catch (error) {
                 setMessage({ message: "File uploading failed", color: "red" });
                 console.error("Error uploading file:", error);
+            }
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
             }
         }
     };
@@ -74,7 +91,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                         Choose File
                     </button>
                 </div>
-                {selectedFile && !message?.message &&(
+                {selectedFile && !message?.message && (
                     <button
                         onClick={handleUploadDataClick}
                         className={styles.uploadDataButton}
@@ -83,7 +100,9 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                     </button>
                 )}
 
-                {message && <p style={{ color: message.color }}>{message.message}</p>}
+                {message && (
+                    <p style={{ color: message.color }}>{message.message}</p>
+                )}
             </div>
         </div>
     );

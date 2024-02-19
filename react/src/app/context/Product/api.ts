@@ -186,72 +186,85 @@ async function download(response: any) {
     }
 }
 
+async function processChunkWithDelay(
+    start: number,
+    end: number,
+    rows: string[],
+    minimumDelay: number,
+    file: File
+) {
+    return new Promise<void>((resolve) => {
+        const startTime = Date.now();
+        const processTime = async () => {
+            await processChunk(start, end, rows, file);
+            const elapsedTime = Date.now() - startTime;
+            const remainingDelay = Math.max(0, minimumDelay - elapsedTime);
+            setTimeout(() => resolve(), remainingDelay);
+        };
+        processTime();
+    });
+}
+
+async function processChunk(
+    start: number,
+    end: number,
+    rows: string[],
+    file: File
+) {
+    try {
+        const chunkRows = rows.slice(start, end);
+        const cleanedRows = chunkRows.map((row) => row.replace(/""/g, ""));
+        const quotedRows = cleanedRows.map((row) =>
+            row
+                .split(",")
+                .map((field) => (field.trim() === "" ? "" : `"${field}"`))
+                .join(",")
+        );
+        const blobData = quotedRows.join("\n");
+        const blob = new Blob([blobData], { type: "text/csv" });
+        const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as ArrayBuffer);
+            reader.onerror = reject;
+            reader.readAsArrayBuffer(blob);
+        });
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const dataArray = Array.from(uint8Array);
+        await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/api/upload`,
+            new Uint8Array(dataArray),
+            {
+                headers: {
+                    "Content-Type": "application/octet-stream",
+                    "Content-Disposition": `attachment; filename="${file.name}"`,
+                },
+            }
+        );
+    } catch (error) {
+        console.error("Error processing chunk:", error);
+        throw error; 
+    }
+}
+
+
 export async function upload(file: File) {
     const rowsPerChunk = 350000; // Adjust as needed
     const fileText = await file.text();
-    const rows = fileText.split('\n');
+    const rows = fileText.split("\n");
     const minimumDelay = 7000; // 7 seconds delay between requests (For data storing)
 
     try {
-        const processChunkWithDelay = (start:number, end:number) => {
-            return new Promise<void>(resolve => {
-                const startTime = Date.now();
-                const processTime = async () => {
-                    await processChunk(start, end);
-                    const elapsedTime = Date.now() - startTime;
-                    const remainingDelay = Math.max(0, minimumDelay - elapsedTime);
-                    setTimeout(() => resolve(), remainingDelay);
-                };
-                processTime();
-            });
-        };
-
-        const processChunk = async (start:number, end:number) => {
-            const chunkRows = rows.slice(start, end);
-            const cleanedRows = chunkRows.map(row => row.replace(/""/g, ''));
-
-            const quotedRows = cleanedRows.map(row => row.split(',').map(field => field.trim() === '' ? '' : `"${field}"`).join(','));
-
-            const blobData = quotedRows.join('\n');
-
-            const blob = new Blob([blobData], { type: 'text/csv' });
-
-            const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result as ArrayBuffer); // Type assertion
-                reader.onerror = reject;
-                reader.readAsArrayBuffer(blob);
-            });
-
-            const uint8Array = new Uint8Array(arrayBuffer);
-
-            const dataArray = Array.from(uint8Array);
-
-            await axios.post(
-                `${process.env.NEXT_PUBLIC_URL}/api/upload`,
-                new Uint8Array(dataArray),
-                {
-                    headers: {
-                        'Content-Type': 'application/octet-stream',
-                        'Content-Disposition': `attachment; filename="${file.name}"`,
-                    },
-                }
-            );
-        };
-
         for (let start = 0; start < rows.length; start += rowsPerChunk) {
             const end = Math.min(start + rowsPerChunk, rows.length);
-            await processChunkWithDelay(start, end);
+            await processChunkWithDelay(start, end, rows, minimumDelay, file);
         }
 
-        console.log('Upload complete');
+        console.log("Upload complete");
     } catch (error) {
         console.error("Error uploading file:", error);
         throw error;
     }
 }
-
-
 
 export async function fetchBatchProgress(batchId: string) {
     try {

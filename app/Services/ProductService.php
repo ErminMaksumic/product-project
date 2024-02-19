@@ -226,6 +226,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return parent::generateReport($parameters, $fileName, $request);
     }
 
+
     public function upload(Request $request)
     {
         Log::info($request);
@@ -240,30 +241,35 @@ class ProductService extends BaseService implements ProductServiceInterface
             $headerSkipped = false;
             $rowCount = 0;
 
-            while (!feof($stream)) {
-                $batch = '';
-                while ($rowCount < $batchSize && !feof($stream)) {
-                    if (!$headerSkipped) {
-                        fgets($stream);
-                        $headerSkipped = true;
-                        continue;
+            try {
+                while (!feof($stream)) {
+                    $batch = '';
+                    while ($rowCount < $batchSize && !feof($stream)) {
+                        if (!$headerSkipped) {
+                            fgets($stream);
+                            $headerSkipped = true;
+                            continue;
+                        }
+                        $batch .= fgets($stream);
+                        $rowCount++;
                     }
-                    $batch .= fgets($stream);
-                    $rowCount++;
+
+                    file_put_contents($filePath, $batch);
+
+                    Queue::push(new ProductCsvProcess($filePath));
+
+                    $rowCount = 0;
                 }
+                fclose($stream);
 
-                file_put_contents($filePath, $batch);
+                return response()->json(['message' => 'File upload processing started']);
+            } catch (\Exception $e) {
+                // Log the error
+                Log::error("Error processing file upload: " . $e->getMessage());
 
-                Queue::push(new ProductCsvProcess($filePath));
-
-                $rowCount = 0;
+                // Return a 500 error response
+                return Response::json(['error' => 'File upload processing failed'], 500);
             }
-
-            fclose($stream);
-
-
-
-            return response()->json(['message' => 'File upload processing started']);
         } else {
             return response()->json(['error' => 'Failed to open the stream'], 500);
         }
