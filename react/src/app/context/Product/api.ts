@@ -186,46 +186,55 @@ async function download(response: any) {
     }
 }
 
-
-
 async function processChunk(
     start: number,
     end: number,
     rows: string[],
-    file: File
+    file: File,
+    progressCallback: (progress: number) => void // Add progress callback
 ) {
-  try {
+    try {
         const chunkRows = rows.slice(start, end);
-        const cleanedRows = chunkRows.map(row => row.replace(/\r\n|\n|\r/g, "\\n"));
+        const cleanedRows = chunkRows.map((row) =>
+            row.replace(/\r\n|\n|\r/g, "\\n")
+        );
         const blobData = cleanedRows.join("\n");
         const blob = new Blob([blobData], { type: "application/octet-stream" });
 
-        await axios.post(
-            `${process.env.NEXT_PUBLIC_URL}/api/upload`,
-            blob,
-            {
-                headers: {
-                    "Content-Type": "application/octet-stream",
-                    "Content-Disposition": `attachment; filename="${file.name}"`,
-                },
-            }
-        );
+        await axios.post(`${process.env.NEXT_PUBLIC_URL}/api/upload`, blob, {
+            headers: {
+                "Content-Type": "application/octet-stream",
+                "Content-Disposition": `attachment; filename="${file.name}"`,
+            },
+        });
+
+        const progress = (end / rows.length) * 100;
+        progressCallback(progress); // Report progress
     } catch (error) {
         console.error("Error processing chunk:", error);
-        throw error; 
+        throw error;
     }
 }
 
-
-export async function upload(file: File) {
+export async function upload(
+    file: File,
+    progressCallback: (progress: number) => void
+) {
     const rowsPerChunk = 200000;
     const fileText = await file.text();
     const rows = fileText.split("\n");
 
     try {
+        const totalChunks = Math.ceil(rows.length / rowsPerChunk);
+        let processedChunks = 0;
+
         for (let start = 0; start < rows.length; start += rowsPerChunk) {
             const end = Math.min(start + rowsPerChunk, rows.length);
-            await processChunk(start, end, rows, file);
+            await processChunk(start, end, rows, file, (chunkProgress) => {
+                processedChunks++;
+                const overallProgress = (processedChunks / totalChunks) * 100;
+                progressCallback(overallProgress); // Report overall progress
+            });
         }
 
         console.log("Upload complete");

@@ -3,7 +3,10 @@ import styles from "./FileUploader.module.scss";
 
 interface FileUploaderProps {
     title: string;
-    onFileUpload: (file: File) => Promise<any>;
+    onFileUpload: (
+        file: File,
+        progressCallback: (progress: number) => void
+    ) => Promise<any>;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
@@ -13,6 +16,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
         message: string;
         color: string;
     } | null>(null);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
 
     const handleButtonClick = () => {
         if (fileInputRef.current) {
@@ -34,6 +38,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                     fileInputRef.current.value = "";
                 }
             } else {
+                setUploadProgress(0);
                 setSelectedFile(file);
                 setMessage(null);
             }
@@ -43,16 +48,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     const handleUploadDataClick = async () => {
         if (selectedFile) {
             try {
-                setMessage({
-                    message: "File is uploading please wait...",
-                    color: "#007bff",
-                });
-                await onFileUpload(selectedFile);
+                await onFileUpload(selectedFile, setUploadProgress);
 
                 setMessage({
                     message: "File uploaded successfully",
                     color: "green",
                 });
+                setUploadProgress(0);
                 setSelectedFile(null);
             } catch (error) {
                 setMessage({ message: "File uploading failed", color: "red" });
@@ -91,7 +93,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                         Choose File
                     </button>
                 </div>
-                {selectedFile && !message?.message && (
+                {selectedFile && !message?.message && uploadProgress <= 0 && (
                     <button
                         onClick={handleUploadDataClick}
                         className={styles.uploadDataButton}
@@ -99,7 +101,16 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                         Upload Data
                     </button>
                 )}
-
+                {uploadProgress > 0 && (
+                    <div className={styles.progressBarContainer}>
+                        <div
+                            className={styles.progressBar}
+                            style={{ width: `${uploadProgress}%` }}
+                        >
+                            {uploadProgress.toFixed(0)}%
+                        </div>
+                    </div>
+                )}
                 {message && (
                     <p style={{ color: message.color }}>{message.message}</p>
                 )}
