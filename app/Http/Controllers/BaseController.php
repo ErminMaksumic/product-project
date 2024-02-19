@@ -8,13 +8,7 @@ use Illuminate\Support\Facades\Log;
 abstract class BaseController extends Controller
 {
     public function __construct(protected $service)
-    {
-        $this->middleware('auth:sanctum')->except([
-            'index', 'generateReportForOneProduct', 'generateReportForExpensiveProducts',
-            'generateReportForProductStatesGraph', 'download', 'upload', 'batchProgress',
-            'uploadFile'
-        ]);
-    }
+    { }
 
     abstract function getInsertRequestClass();
     abstract function getUpdateRequestClass();

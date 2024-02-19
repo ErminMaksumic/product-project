@@ -12,7 +12,7 @@
     value,
     price
 FROM variants
-WHERE 
+WHERE
     variants.product_id = $P{productId}]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
@@ -47,7 +47,7 @@ WHERE
 					<textElement>
 						<font size="34" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Ermin]]></text>
+					<text><![CDATA[Report]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="395" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="988cd4b3-d834-4a93-a5d4-32a8c93a64e1"/>

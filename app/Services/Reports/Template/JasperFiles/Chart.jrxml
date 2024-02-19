@@ -27,7 +27,7 @@ GROUP BY  products.status]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="20"/>
 				</textElement>
-				<text><![CDATA[Strasna tabela]]></text>
+				<text><![CDATA[Data]]></text>
 			</staticText>
 		</band>
 	</title>
