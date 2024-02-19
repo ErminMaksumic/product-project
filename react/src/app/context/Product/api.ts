@@ -186,24 +186,7 @@ async function download(response: any) {
     }
 }
 
-async function processChunkWithDelay(
-    start: number,
-    end: number,
-    rows: string[],
-    minimumDelay: number,
-    file: File
-) {
-    return new Promise<void>((resolve) => {
-        const startTime = Date.now();
-        const processTime = async () => {
-            await processChunk(start, end, rows, file);
-            const elapsedTime = Date.now() - startTime;
-            const remainingDelay = Math.max(0, minimumDelay - elapsedTime);
-            setTimeout(() => resolve(), remainingDelay);
-        };
-        processTime();
-    });
-}
+
 
 async function processChunk(
     start: number,
@@ -211,28 +194,15 @@ async function processChunk(
     rows: string[],
     file: File
 ) {
-    try {
+  try {
         const chunkRows = rows.slice(start, end);
-        const cleanedRows = chunkRows.map((row) => row.replace(/""/g, ""));
-        const quotedRows = cleanedRows.map((row) =>
-            row
-                .split(",")
-                .map((field) => (field.trim() === "" ? "" : `"${field}"`))
-                .join(",")
-        );
-        const blobData = quotedRows.join("\n");
-        const blob = new Blob([blobData], { type: "text/csv" });
-        const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as ArrayBuffer);
-            reader.onerror = reject;
-            reader.readAsArrayBuffer(blob);
-        });
-        const uint8Array = new Uint8Array(arrayBuffer);
-        const dataArray = Array.from(uint8Array);
+        const cleanedRows = chunkRows.map(row => row.replace(/\r\n|\n|\r/g, "\\n"));
+        const blobData = cleanedRows.join("\n");
+        const blob = new Blob([blobData], { type: "application/octet-stream" });
+
         await axios.post(
             `${process.env.NEXT_PUBLIC_URL}/api/upload`,
-            new Uint8Array(dataArray),
+            blob,
             {
                 headers: {
                     "Content-Type": "application/octet-stream",
@@ -248,15 +218,14 @@ async function processChunk(
 
 
 export async function upload(file: File) {
-    const rowsPerChunk = 350000; // Adjust as needed
+    const rowsPerChunk = 200000;
     const fileText = await file.text();
     const rows = fileText.split("\n");
-    const minimumDelay = 7000; // 7 seconds delay between requests (For data storing)
 
     try {
         for (let start = 0; start < rows.length; start += rowsPerChunk) {
             const end = Math.min(start + rowsPerChunk, rows.length);
-            await processChunkWithDelay(start, end, rows, minimumDelay, file);
+            await processChunk(start, end, rows, file);
         }
 
         console.log("Upload complete");

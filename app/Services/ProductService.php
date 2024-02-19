@@ -233,45 +233,37 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         $stream = fopen('php://input', 'r');
 
-        if ($stream) {
-            fseek($stream, 0);
-
-            $batchSize = 10000;
-            $filePath = storage_path('app/uploads/tmp.csv');
-            $headerSkipped = false;
-            $rowCount = 0;
-
-            try {
-                while (!feof($stream)) {
-                    $batch = '';
-                    while ($rowCount < $batchSize && !feof($stream)) {
-                        if (!$headerSkipped) {
-                            fgets($stream);
-                            $headerSkipped = true;
-                            continue;
-                        }
-                        $batch .= fgets($stream);
-                        $rowCount++;
-                    }
-
-                    file_put_contents($filePath, $batch);
-
-                    Queue::push(new ProductCsvProcess($filePath));
-
-                    $rowCount = 0;
-                }
-                fclose($stream);
-
-                return response()->json(['message' => 'File upload processing started']);
-            } catch (\Exception $e) {
-                // Log the error
-                Log::error("Error processing file upload: " . $e->getMessage());
-
-                // Return a 500 error response
-                return Response::json(['error' => 'File upload processing failed'], 500);
-            }
-        } else {
+        if (!$stream) {
             return response()->json(['error' => 'Failed to open the stream'], 500);
+        }
+
+        try {
+            $filePath = storage_path('app/uploads/tmp.csv');
+
+            file_put_contents($filePath, $stream);
+
+            fclose($stream);
+
+            DB::beginTransaction();
+
+            DB::statement("
+            COPY products(name, description, product_type_id, created_at, updated_at, \"validFrom\", \"validTo\", status)
+            FROM '{$filePath}'
+            DELIMITER ','
+            CSV HEADER;
+        ");
+
+            DB::commit();
+
+            return response()->json(['message' => 'File upload processing completed']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Log the error
+            Log::error("Error processing file upload: " . $e->getMessage());
+
+            // Return a 500 error response
+            return response()->json(['error' => 'File upload processing failed'], 500);
         }
     }
 }
