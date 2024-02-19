@@ -191,7 +191,7 @@ async function processChunk(
     end: number,
     rows: string[],
     file: File,
-    progressCallback: (progress: number) => void // Add progress callback
+    progressCallback: (progress: number) => void
 ) {
     try {
         const chunkRows = rows.slice(start, end);
@@ -209,7 +209,7 @@ async function processChunk(
         });
 
         const progress = (end / rows.length) * 100;
-        progressCallback(progress); // Report progress
+        progressCallback(progress);
     } catch (error) {
         console.error("Error processing chunk:", error);
         throw error;
@@ -233,7 +233,7 @@ export async function upload(
             await processChunk(start, end, rows, file, (chunkProgress) => {
                 processedChunks++;
                 const overallProgress = (processedChunks / totalChunks) * 100;
-                progressCallback(overallProgress); // Report overall progress
+                progressCallback(overallProgress);
             });
         }
 

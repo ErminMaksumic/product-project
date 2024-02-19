@@ -255,14 +255,16 @@ class ProductService extends BaseService implements ProductServiceInterface
 
             DB::commit();
 
+            unlink($filePath);
+
             return response()->json(['message' => 'File upload processing completed']);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Log the error
             Log::error("Error processing file upload: " . $e->getMessage());
 
-            // Return a 500 error response
+            unlink($filePath);
+
             return response()->json(['error' => 'File upload processing failed'], 500);
         }
     }

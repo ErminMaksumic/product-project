@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.scss";
 import { useUserApi } from "@/app/context/User/UserContext";
-import qs from 'qs';
+import qs from "qs";
 
 const LoginPage: React.FC<any> = ({ props }) => {
     const { login } = useUserApi();
@@ -18,12 +18,14 @@ const LoginPage: React.FC<any> = ({ props }) => {
 
     const signInWithOauth2 = () => {
         const queryString = {
-            client_id: '4',
-            redirect_uri: 'http://localhost:3000/callback',
-            response_type: 'code',
-            scope: ['products']
+            client_id: "4",
+            redirect_uri: "http://localhost:3000/callback",
+            response_type: "code",
+            scope: ["products"],
         };
-        window.location.href = `http://localhost:8000/oauth/authorize?${qs.stringify(queryString)}`;
+        window.location.href = `http://localhost:8000/oauth/authorize?${qs.stringify(
+            queryString
+        )}`;
     };
 
     useEffect(() => {
