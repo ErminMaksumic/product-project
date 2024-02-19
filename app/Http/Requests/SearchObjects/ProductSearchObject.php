@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\SearchObjects;
 
+use DateTime;
+
 class ProductSearchObject extends BaseSearchObject
 {
 
@@ -10,8 +12,8 @@ class ProductSearchObject extends BaseSearchObject
     public ?bool $includeVariants = null;
     public ?int $priceGT = null;
     public ?int $priceLT = null;
-    public ?string $validFrom = null;
-    public ?string $validTo = null;
+    public ?DateTime $validFrom = null;
+    public ?DateTime $validTo = null;
 
     public function __set($key, $value)
     {
@@ -22,8 +24,6 @@ class ProductSearchObject extends BaseSearchObject
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
-        foreach ($attributes as $key => $value) {
-            $this->$key = $value;
-        }
+
     }
 }

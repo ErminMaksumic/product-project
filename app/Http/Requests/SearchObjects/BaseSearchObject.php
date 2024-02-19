@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\SearchObjects;
 
+use DateTime;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BaseSearchObject extends FormRequest
@@ -16,9 +17,12 @@ class BaseSearchObject extends FormRequest
 
     public function __construct($attributes = [])
     {
-        parent::__construct();
         foreach ($attributes as $key => $value) {
-            $this->$key = $value;
+            if ($key === 'validFrom' || $key === 'validTo') {
+                $this->$key = !empty($value) ? new DateTime($value) : null;
+            } else {
+                $this->$key = $value;
+            }
         }
     }
 }
