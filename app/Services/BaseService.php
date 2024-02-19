@@ -187,30 +187,6 @@ abstract class BaseService implements BaseServiceInterface
         ];
     }
 
-    public function upload($file, $processJob)
-    {
-        Log::info('Processing CSV Upload');
-
-        $data = file($file);
-
-        $batch = Bus::batch([])->dispatch();
-
-        $chunks = array_chunk($data, 10000);
-
-        $header = [];
-        foreach ($chunks as $key => $chunk) {
-            $chunkData = array_map('str_getcsv', $chunk);
-            if ($key === 0) {
-                $header = $chunkData[0];
-                unset($chunkData[0]);
-            }
-
-            $batch->add(new $processJob($chunkData, $header));
-        }
-
-        return $batch->id;
-    }
-
     public function batchProgress($request, $batch_id)
     {
         $batch = Bus::findBatch($batch_id);

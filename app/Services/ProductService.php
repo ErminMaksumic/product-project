@@ -15,7 +15,10 @@ use App\StateMachine\Enums\ProductStatus;
 use App\StateMachine\States\BaseState;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use PHPJasper\PHPJasper;
 
 class ProductService extends BaseService implements ProductServiceInterface
@@ -223,13 +226,46 @@ class ProductService extends BaseService implements ProductServiceInterface
         return parent::generateReport($parameters, $fileName, $request);
     }
 
-    public function uploadFile($request)
+
+    public function upload(Request $request)
     {
-        if ($request->has('mycsv')) {
-            $file = $request->file('mycsv');
-            $batchId = parent::upload($file, ProductCsvProcess::class);
-            return response()->json(['batch_id' => $batchId]);
+        Log::info($request);
+
+        $stream = fopen('php://input', 'r');
+
+        if (!$stream) {
+            return response()->json(['error' => 'Failed to open the stream'], 500);
         }
-        return 'please upload file';
+
+        try {
+            $filePath = storage_path('app/uploads/tmp.csv');
+
+            file_put_contents($filePath, $stream);
+
+            fclose($stream);
+
+            DB::beginTransaction();
+
+            DB::statement("
+            COPY products(name, description, product_type_id, created_at, updated_at, \"validFrom\", \"validTo\", status)
+            FROM '{$filePath}'
+            DELIMITER ','
+            CSV HEADER;
+        ");
+
+            DB::commit();
+
+            unlink($filePath);
+
+            return response()->json(['message' => 'File upload processing completed']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error("Error processing file upload: " . $e->getMessage());
+
+            unlink($filePath);
+
+            return response()->json(['error' => 'File upload processing failed'], 500);
+        }
     }
 }

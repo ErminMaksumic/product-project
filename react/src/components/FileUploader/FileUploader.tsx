@@ -1,20 +1,22 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import styles from "./FileUploader.module.scss";
-import { Batch } from "@/lib/product";
-import { useProductApi } from "@/app/context/Product/ProductContext";
 
 interface FileUploaderProps {
     title: string;
-    onFileUpload: (file: File) => Promise<Batch>;
+    onFileUpload: (
+        file: File,
+        progressCallback: (progress: number) => void
+    ) => Promise<any>;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
-    const { fetchBatchProgress } = useProductApi();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [uploading, setUploading] = useState<boolean>(false);
-    const [batchProgress, setBatchProgress] = useState<number>(0);
+    const [message, setMessage] = useState<{
+        message: string;
+        color: string;
+    } | null>(null);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
 
     const handleButtonClick = () => {
         if (fileInputRef.current) {
@@ -23,60 +25,45 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        
         const file = e.target.files && e.target.files[0];
         if (file) {
             const allowedTypes = ["text/csv"];
             if (!allowedTypes.includes(file.type)) {
-                setError("Only CSV files are allowed.");
+                setMessage({
+                    message: "Only CSV files are allowed.",
+                    color: "red",
+                });
+                setSelectedFile(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
             } else {
+                setUploadProgress(0);
                 setSelectedFile(file);
-                setError(null);
+                setMessage(null);
             }
         }
     };
-    
 
     const handleUploadDataClick = async () => {
         if (selectedFile) {
-            setUploading(true);
             try {
-                const response = await onFileUpload(selectedFile);
-                console.log("batch_id: " + response.batch_id);
-                await pollProgress(response.batch_id);
+                await onFileUpload(selectedFile, setUploadProgress);
+
+                setMessage({
+                    message: "File uploaded successfully",
+                    color: "green",
+                });
+                setUploadProgress(0);
+                setSelectedFile(null);
             } catch (error) {
-                setUploading(false);
+                setMessage({ message: "File uploading failed", color: "red" });
                 console.error("Error uploading file:", error);
             }
-        }
-    };
-
-    const pollProgress = async (batch_id: string) => {
-        let previousProgress = 0;
-        let consecutiveSameProgressCount = 0;
-        const timeoutDuration = 40000;
-
-        const interval = setInterval(async () => {
-            const progress = await fetchBatchProgress(batch_id);
-            setBatchProgress(progress);
-
-            if (progress === 100) {
-                clearInterval(interval);
-                setUploading(false);
-            } else if (progress === previousProgress) {
-                consecutiveSameProgressCount += 3000;
-
-                if (consecutiveSameProgressCount >= timeoutDuration) {
-                    clearInterval(interval);
-                    setUploading(false);
-                    setSelectedFile(null);
-                    setError("Upload failed please try again");
-                }
-            } else {
-                previousProgress = progress;
-                consecutiveSameProgressCount = 0;
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
             }
-        }, 3000);
+        }
     };
 
     return (
@@ -106,26 +93,27 @@ const FileUploader: React.FC<FileUploaderProps> = ({ title, onFileUpload }) => {
                         Choose File
                     </button>
                 </div>
-                {selectedFile && !uploading && (
+                {selectedFile && !message?.message && uploadProgress <= 0 && (
                     <button
-                        disabled={uploading}
                         onClick={handleUploadDataClick}
                         className={styles.uploadDataButton}
                     >
                         Upload Data
                     </button>
                 )}
-                {uploading && (
+                {uploadProgress > 0 && (
                     <div className={styles.progressBarContainer}>
                         <div
                             className={styles.progressBar}
-                            style={{ width: `${batchProgress}%` }}
+                            style={{ width: `${uploadProgress}%` }}
                         >
-                            {batchProgress}%
+                            {uploadProgress.toFixed(0)}%
                         </div>
                     </div>
                 )}
-                {error && <p className={styles.error}>{error}</p>}
+                {message && (
+                    <p style={{ color: message.color }}>{message.message}</p>
+                )}
             </div>
         </div>
     );
