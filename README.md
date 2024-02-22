@@ -1,4 +1,3 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://media.licdn.com/dms/image/C4E03AQFEcQ_bodPebg/profile-displayphoto-shrink_800_800/0/1656338761095?e=2147483647&v=beta&t=8JbE2wqNR-rYAGnF_otTW66NGxvFqmTF_cC5YIQCiHM" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
