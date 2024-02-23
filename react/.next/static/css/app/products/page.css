@@ -1,0 +1,278 @@
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[11].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[11].oneOf[9].use[5]!./src/components/Table/TableComponent.module.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.TableComponent_table__7L88u {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  min-width: 700px; /* Set a minimum width */
+  width: 100%;
+  border-spacing: 0;
+  margin-bottom: 20px;
+  font-family: sans-serif;
+  font-size: 14px;
+  overflow-x: auto;
+}
+.TableComponent_table__7L88u a[href] {
+  display: inline-block;
+  padding: 8px 16px;
+  color: #1976d2;
+  background-color: white;
+  border: 1px solid #1976d2;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.TableComponent_table__7L88u a[href]:hover {
+  background-color: #ddd;
+}
+
+.TableComponent_table__7L88u th {
+  padding: 15px 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.TableComponent_table__7L88u td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.TableComponent_pagination__ID8Xv {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.TableComponent_paginationList__tgrQ2 {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: right;
+}
+
+.TableComponent_pageItem__c_uoR {
+  margin: 0 5px;
+}
+.TableComponent_pageItem__c_uoR .TableComponent_pageLink__BB5zy {
+  display: inline-flex;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.TableComponent_pageItem__c_uoR .TableComponent_pageLink__BB5zy:hover {
+  background-color: #f2f2f2;
+}
+.TableComponent_pageItem__c_uoR .TableComponent_pageLink__BB5zy:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[11].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[11].oneOf[9].use[5]!./src/components/Report/ReportComponent.module.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.ReportComponent_container__rQ2TH .ReportComponent_wrapper__BQs14 {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  height: 75px;
+}
+.ReportComponent_container__rQ2TH .ReportComponent_wrapper__BQs14 .ReportComponent_containerWrapper__3tXFj {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 200px;
+}
+.ReportComponent_container__rQ2TH .ReportComponent_wrapper__BQs14 button {
+  height: 40px;
+  width: 200px;
+}
+
+.ReportComponent_label__wkcfq {
+  margin-bottom: 0.5rem;
+}
+
+.ReportComponent_dropdown__DUTp6 {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.ReportComponent_multiSelectContainer__RE3sG {
+  margin-top: 1rem;
+}
+
+.ReportComponent_multiSelectDropdown__CLovS {
+  cursor: pointer;
+  width: 100%;
+  height: 35px;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  position: relative;
+  font-size: 14px;
+}
+
+.ReportComponent_dropdownContent__x8wIA {
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.ReportComponent_dropdownItem__AhgU9 {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.ReportComponent_selectedItems__15iRV {
+  margin-block: 0.5rem;
+}
+
+.ReportComponent_selectedItem__qD8xL {
+  display: inline-block;
+  background-color: #f0f0f0;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+.ReportComponent_removeButton__VSxNr {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.ReportComponent_confirmButton__IdK6M {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.ReportComponent_confirmButton__IdK6M:hover {
+  background-color: #0056b3;
+}
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[11].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[11].oneOf[9].use[5]!./src/components/FileUploader/FileUploader.module.scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.FileUploader_container__UmYRv {
+  margin: 10px 0px;
+}
+.FileUploader_container__UmYRv h4 {
+  font-size: 16px;
+  margin: 10px 0px;
+}
+
+.FileUploader_fileUploader__1nQsx {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_fileInputContainer__R_eBQ {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_fileInput__t8z5z {
+  display: none;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_fileNameInput__PG7yM {
+  height: 40px;
+  width: 200px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_uploadButton__Kgc_k {
+  height: 40px;
+  width: 100px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_uploadButton__Kgc_k:hover {
+  background-color: #0056b3;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_uploadDataButton__VAd1a {
+  height: 40px;
+  width: 200px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_uploadDataButton__VAd1a:hover {
+  background-color: #0056b3;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_progressBarContainer__MZ_Of {
+  width: 200px;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.FileUploader_fileUploader__1nQsx .FileUploader_progressBar__vmdiE {
+  height: 100%;
+  background-color: #007bff;
+  text-align: center;
+  line-height: 20px;
+  color: #fff;
+}
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[9].use[3]!./node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[11].oneOf[9].use[4]!./node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[11].oneOf[9].use[5]!./src/app/products/page.module.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.page_filterInputs__7s8xt {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.page_filterInputs__7s8xt .page_filterInput__SiCWo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.page_filterInputs__7s8xt .page_filterInput__SiCWo label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+.page_filterInputs__7s8xt .page_filterInput__SiCWo input {
+  width: 200px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.page_filterInputs__7s8xt .page_twinInputs__lMik0 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 150px;
+}
+.page_filterInputs__7s8xt .page_resetButton__EEoW_ {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.page_filterInputs__7s8xt .page_resetButton__EEoW_:hover {
+  background-color: #0056b3;
+}
