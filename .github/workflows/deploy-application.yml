@@ -27,3 +27,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-dev --no-interaction --prefer-dist
         working-directory: ./product-backend
+
+      - name: Create deployment artifact
+        run: tar -czf app.tar.gz  --exclude=*.git --exclude=node_modules /*
