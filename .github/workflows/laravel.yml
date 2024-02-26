@@ -18,13 +18,16 @@ jobs:
 
     - name: Start Docker Compose
       run: docker-compose -f product-backend/docker-compose.yml up -d
-
-    - name: List Docker container
-      run: docker ps
    
     - name: Wait for Container to Start
       run: sleep 10 
+    
+    - name: List Docker container
+      run: docker ps
       
+    - name: Show Docker Compose logs
+      run: docker-compose -f product-backend/docker-compose.yml logs
+
     - name: Fetch Container Name
       id: get_container_name
       run: |
