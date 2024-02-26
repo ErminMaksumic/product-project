@@ -10,13 +10,15 @@ jobs:
   create-deployment-artifacts:
     name: Create deployment artifacts
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./product-backend
     steps:
       - uses: actions/checkout@v2
       - name: Compile CSS and JS
         run: |
           npm install
           npm run build
-        working-directory: ./product-backend
 
       - name: Configure PHP 8.2
         uses: shivammathur/setup-php@master
@@ -26,16 +28,14 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --no-dev --no-interaction --prefer-dist
-        working-directory: ./product-backend
 
       - name: Create deployment artifact
         env:
           GITHUB_SHA: ${{ github.sha }}
         run: tar -czf "${GITHUB_SHA}".tar.gz  --exclude=*.git --exclude=node_modules *
-        working-directory: ./product-backend
 
       - name: Store artifact for distribution
         uses: actions/upload-artifact@v2
         with:
           name: app-build
-          path: ./product-backend/${{ github.sha }}.tar.gz
+          path: ./${{ github.sha }}.tar.gz
