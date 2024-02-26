@@ -32,7 +32,7 @@ jobs:
         echo "::set-output name=container_name::$CONTAINER_NAME"
         
     - name: Check if Container is Running
-      run: docker inspect -f '{{.State.Running}}' ${{ steps.get_container_name.outputs.container_name }}
+      run: docker inspect -f '{{.State.Running}}' product-backend_laravel-backend
 
     - name: Check if Container is Running
       id: check_container
@@ -43,7 +43,7 @@ jobs:
 
     - name: Restart Container if Not Running
       if: steps.check_container.outputs.container_state == 'false'
-      run: docker restart ${{ steps.get_container_name.outputs.container_name }}
+      run: docker restart product-backend_laravel-backend
 
     - name: Migrate and Seed Database
       run: |
