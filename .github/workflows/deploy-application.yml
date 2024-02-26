@@ -15,6 +15,7 @@ jobs:
 
       - name: test
         run: ls
+        working-directory: ./product-backend
 
       - name: Build Docker image
         run: docker-compose build app
