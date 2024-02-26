@@ -28,4 +28,4 @@ jobs:
           npm install
           npm run prod
 
-        working-directory: test/test
+        working-directory: ../product-backend
