@@ -27,3 +27,5 @@ jobs:
         run: |
           npm install
           npm run prod
+
+        working-directory: test/test
