@@ -19,8 +19,8 @@ jobs:
     - name: Start Docker Compose
       run: docker-compose -f product-backend/docker-compose.yml up -d
 
-    - name: List Docker Images
-      run: docker images
+    - name: List Docker container
+      run: docker ps
    
     - name: Wait for Container to Start
       run: sleep 10 
@@ -30,20 +30,6 @@ jobs:
       run: |
         CONTAINER_NAME=$(docker-compose -f product-backend/docker-compose.yml ps -q laravel-backend)
         echo "::set-output name=container_name::$CONTAINER_NAME"
-        
-    - name: Check if Container is Running
-      run: docker inspect -f '{{.State.Running}}' product-backend_laravel-backend
-
-    - name: Check if Container is Running
-      id: check_container
-      run: |
-        CONTAINER_ID=$(docker-compose -f product-backend/docker-compose.yml ps -q laravel-backend)
-        CONTAINER_STATE=$(docker inspect -f '{{.State.Running}}' $CONTAINER_ID)
-        echo "::set-output name=container_state::$CONTAINER_STATE"
-
-    - name: Restart Container if Not Running
-      if: steps.check_container.outputs.container_state == 'false'
-      run: docker restart product-backend_laravel-backend
 
     - name: Migrate and Seed Database
       run: |
