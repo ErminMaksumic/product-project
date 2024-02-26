@@ -24,8 +24,7 @@ jobs:
 
       - name: Compile CSS and JS
 
-        run: |
-          npm install
-          npm run prod
+        run:
+          ls
 
         working-directory: /home/runner/work/product-project/product-backend
