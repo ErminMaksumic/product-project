@@ -28,4 +28,4 @@ jobs:
           npm install
           npm run prod
 
-        working-directory: /home/runner/work/product/product-backend
+        working-directory: /home/runner/work/product-project/product-backend
