@@ -18,7 +18,10 @@ jobs:
 
     - name: Start Docker Compose
       run: docker-compose -f product-backend/docker-compose.yml up -d
-      
+
+    - name: List Docker Images
+      run: docker images
+   
     - name: Wait for Container to Start
       run: sleep 10 
       
