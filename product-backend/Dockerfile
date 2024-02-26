@@ -1,9 +1,10 @@
 # Use the official PHP image with Apache
 FROM php:8.2-apache
 
-# Install PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    git \
     && docker-php-ext-install pdo pdo_pgsql
 
 # Install Composer
