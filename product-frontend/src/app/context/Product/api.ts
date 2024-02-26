@@ -6,10 +6,10 @@ const authToken = localStorage.getItem("accessToken");
 axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
 export async function getProductById(id: number, includeVariant = false) {
-    let url = `${process.env.NEXT_PUBLIC_URL}/api/product/${id}`;
+    let url = `${process.env.NEXT_PUBLIC_URL}/api/v1/product/${id}`;
 
     if (includeVariant) {
-        url = `${process.env.NEXT_PUBLIC_URL}/api/product/${id}?includeVariants=true`;
+        url = `${process.env.NEXT_PUBLIC_URL}/api/v1/product/${id}?includeVariants=true`;
     }
 
     try {
@@ -25,7 +25,7 @@ export async function getProductById(id: number, includeVariant = false) {
 export async function getAllowedActions(id: number) {
     try {
         const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_URL}/api/product/${id}/allowedActions`
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/product/${id}/allowedActions`
         );
 
         return response.data;
@@ -42,7 +42,7 @@ export async function updateProduct(
 ) {
     try {
         const response = await axios.put(
-            `${process.env.NEXT_PUBLIC_URL}/api/product/${id}${path}`,
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/product/${id}${path}`,
             product,
             {
                 headers: {
@@ -61,7 +61,7 @@ export async function updateProduct(
 export async function updateVariant(id: number, variant: Variant) {
     try {
         const response = await axios.put(
-            `${process.env.NEXT_PUBLIC_URL}/api/variant/${id}`,
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/variant/${id}`,
             variant,
             {
                 headers: {
@@ -83,7 +83,7 @@ export async function getProducts(
     query: string | undefined
 ) {
     try {
-        const url = `${process.env.NEXT_PUBLIC_URL}/api/product?includeVariant=${includeVariant}}&page=${page}&${query}`;
+        const url = `${process.env.NEXT_PUBLIC_URL}/api/v1/product?includeVariant=${includeVariant}}&page=${page}&${query}`;
 
         const response = await axios.get(url);
         return response.data;
@@ -99,7 +99,7 @@ export async function generateReportForOneProduct(
 ) {
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_URL}/api/product/${id}/generateReport`,
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/product/${id}/generateReport`,
             {
                 formats: body.formats.map((format) => format.toLowerCase()),
             }
@@ -118,7 +118,7 @@ export async function generateReportForExpensiveProducts(body: {
 }) {
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_URL}/api/product/generateReport`,
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/product/generateReport`,
             {
                 formats: body.formats.map((format) => format.toLowerCase()),
             }
@@ -137,7 +137,7 @@ export async function generateReportForProductStatesGraph(body: {
 }) {
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_URL}/api/product/generateReportChart`,
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/product/generateReportChart`,
             {
                 formats: body.formats.map((format) => format.toLowerCase()),
             }
@@ -155,7 +155,7 @@ export async function generateReportForProductStatesGraph(body: {
 export async function insertVariant(variantData: Variant) {
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_URL}/api/product/variant`,
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/product/variant`,
             variantData,
             {
                 headers: {
@@ -177,7 +177,7 @@ async function download(response: any) {
         const filePath = filePaths[i];
         const url = `${
             process.env.NEXT_PUBLIC_URL
-        }/api/download?filePath=${encodeURIComponent(filePath)}`;
+        }/api/v1/download?filePath=${encodeURIComponent(filePath)}`;
         const isPopupsBlocked = window.open(url, "_blank");
         if (!isPopupsBlocked) {
             alert("Please enable pop-ups to download multiple files.");
@@ -201,7 +201,7 @@ async function processChunk(
         const blobData = cleanedRows.join("\n");
         const blob = new Blob([blobData], { type: "application/octet-stream" });
 
-        await axios.post(`${process.env.NEXT_PUBLIC_URL}/api/upload`, blob, {
+        await axios.post(`${process.env.NEXT_PUBLIC_URL}/api/v1/upload`, blob, {
             headers: {
                 "Content-Type": "application/octet-stream",
                 "Content-Disposition": `attachment; filename="${file.name}"`,
@@ -247,7 +247,7 @@ export async function upload(
 export async function fetchBatchProgress(batchId: string) {
     try {
         const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_URL}/api/batch/progress/${batchId}`
+            `${process.env.NEXT_PUBLIC_URL}/api/v1/batch/progress/${batchId}`
         );
         return response.data.progress;
     } catch (error) {

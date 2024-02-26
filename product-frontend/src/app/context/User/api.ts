@@ -31,7 +31,7 @@ export const login = async (
     console.log(csrfResponse);
 
     const response: AxiosResponse<LoginResponse> = await api.post(
-      "/api/login",
+      "/api/v1/login",
       {
         email,
         password,
@@ -51,7 +51,7 @@ export const login = async (
 
 export const getUser = async (): Promise<User> => {
   try {
-    const response: AxiosResponse<User> = await api.get("/api/user");
+    const response: AxiosResponse<User> = await api.get("/api/v1/user");
     localStorage.setItem("currentUser", JSON.stringify(response.data));
     return response.data;
   } catch (error) {
@@ -62,6 +62,6 @@ export const getUser = async (): Promise<User> => {
 
 export const logout = async (): Promise<void> => {
   localStorage.removeItem("currentUser");
-  const response: AxiosResponse<User> = await api.post("/api/logout");
+  const response: AxiosResponse<User> = await api.post("/api/v1/logout");
   setBearerToken(null);
 };
