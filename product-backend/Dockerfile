@@ -34,12 +34,6 @@ ENV DB_CONNECTION=pgsql \
     DB_USERNAME=postgres \
     DB_PASSWORD=root
 
-# Run migrations (optional, if needed)
-RUN php artisan migrate
-
-# Seed the database
-RUN php artisan migrate:fresh --seed
-
 # Expose port 8000 and start Laravel development server
 EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000"]
