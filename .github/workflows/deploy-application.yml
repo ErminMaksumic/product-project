@@ -21,10 +21,8 @@ jobs:
     steps:
 
       - uses: actions/checkout@v2
-
       - name: Compile CSS and JS
-
-        run:
-          ls
-
-        working-directory: /home/runner/work/product-project/product-backend
+        run: |
+          npm install
+          npm run prod
+        working-directory: ./product-backend
