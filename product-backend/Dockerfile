@@ -48,4 +48,4 @@ CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000"]
 # Redis setup (instead of password here enter your password as well as user)
 RUN pecl install redis && docker-php-ext-enable redis
 RUN echo "session.save_handler = redis" >> /usr/local/etc/php/php.ini
-RUN echo "session.save_path = 'tcp://(user here):(password here)@redis:6379'" >> /usr/local/etc/php/php.ini
+RUN echo "session.save_path = 'tcp://root:root@redis:6379'" >> /usr/local/etc/php/php.ini
