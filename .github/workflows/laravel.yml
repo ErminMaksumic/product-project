@@ -20,7 +20,7 @@ jobs:
       run: docker-compose -f product-backend/docker-compose.yml up -d
       
     - name: Wait for Container to Start
-      run: sleep 10 # Adjust sleep time as needed
+      run: sleep 30 
       
     - name: Fetch Container Name
       id: get_container_name
