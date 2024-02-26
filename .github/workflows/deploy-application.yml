@@ -15,5 +15,5 @@ jobs:
       - name: Compile CSS and JS
         run: |
           npm install
-          npm run dev
+          npm run build
         working-directory: ./product-backend
