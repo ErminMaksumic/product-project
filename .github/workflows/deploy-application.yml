@@ -38,4 +38,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: app-build
-          path: ${{ github.sha }}.tar.gz
+          path: ./product-backend/${{ github.sha }}.tar.gz
