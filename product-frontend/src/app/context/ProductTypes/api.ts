@@ -4,7 +4,7 @@ const authToken = localStorage.getItem("accessToken");
 axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
 
 export async function getProductTypeById(id: number): Promise<ProductType[]> {
-    let url = `${process.env.NEXT_PUBLIC_URL}/api/productType/${id}`;
+    let url = `${process.env.NEXT_PUBLIC_URL}/api/v1/productType/${id}`;
 
     try {
         const response = await axios.get(url);
@@ -18,9 +18,9 @@ export async function getProductTypeById(id: number): Promise<ProductType[]> {
 
 export async function getProductTypes(includeVariant: boolean) {
     try {
-        let url = `${process.env.NEXT_PUBLIC_URL}/api/product`;
+        let url = `${process.env.NEXT_PUBLIC_URL}/api/v1/product`;
         if (includeVariant) {
-            url = `${process.env.NEXT_PUBLIC_URL}/api/product?includeVariant=true`;
+            url = `${process.env.NEXT_PUBLIC_URL}/api/v1/product?includeVariant=true`;
         }
 
         const response = await axios.get(url);
