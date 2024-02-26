@@ -13,10 +13,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: test
-        run: ls
-        working-directory: ./product-backend
-
       - name: Build Docker image
         run: docker-compose build app
         working-directory: ./product-backend

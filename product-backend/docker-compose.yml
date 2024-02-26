@@ -3,7 +3,7 @@ version: '3.8'
 services:
     app:
         build:
-            context: ../../product-backend
+            context: ../product-backend
             dockerfile: Dockerfile
         container_name: laravel_app
         ports:
