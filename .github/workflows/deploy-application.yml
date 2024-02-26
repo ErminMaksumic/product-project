@@ -1,28 +1,19 @@
 name: Product app
 
 on:
-
   push:
-
     branches:
-
       - master
       - deployment
 
-
 jobs:
-
   create-deployment-artifacts:
-
     name: Create deployment artifacts
-
     runs-on: ubuntu-latest
-
     steps:
-
       - uses: actions/checkout@v2
       - name: Compile CSS and JS
         run: |
           npm install
-          npm run prod
+          npm run dev
         working-directory: ./product-backend
