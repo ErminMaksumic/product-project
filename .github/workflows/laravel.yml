@@ -21,6 +21,15 @@ jobs:
       
     - name: Wait for Container to Start
       run: sleep 10 # Adjust sleep time as needed
+      
+    - name: Fetch Container Name
+      id: get_container_name
+      run: |
+        CONTAINER_NAME=$(docker-compose -f product-backend/docker-compose.yml ps -q laravel-backend)
+        echo "::set-output name=container_name::$CONTAINER_NAME"
+        
+    - name: Check if Container is Running
+      run: docker inspect -f '{{.State.Running}}' ${{ steps.get_container_name.outputs.container_name }}
 
     - name: Migrate and Seed Database
       run: |
