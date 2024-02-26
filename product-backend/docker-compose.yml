@@ -5,6 +5,7 @@ services:
         build:
             context: ../product-backend
             dockerfile: Dockerfile
+        image: ermin99/product:v1
         container_name: laravel_app
         ports:
             - "8000:80"
