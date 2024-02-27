@@ -32,7 +32,7 @@ jobs:
       run: docker exec ${{ steps.get_container_name.outputs.container_name }} composer --version
       
     - name: List Contents of Laravel Application Directory
-      run: docker exec ${{ steps.get_container_name.outputs.container_name }} ls /var/www/html
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} ls /var/www/html/product-backend
       
     - name: Fetch Container Name
       id: get_container_name
