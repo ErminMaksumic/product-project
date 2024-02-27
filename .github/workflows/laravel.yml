@@ -16,8 +16,14 @@ jobs:
     - name: Copy .env from product-backend or use .env.example
       run: cp product-backend/.env .env || cp product-backend/.env.example .env
 
-    - name: Start Docker Compose
-      run: docker-compose -f product-backend/docker-compose.yml up -d
+    - name: Stop and remove volumes (clean up)
+      run: docker-compose down -v
+
+    - name: Build Docker images
+      run: docker-compose build
+
+    - name: Start services in detached mode
+      run: docker-compose up -d
    
     - name: Wait for Container to Start
       run: sleep 10 
