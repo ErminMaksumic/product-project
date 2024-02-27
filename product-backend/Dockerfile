@@ -27,7 +27,7 @@ COPY . .
 RUN composer install
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/product-backend/storage /var/www/html/product-backend/bootstrap/cache
 
 # Set environment variables for connecting to PostgreSQL
 ENV DB_CONNECTION=pgsql \
