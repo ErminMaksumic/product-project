@@ -26,6 +26,9 @@ COPY . .
 # Install dependencies
 RUN composer install
 
+# Copy artisan file
+COPY artisan /usr/local/bin/artisan
+
 # Set environment variables for connecting to PostgreSQL
 ENV DB_CONNECTION=pgsql \
     DB_HOST=host.docker.internal \
