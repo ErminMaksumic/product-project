@@ -28,14 +28,17 @@ jobs:
     - name: Show Docker Compose logs
       run: docker-compose -f product-backend/docker-compose.yml logs
       
-    - name: List Contents of Laravel Application Directory
-      run: docker exec ${{ steps.get_container_name.outputs.container_name }} ls /var/www/html/product-backend
-      
     - name: Fetch Container Name
       id: get_container_name
       run: |
         CONTAINER_NAME=$(docker-compose -f product-backend/docker-compose.yml ps -q laravel-backend)
         echo "::set-output name=container_name::$CONTAINER_NAME"
+        
+    - name: List Contents of Laravel Application Directory
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} ls /var/www/html/product-backend
+
+    - name: Check Composer Version
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} composer --version
 
     - name: Migrate and Seed Database
       run: |
