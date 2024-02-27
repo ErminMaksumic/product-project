@@ -26,8 +26,8 @@ COPY . .
 # Install dependencies
 RUN composer install
 
-# Copy artisan file
-COPY artisan /usr/local/bin/artisan
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Set environment variables for connecting to PostgreSQL
 ENV DB_CONNECTION=pgsql \
