@@ -27,9 +27,6 @@ jobs:
       
     - name: Show Docker Compose logs
       run: docker-compose -f product-backend/docker-compose.yml logs
-
-    - name: Check Composer Version
-      run: docker exec ${{ steps.get_container_name.outputs.container_name }} composer --version
       
     - name: List Contents of Laravel Application Directory
       run: docker exec ${{ steps.get_container_name.outputs.container_name }} ls /var/www/html/product-backend
