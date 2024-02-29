@@ -13,6 +13,10 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Setup Environment File
+        run: cp ./product-backend/env.example ./product-backend/.env
+        working-directory: ./product-backend
+
       - name: Build Docker image
         run: docker-compose build app
         working-directory: ./product-backend
