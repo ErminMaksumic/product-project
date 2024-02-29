@@ -35,14 +35,15 @@ jobs:
 
       - name: Run Migrations
         run: php artisan migrate --force
-        env:
-          DB_CONNECTION: pgsql
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         working-directory: ./product-backend
+
+#        env:
+#          DB_CONNECTION: pgsql
+#          DB_HOST: ${{ secrets.DB_HOST }}
+#          DB_PORT: ${{ secrets.DB_PORT }}
+#          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+#          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+#          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 #      - name: Push Docker image to registry
 #        run: |
