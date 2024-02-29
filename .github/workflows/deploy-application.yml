@@ -21,6 +21,10 @@ jobs:
         run: docker-compose build app
         working-directory: ./product-backend
 
+      - name: Start Database Service
+        run: docker-compose up -d
+        working-directory: ./product-backend
+
       - name: Run Migrations
         run: |
           docker-compose exec app php artisan migrate --force
