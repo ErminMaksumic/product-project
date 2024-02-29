@@ -13,10 +13,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Setup Environment File
-        run: cp .env.example .env
-        working-directory: ./product-backend
-
       - name: Build Docker image
         run: docker-compose build app
         working-directory: ./product-backend
@@ -25,17 +21,17 @@ jobs:
         run: docker-compose up -d
         working-directory: ./product-backend
 
-      - name: Run Migrations
-        run: |
-          docker-compose exec -T app php artisan migrate --force
-        env:
-          DB_CONNECTION: pgsql
-          DB_HOST: db
-          DB_PORT: 5432
-          DB_DATABASE: product-db
-          DB_USERNAME: postgres
-          DB_PASSWORD: root
-        working-directory: ./product-backend
+#      - name: Run Migrations
+#        run: |
+#          docker-compose exec -T app php artisan migrate --force
+#        env:
+#          DB_CONNECTION: pgsql
+#          DB_HOST: db
+#          DB_PORT: 5432
+#          DB_DATABASE: product-db
+#          DB_USERNAME: postgres
+#          DB_PASSWORD: root
+#        working-directory: ./product-backend
 
       - name: Install Composer dependencies
         run: composer update --no-dev --no-interaction --prefer-dist
