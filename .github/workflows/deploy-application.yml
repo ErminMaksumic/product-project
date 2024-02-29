@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Environment File
-        run: cp ./product-backend/env.example ./product-backend/.env
+        run: cp env.example .env
         working-directory: ./product-backend
 
       - name: Build Docker image
