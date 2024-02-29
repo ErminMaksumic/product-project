@@ -19,6 +19,7 @@ jobs:
 
       - name: Start Database Service
         run: docker-compose up -d db
+        working-directory: ./product-backend
 
       - name: Install Composer dependencies
         run: composer update --no-dev --no-interaction --prefer-dist
