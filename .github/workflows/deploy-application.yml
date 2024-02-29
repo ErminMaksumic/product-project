@@ -19,6 +19,7 @@ jobs:
 
       - name: Lss
         run: ls -a
+        working-directory: ./product-backend
 
       - name: Run Migrations
         run: php artisan migrate --force
