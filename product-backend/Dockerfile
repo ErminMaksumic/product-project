@@ -35,7 +35,7 @@ ENV DB_CONNECTION=pgsql \
     DB_PASSWORD=root
 
 # Run migrations (optional, if needed)
-RUN php artisan migrate --force
+RUN php artisan migrate
 
 # Seed the database
 RUN php artisan migrate:fresh --seed
