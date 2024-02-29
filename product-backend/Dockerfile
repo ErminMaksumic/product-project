@@ -40,10 +40,6 @@ ENV DB_CONNECTION=pgsql \
     DB_USERNAME=postgres \
     DB_PASSWORD=root
 
-# Expose port 8000 and start Laravel development server
-EXPOSE 8000
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000"]
-
 # [IMPORTANT]
 # Redis setup (instead of password here enter your password as well as user)
 RUN pecl install redis && docker-php-ext-enable redis
