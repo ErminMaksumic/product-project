@@ -21,8 +21,13 @@ jobs:
           cp product-backend/.env.example .env
         fi
 
-    - name: Start Docker Compose
-      run: docker-compose -f product-backend/docker-compose.yml up -d
+    - name: Stop and remove existing Docker containers
+      run: docker-compose -f product-backend/docker-compose.yml down
+
+    - name: Build and Run Docker Compose
+      run: |
+        docker-compose -f product-backend/docker-compose.yml build
+        docker-compose -f product-backend/docker-compose.yml up -d
    
     - name: Wait for Container to Start
       run: sleep 10 
