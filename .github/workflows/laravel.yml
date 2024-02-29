@@ -13,12 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Copy .env from product-backend or use .env.example
+    - name: Create .env file if not exists
       run: |
-        if [ -f "product-backend/.env" ]; then
-          cp product-backend/.env .env
-        else
+        if [ ! -f ".env" ]; then
           cp product-backend/.env.example .env
+          echo ".env file created from .env.example."
         fi
 
     - name: Stop and remove existing Docker containers
