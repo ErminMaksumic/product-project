@@ -24,7 +24,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY . .
 
 # Install dependencies
-RUN composer install --no-interaction
+RUN composer install --no-cache --working-dir=/var/www/html
+
+#VERSION
+RUN composer --version
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Set environment variables for connecting to PostgreSQL
 ENV DB_CONNECTION=pgsql \
@@ -33,16 +39,6 @@ ENV DB_CONNECTION=pgsql \
     DB_DATABASE=product-db \
     DB_USERNAME=postgres \
     DB_PASSWORD=root
-
-# Run migrations (optional, if needed)
-RUN php artisan migrate
-
-# Seed the database
-RUN php artisan migrate:fresh --seed
-
-# Expose port 8000 and start Laravel development server
-EXPOSE 8000
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8000"]
 
 # [IMPORTANT]
 # Redis setup (instead of password here enter your password as well as user)
