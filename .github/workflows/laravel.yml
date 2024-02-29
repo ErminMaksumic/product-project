@@ -16,7 +16,7 @@ jobs:
     - name: Create .env file if not exists
       run: |
         if [ ! -f ".env" ]; then
-          cp product-backend/.env.example .env
+          cp product-backend/.env.example product-backend/.env
           echo ".env file created from .env.example."
         fi
 
