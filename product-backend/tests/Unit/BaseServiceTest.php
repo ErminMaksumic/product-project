@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Unit;
 
 use App\Exceptions\UserException;
 use App\Http\Requests\ProductInsertRequest;
@@ -14,11 +14,11 @@ use App\Models\Variant;
 use App\Services\ProductService;
 use App\Services\VariantService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\App;
 use Mockery;
 use ReflectionMethod;
+use Tests\TestCase;
 
 class BaseServiceTest extends TestCase
 {
