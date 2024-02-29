@@ -58,7 +58,7 @@ jobs:
     - name: Migrate and Seed Database
       run: |
         docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan migrate --force"
-        docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan migrate:fresh --seed"
+        docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan migrate:fresh --seed --force"
 
     - name: Generate Application Key
       run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan key:generate"
