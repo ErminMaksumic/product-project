@@ -11,13 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     - name: Copy .env from product-backend or use .env.example
       run: cp product-backend/.env .env || cp product-backend/.env.example .env
 
     - name: Start Docker Compose
-      run: docker-compose -f product-backend/docker-compose.yml up -d
+      run: docker-compose -f ./product-backend/docker-compose.yml up -d
+      working-directory: ./product-backend
    
     - name: Wait for Container to Start
       run: sleep 10 
@@ -26,12 +28,12 @@ jobs:
       run: docker ps
       
     - name: Show Docker Compose logs
-      run: docker-compose -f product-backend/docker-compose.yml logs
+      run: docker-compose -f ./product-backend/docker-compose.yml logs
       
     - name: Fetch Container Name
       id: get_container_name
       run: |
-        CONTAINER_NAME=$(docker-compose -f product-backend/docker-compose.yml ps -q laravel-backend)
+        CONTAINER_NAME=$(docker-compose -f ./product-backend/docker-compose.yml ps -q laravel-backend)
         echo "::set-output name=container_name::$CONTAINER_NAME"
         
     - name: Check Composer Version
