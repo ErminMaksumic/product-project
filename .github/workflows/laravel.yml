@@ -25,10 +25,7 @@ jobs:
 
     - name: Start Docker Compose
       run: docker-compose -f product-backend/docker-compose.yml up --build -d
-   
-    - name: Wait for Container to Start
-      run: sleep 10 
-        
+
     - name: Check if .env file exists
       run: |
         if [ -f "product-backend/.env" ]; then
@@ -81,7 +78,9 @@ jobs:
       run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "composer require laravel/breeze --dev"
 
     - name: Create Personal Passport Client
-      run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan passport:client --personal test"
+      run: |
+        echo "test" | docker exec -i ${{ steps.get_container_name.outputs.container_name }} \
+        php artisan passport:client --personal
 
     - name: Run php artisan serve for testing
       run: docker exec -e APP_ENV=local ${{ steps.get_container_name.outputs.container_name }} php artisan serve --host=0.0.0.0 --port=8000
