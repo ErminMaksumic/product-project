@@ -13,14 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Copy .env from product-backend or use .env.example
-      run: |
-        if [ -f "product-backend/.env" ]; then
-          cp product-backend/.env .env
-        else
-          cp product-backend/.env.example .env
-        fi
-
     - name: Stop and remove existing Docker containers
       run: docker-compose -f product-backend/docker-compose.yml down
 
@@ -29,6 +21,23 @@ jobs:
    
     - name: Wait for Container to Start
       run: sleep 10 
+
+    - name: Copy .env from product-backend or use .env.example
+      run: |
+        if [ -f "product-backend/.env" ]; then
+          cp product-backend/.env .env
+        else
+          cp product-backend/.env.example .env
+        fi
+        
+    - name: Check if .env file exists
+      run: |
+        if [ -f "product-backend/.env" ]; then
+          echo ".env file exists."
+        else
+          echo "Error: .env file not found."
+          exit 1
+        fi
     
     - name: List Docker container
       run: docker ps
