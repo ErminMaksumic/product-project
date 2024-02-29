@@ -18,6 +18,11 @@ jobs:
 
     - name: Start Docker Compose
       run: docker-compose -f product-backend/docker-compose.yml up -d
+
+    - name: Install Composer Dependencies
+      run: |
+        docker exec ${{ steps.get_container_name.outputs.container_name }} composer install --working-dir=/var/www/html
+
    
     - name: Wait for Container to Start
       run: sleep 10 
