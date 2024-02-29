@@ -26,6 +26,9 @@ COPY . .
 # Install dependencies
 RUN composer install --no-cache --working-dir=/var/www/html
 
+#VERSION
+RUN composer --version
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
