@@ -16,11 +16,13 @@ class RequestLoggingMiddleware
      */
     public function handle($request, Closure $next)
     {
-        Log::info('Request:', [
+        $logChannel = 'request_logs';
+
+        Log::channel($logChannel)->info('Request:', [
             'method' => $request->method(),
             'url' => $request->fullUrl(),
             'query_params' => $request->query(),
-            'request_params' => $request->all(),
+            'body_params' => $request->getContent(),
         ]);
 
         return $next($request);
