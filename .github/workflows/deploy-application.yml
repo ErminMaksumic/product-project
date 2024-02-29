@@ -27,7 +27,7 @@ jobs:
             DB_DATABASE: product-db
             DB_USERNAME: postgres
             DB_PASSWORD: root
-        working-directory: ./path/to/your/docker-compose-file
+        working-directory: ./product-backend
 
       - name: Build Docker image
         run: docker-compose build app
