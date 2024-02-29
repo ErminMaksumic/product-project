@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Migrations
         run: |
-          docker-compose exec app php artisan migrate --force
+          docker-compose exec -T app php artisan migrate --force
         env:
           DB_CONNECTION: pgsql
           DB_HOST: db
