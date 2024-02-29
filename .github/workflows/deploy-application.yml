@@ -22,7 +22,7 @@ jobs:
         working-directory: ./product-backend
 
       - name: Install Composer dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist
+        run: composer update --no-dev --no-interaction --prefer-dist
         working-directory: ./product-backend
 
       - name: Run Migrations
