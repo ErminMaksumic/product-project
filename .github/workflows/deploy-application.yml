@@ -17,6 +17,9 @@ jobs:
         run: docker-compose build app
         working-directory: ./product-backend
 
+      - name: Install Composer dependencies
+        run: composer install --no-dev --no-interaction --prefer-dist
+
       - name: Lss
         run: ls -a
         working-directory: ./product-backend
