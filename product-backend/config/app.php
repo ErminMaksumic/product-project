@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\KafkaServiceProvider;
 use App\Providers\StateMachineServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
@@ -170,7 +171,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         StateMachineServiceProvider::class,
-        Laravel\Passport\PassportServiceProvider::class
+        Laravel\Passport\PassportServiceProvider::class,
+        KafkaServiceProvider::class
     ])->toArray(),
 
     /*

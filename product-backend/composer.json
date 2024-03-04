@@ -12,10 +12,13 @@
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "predis/predis": "^2.2"
+        "mateusjunges/laravel-kafka": "^1.13",
+        "predis/predis": "^2.2",
+        "spatie/laravel-permission": "^6.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
+        "kwn/php-rdkafka-stubs": "^0.0.1",
         "laravel/breeze": "^1.28",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\UserException;
 use App\Http\Requests\SearchObjects\BaseSearchObject;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
+use App\Jobs\ProductCreated;
 use App\Jobs\ProductCsvProcess;
 use App\Services\Interfaces\BaseServiceInterface;
 use Exception;
@@ -58,6 +59,7 @@ abstract class BaseService implements BaseServiceInterface
 
       $this->validateRequest($request, $this->getInsertRequestClass());
       $result = $this->getModelInstance()->create($request->all());
+      ProductCreated::dispatch($result->toArray()->onQueue('default'));
       return $result;
     }
 

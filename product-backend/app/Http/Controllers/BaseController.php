@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProductCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -81,5 +82,5 @@ abstract class BaseController extends Controller
         return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
     }
 
-   
+
 }
