@@ -36,7 +36,7 @@ class RabbitMQService
             if ($message !== null) {
                 $messages[] = json_decode($message->body, true);
                 //If u want to delete msg after its acknowledged
-                //$channel->basic_ack($message->delivery_info['delivery_tag']);
+                // $channel->basic_ack($message->delivery_info['delivery_tag']);
             } else {
                 break;
             }
