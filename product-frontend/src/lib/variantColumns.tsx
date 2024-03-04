@@ -31,7 +31,7 @@ export const variantColumnsWithEdit = [
         field: "actions",
         headerName: "Actions",
         width: 150,
-        renderCell: (params, props) => (
+        renderCell: (params:any, props:any) => (
             <Button
                 variant="outlined"
                 onClick={() => props.handleEditVariant(params.row)}

@@ -21,11 +21,13 @@
         "react": "^18",
         "react-dom": "^18",
         "react-icons": "^5.0.1",
-        "sass": "^1.70.0"
+        "sass": "^1.70.0",
+        "uuid": "^9.0.1"
     },
     "devDependencies": {
         "@types/lodash.debounce": "^4.0.9",
         "@types/node": "^20",
+        "@types/qs": "^6.9.12",
         "@types/react": "^18",
         "@types/react-dom": "^18",
         "@types/uuid": "^9.0.8",
