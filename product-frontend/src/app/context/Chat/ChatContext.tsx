@@ -1,10 +1,11 @@
 "use client";
 import React, { createContext, useContext, ReactNode } from "react";
-import { getMessages, sendMessage } from "./api";
+import { getMessages, sendMessage, pusherSendMessage } from "./api";
 
 interface ChatProps {
   getMessages: () => Promise<any>;
   sendMessage: (message:string) => Promise<any>;
+  pusherSendMessage: (message:string) => Promise<any>;
 }
 
 const ChatContext = createContext<ChatProps | undefined>(undefined);
@@ -16,7 +17,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
     <ChatContext.Provider
       value={{
         getMessages,
-        sendMessage
+        sendMessage,
+        pusherSendMessage
       }}
     >
       {children}

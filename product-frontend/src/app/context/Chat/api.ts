@@ -25,3 +25,22 @@ export async function getMessages(): Promise<any> {
     throw error;
   }
 }
+
+export async function pusherSendMessage(message: string): Promise<any> {
+  try {
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_URL}/api/v1/sendMessage`,
+      {
+        message,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Error sending message:", error);
+    throw error;
+  }
+}

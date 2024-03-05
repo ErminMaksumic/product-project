@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\ProductTypeController;
 use App\Http\Controllers\ApiControllers\VariantController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\RabbitMQController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,10 +55,11 @@ Route::prefix('v1')->group(function () {
     Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');
     Route::put('/product/{id}/productDelete', [ProductController::class, 'productHide'])->name('product.productHide');
 
-    //RabbitMQ
+    //RabbitMQ and Pusher Websocket
 
     Route::middleware(['auth:api'])->group(function () {
         Route::post('/message', [RabbitMQController::class, 'publishMessage'])->name('rabbitmq.message');
         Route::get('/messages', [RabbitMQController::class, 'fetchMessages'])->name('rabbitmq.messages');
+        Route::post('/sendMessage', [ChatController::class, 'sendMessage'])->name('pusher.sendMessage');
     });
 });
