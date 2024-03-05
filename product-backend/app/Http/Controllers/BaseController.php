@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Junges\Kafka\Facades\Kafka;
 
 abstract class BaseController extends Controller
 {
@@ -81,5 +82,5 @@ abstract class BaseController extends Controller
         return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
     }
 
-   
+
 }

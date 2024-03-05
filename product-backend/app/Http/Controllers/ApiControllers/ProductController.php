@@ -13,12 +13,17 @@ use App\Http\Resources\VariantResource;
 use App\Services\Interfaces\ProductServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Junges\Kafka\Facades\Kafka;
 
 class ProductController extends BaseController
 {
     public function __construct(protected ProductServiceInterface $productService)
     {
         parent::__construct($productService);
+        $producer = Kafka::publishOn('topic')->withKafkaKey('key');
+        $producer->send('test');
+        $consumer = Kafka::createConsumer()->subscribe('topic')->build();
+        $consumer->consume();
     }
 
     public function getInsertRequestClass()
