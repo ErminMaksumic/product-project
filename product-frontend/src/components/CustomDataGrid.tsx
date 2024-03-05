@@ -16,10 +16,10 @@ export function CustomDataGrid({
                     rows={Array.isArray(params) ? params : [params]}
                     columns={
                         Array.isArray(params)
-                            ? columnsWithEdit.map((column) => ({
+                            ? columnsWithEdit.map((column:any) => ({
                                   ...column,
                                   renderCell: column.renderCell
-                                      ? (cellParams) =>
+                                      ? (cellParams:any) =>
                                             column.renderCell(cellParams, {
                                                 handleEditVariant,
                                             })

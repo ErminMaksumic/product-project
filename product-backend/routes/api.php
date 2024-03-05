@@ -4,6 +4,8 @@ use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\ProductTypeController;
 use App\Http\Controllers\ApiControllers\VariantController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\RabbitMQController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
-// Custom path
+    // Custom path
     Route::get('/product/newestVariant', [ProductController::class, 'getNewestVariant']);
     Route::post('/product/variant', [ProductController::class, 'addVariant']);
     Route::post('/product/{id}/generateReport', [ProductController::class, 'generateReportForOneProduct']);
@@ -30,7 +32,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/batch/progress/{batch_id}', [ProductController::class, 'batchProgress'])->name('batch');
 
 
-// Resources
+    // Resources
     Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('productType', ProductTypeController::class);
         Route::apiResource('product', ProductController::class);
@@ -38,17 +40,26 @@ Route::prefix('v1')->group(function () {
 
     Route::apiResource('variant', VariantController::class);
 
-// Auth
+    // Auth
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanctum");
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+    Route::get('user', [AuthController::class, 'getUser'])->middleware("auth:api");
+    //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    //    return $request->user();
+    //});
 
-// State machine
+    // State machine
     Route::get('/product/{id}/allowedActions', [ProductController::class, 'allowedActions'])->name('product.allowedActions');
     Route::put('/product/{id}/productActivate', [ProductController::class, 'productActivate'])->name('product.productActivate');
     Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');
     Route::put('/product/{id}/productDelete', [ProductController::class, 'productHide'])->name('product.productHide');
+
+    //RabbitMQ and Pusher Websocket
+
+    Route::middleware(['auth:api'])->group(function () {
+        Route::post('/message', [RabbitMQController::class, 'publishMessage'])->name('rabbitmq.message');
+        Route::get('/messages', [RabbitMQController::class, 'fetchMessages'])->name('rabbitmq.messages');
+        Route::post('/sendMessage', [ChatController::class, 'sendMessage'])->name('pusher.sendMessage');
+    });
 });

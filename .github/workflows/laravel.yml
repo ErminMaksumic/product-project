@@ -1,0 +1,69 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Copy .env from product-backend or use .env.example
+      run: |
+        if [ -f "product-backend/.env" ]; then
+          cp product-backend/.env .env
+        else
+          cp product-backend/.env.example .env
+        fi
+
+    - name: Stop and remove existing Docker containers
+      run: docker-compose -f product-backend/docker-compose.yml down
+
+    - name: Start Docker Compose
+      run: docker-compose -f product-backend/docker-compose.yml up --build -d
+   
+    - name: Wait for Container to Start
+      run: sleep 10 
+    
+    - name: List Docker container
+      run: docker ps
+      
+    - name: Show Docker Compose logs
+      run: docker-compose -f product-backend/docker-compose.yml logs
+      
+    - name: Fetch Container Name
+      id: get_container_name
+      run: |
+        CONTAINER_NAME=$(docker-compose -f product-backend/docker-compose.yml ps -q laravel-backend)
+        echo "::set-output name=container_name::$CONTAINER_NAME"
+        
+    - name: Check Composer Version
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} composer --version
+      
+    - name: List Contents of Laravel Application Directory
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} ls /var/www/html/product-backend
+
+    - name: Migrate and Seed Database
+      run: |
+        docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan migrate"
+        docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan migrate:fresh --seed"
+
+    - name: Generate Application Key
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan key:generate"
+
+    - name: Install laravel/passport Package
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "composer require laravel/passport"
+
+    - name: Generate Passport Keys
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan passport:keys"
+
+    - name: Install laravel/breeze Package
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "composer require laravel/breeze --dev"
+
+    - name: Create Personal Passport Client
+      run: docker exec ${{ steps.get_container_name.outputs.container_name }} bash -c "php artisan passport:client --personal test"
