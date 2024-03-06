@@ -72,11 +72,6 @@ const ChatPage: React.FC = () => {
           sent,
         },
       ]);
-
-      if (messagesWrapperRef.current) {
-        messagesWrapperRef.current.scrollTop =
-          messagesWrapperRef.current.scrollHeight;
-      }
     });
 
     return () => {
@@ -89,6 +84,13 @@ const ChatPage: React.FC = () => {
       handleMessageSend();
     }
   };
+
+  useEffect(() => {
+    if (messagesWrapperRef.current) {
+      messagesWrapperRef.current.scrollTop =
+        messagesWrapperRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div className={styles.pageWrapper}>
