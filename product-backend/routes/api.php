@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiControllers\ProductController;
 use App\Http\Controllers\ApiControllers\ProductTypeController;
 use App\Http\Controllers\ApiControllers\VariantController;
+use App\Http\Controllers\KafkaController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -51,4 +52,8 @@ Route::prefix('v1')->group(function () {
     Route::put('/product/{id}/productActivate', [ProductController::class, 'productActivate'])->name('product.productActivate');
     Route::put('/product/{id}/productDraft', [ProductController::class, 'productDraft'])->name('product.productDraft');
     Route::put('/product/{id}/productDelete', [ProductController::class, 'productHide'])->name('product.productHide');
+
+//Kafka
+    Route::get('/messages/consume', [KafkaController::class, 'consume'])->name('kafka.consume');
+    Route::post('/messages/produce', [KafkaController::class, 'produce'])->name('kafka.produce');
 });
